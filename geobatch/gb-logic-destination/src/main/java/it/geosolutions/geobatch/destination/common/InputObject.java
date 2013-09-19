@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Query;
@@ -65,42 +66,42 @@ import com.thoughtworks.xstream.XStream;
  *
  */
 public abstract class InputObject {
-	
+
 	private static final XStream xstream = new XStream();
-	
+
 	public static Properties partners = new Properties();
-	
+
 	public static SpelExpressionParser expressionParser = new SpelExpressionParser();
-	
+
 	public static StandardEvaluationContext evaluationContext = new StandardEvaluationContext();
-	
+
 	private final static Logger LOGGER = LoggerFactory.getLogger(InputObject.class);
-	
+
 	private static CoordinateReferenceSystem defaultCrs = null;
-	
+
 	public static FilterFactory2 filterFactory = CommonFactoryFinder.getFilterFactory2();
-	
+
 	public static final int NO_TARGET = -1;
-	
+
 	private String SEQUENCE_SUFFIX = "_seq";
-	
+
 	private SequenceManager sequenceManager;
-	
+
 	//
 	private String inputTypeName = "";	
 	private ProgressListenerForwarder listenerForwarder=null;
-	
+
 	private boolean valid = false;
-	
+
 	FeatureStore<SimpleFeatureType, SimpleFeature> inputReader = null;
 	Query inputQuery = null;	
 	FeatureIterator<SimpleFeature> inputIterator = null;
 	int inputCount = 0;
 	int readCount = 0;
-	
+
 	protected MetadataIngestionHandler metadataHandler;
-	protected JDBCDataStore dataStore;
-	
+	protected DataStore dataStore;
+
 	/**
 	 * Initializes an IngestionObject handler for the given input feature.
 	 * 
@@ -109,7 +110,7 @@ public abstract class InputObject {
 	public InputObject(String inputTypeName,
 			ProgressListenerForwarder listenerForwarder,
 			MetadataIngestionHandler metadataHandler,
-			JDBCDataStore dataStore) {
+			DataStore dataStore) {
 		super();
 		this.inputTypeName = inputTypeName;
 		this.listenerForwarder = listenerForwarder;
@@ -117,7 +118,7 @@ public abstract class InputObject {
 		this.metadataHandler = metadataHandler;
 		this.valid = this.parseTypeName(inputTypeName);
 	}
-	
+
 	/**
 	 * Parses type name to extract information about the to be ingested object.
 	 * 
@@ -128,15 +129,15 @@ public abstract class InputObject {
 		// load mappings from resources
 		try {
 			partners.load(InputObject.class.getResourceAsStream("/partners.properties"));
-			
+
 			evaluationContext.addPropertyAccessor(new PropertyAccessor() {
-				
+
 				@Override
 				public void write(EvaluationContext ctx, Object target, String name,
 						Object value) throws AccessException {					
-					
+
 				}
-				
+
 				@Override
 				public TypedValue read(EvaluationContext ctx, Object target, String name)
 						throws AccessException {
@@ -146,18 +147,18 @@ public abstract class InputObject {
 					}
 					return null;
 				}
-				
+
 				@Override
 				public Class[] getSpecificTargetClasses() {					
 					return new Class[] {SimpleFeature.class};
 				}
-				
+
 				@Override
 				public boolean canWrite(EvaluationContext ctx, Object target, String name)
 						throws AccessException {					
 					return false;
 				}
-				
+
 				@Override
 				public boolean canRead(EvaluationContext ctx, Object target, String name)
 						throws AccessException {
@@ -168,7 +169,7 @@ public abstract class InputObject {
 			LOGGER.error("Unable to load configuration: "+e.getMessage(), e);
 		}
 	}
-	
+
 	protected void reset() {
 		inputReader = null;
 		inputQuery = null;	
@@ -176,11 +177,11 @@ public abstract class InputObject {
 		inputCount = 0;
 		readCount = 0;
 	}
-	
+
 	protected void resetInputCounter(){
-	    inputCount = 0;
+		inputCount = 0;
 	}
-	
+
 	/**
 	 * Checks for typeName validity.
 	 * 
@@ -194,7 +195,7 @@ public abstract class InputObject {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Checks and fills the given crs with default value if needed.
 	 * 
@@ -214,32 +215,32 @@ public abstract class InputObject {
 		}
 		return crs;
 	}
-	
+
 	/**
 	 * Connects to the given DataStore.
 	 * 
 	 * @param datastoreParams
 	 * @return
 	 * @throws IOException
-	 
+
 	protected JDBCDataStore connectToDataStore(
 			Map<String, Serializable> datastoreParams) throws IOException {
 		JDBCDataStore dataStore;
 		dataStore = (JDBCDataStore)DataStoreFinder.getDataStore(datastoreParams);
-		
+
 		if(dataStore == null) {
 			throw new IOException("Cannot connect to database for: "+inputTypeName);
 		}
 		//metadataHandler = new MetadataIngestionHandler(dataStore);
 		return dataStore;
 	}*/
-	
+
 	protected void dispose() {
 		/*if(metadataHandler != null) {
 			metadataHandler.dispose();
 		}*/
 	}
-	
+
 	/**
 	 * Creates a new Ingestion process in the logging tables, on the given database
 	 * connection.
@@ -248,10 +249,13 @@ public abstract class InputObject {
 	 * @return
 	 * @throws IOException 
 	 */
-	protected int createProcess(JDBCDataStore dataStore) throws IOException {
-		return metadataHandler.createProcess();
+	protected int createProcess() throws IOException {
+		if(metadataHandler != null){
+			return metadataHandler.createProcess();
+		}
+		return 0;
 	}
-	
+
 	/**
 	 * Get the input feature Ingestion process in the logging tables, on the given database
 	 * connection.
@@ -260,10 +264,13 @@ public abstract class InputObject {
 	 * @return
 	 * @throws IOException 
 	 */
-	protected MetadataIngestionHandler.Process getProcessData(JDBCDataStore dataStore) throws IOException {
-		return metadataHandler.getProcessData(inputTypeName);
+	protected MetadataIngestionHandler.Process getProcessData() throws IOException {
+		if(metadataHandler != null){
+			return metadataHandler.getProcessData(inputTypeName);
+		}
+		return null;
 	}
-			
+
 	protected Set<Number> getAggregationValues(String aggregateAttribute) throws IOException {		
 		// get unique aggregation values
 		Function unique = filterFactory.function("Collection_Unique",
@@ -274,22 +281,22 @@ public abstract class InputObject {
 		return (Set<Number>) unique.evaluate(inputReader
 				.getFeatures(new Query(inputTypeName, Filter.INCLUDE)));				
 	}
-	
-    protected Set<BigDecimal> getAggregationBigValues(String aggregateAttribute) throws IOException {
-        // get unique aggregation values
-        Function unique = filterFactory.function("Collection_Unique",
-                filterFactory.property(aggregateAttribute));
-        FeatureCollection<SimpleFeatureType, SimpleFeature> features = inputReader
-                .getFeatures(inputQuery);
 
-        Set<BigDecimal> set = (Set<BigDecimal>)unique.evaluate(features);
-        if(set == null){
-            set = new HashSet<BigDecimal>(); 
-        }
-        return set;
-    }
-	
-	
+	protected Set<BigDecimal> getAggregationBigValues(String aggregateAttribute) throws IOException {
+		// get unique aggregation values
+		Function unique = filterFactory.function("Collection_Unique",
+				filterFactory.property(aggregateAttribute));
+		FeatureCollection<SimpleFeatureType, SimpleFeature> features = inputReader
+				.getFeatures(inputQuery);
+
+		Set<BigDecimal> set = (Set<BigDecimal>)unique.evaluate(features);
+		if(set == null){
+			set = new HashSet<BigDecimal>(); 
+		}
+		return set;
+	}
+
+
 	/**
 	 * Create a new entry in the trace log for the given input file / feature.
 	 * The trace is bound to the given process.
@@ -304,12 +311,14 @@ public abstract class InputObject {
 	 * @return
 	 * @throws IOException
 	 */
-	protected int logFile(JDBCDataStore dataStore, 
-			int processo, int bersaglio, int partner, String codicePartner, String date, boolean update) throws IOException {
-		return metadataHandler.logFile(processo, -1,
-				partner, codicePartner, inputTypeName, date, false);
+	protected int logFile(int processo, int bersaglio, int partner, String codicePartner, String date, boolean update) throws IOException {
+		if(metadataHandler != null){
+			return metadataHandler.logFile(processo, -1,
+					partner, codicePartner, inputTypeName, date, false);
+		}
+		return 0;
 	}
-	
+
 	/**
 	 * Creates a FeatureSource for the input feature.
 	 * 
@@ -319,20 +328,20 @@ public abstract class InputObject {
 	 * @throws IOException
 	 */
 	protected FeatureStore<SimpleFeatureType, SimpleFeature> createInputReader(
-			JDBCDataStore dataStore, Transaction transaction, String featureName)
-			throws IOException {
+			DataStore dataStore, Transaction transaction, String featureName)
+					throws IOException {
 		if(featureName == null) {
 			featureName = inputTypeName;
 		}
 		inputReader = FeatureLoaderUtils.createFeatureSource(dataStore, transaction,
 				featureName);		
 		inputQuery = new Query(featureName);
-	        if(sequenceManager == null){
-		    sequenceManager = new SequenceManager(dataStore, this.getClass().getSimpleName()+SEQUENCE_SUFFIX);
-	        }
+		if(sequenceManager == null){
+			sequenceManager = new SequenceManager(dataStore, this.getClass().getSimpleName()+SEQUENCE_SUFFIX);
+		}
 		return inputReader;
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -342,19 +351,19 @@ public abstract class InputObject {
 			inputIterator = null;
 		}
 		if(inputIterator != null) {
-		    sequenceManager.disposeManager();
-		    sequenceManager = null;
+			sequenceManager.disposeManager();
+			sequenceManager = null;
 		}
 	}
-	
-	protected String getInputGeometryName(JDBCDataStore dataStore) throws IOException {
+
+	protected String getInputGeometryName(DataStore dataStore) throws IOException {
 		return getInputGeometryName(dataStore,inputTypeName);
 	}
-	
-	protected String getInputGeometryName(JDBCDataStore dataStore, String featureTypeName) throws IOException {
+
+	protected String getInputGeometryName(DataStore dataStore, String featureTypeName) throws IOException {
 		return dataStore.getSchema(featureTypeName).getGeometryDescriptor().getLocalName();
 	}
-	
+
 	/**
 	 * Creates a FeatureSource for the given typeName on the given DataStore.
 	 * Optionally the source is bound to a transaction, if not null.
@@ -367,10 +376,10 @@ public abstract class InputObject {
 	 */
 	protected FeatureStore<SimpleFeatureType, SimpleFeature> createFeatureSource(
 			JDBCDataStore dataStore, Transaction transaction, String typeName)
-			throws IOException {
+					throws IOException {
 		return FeatureLoaderUtils.createFeatureSource(dataStore, transaction, typeName);
 	}
-	
+
 	/**
 	 * Remove old records from the given output objects, using a specific filter.
 	 *  
@@ -383,7 +392,7 @@ public abstract class InputObject {
 			obj.getSource().removeFeatures(filter);			
 		}
 	}
-	
+
 	/**
 	 * @param e
 	 * @return
@@ -394,10 +403,10 @@ public abstract class InputObject {
 		while(t.getCause() != null) {
 			t=t.getCause();
 		}
-		
+
 		return t.getMessage().substring(0,Math.min(t.getMessage().length(), 1000));
 	}
-	
+
 	/**
 	 * Gets the total number of objects to import from the input feature.
 	 * 
@@ -407,7 +416,7 @@ public abstract class InputObject {
 	protected int getImportCount() throws IOException {
 		return inputReader.getCount(inputQuery);
 	}
-	
+
 	/**
 	 * @return
 	 * @throws IOException 
@@ -415,34 +424,34 @@ public abstract class InputObject {
 	protected Number getOutputId(OutputObject obj) throws IOException {
 		// calculate max current value for geo output id, to append new data
 		Function max = filterFactory.function("Collection_Max", filterFactory.property(obj.getId()));			
-									
+
 		Number id = (BigDecimal)max.evaluate( obj.getSource().getFeatures());
 		if(id == null) {
 			id = new BigDecimal(0);
 		}
 		return id;
 	}
-	
+
 	protected Number getAverageOnInput(String attributeName, Number defaultValue) throws IOException {
 		Function avg = filterFactory.function("Collection_Average", filterFactory.property(attributeName));
-		
+
 		Number value = (Double)avg.evaluate( inputReader.getFeatures(inputQuery));
 		if(value == null) {
 			value = defaultValue;
 		}
 		return value;
 	}
-	
+
 	protected Number getSumOnInput(String attributeName, Number defaultValue) throws IOException {
 		Function avg = filterFactory.function("Collection_Sum", filterFactory.property(attributeName));
-		
+
 		Number value = (Number)avg.evaluate( inputReader.getFeatures(inputQuery));
 		if(value == null) {
 			value = defaultValue;
 		}
 		return value;
 	}
-	
+
 	/**
 	 * Reads the next available input feature.
 	 * 
@@ -462,7 +471,7 @@ public abstract class InputObject {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Reads the next available input feature.
 	 * 
@@ -478,7 +487,7 @@ public abstract class InputObject {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns the next value to use for the output feature id.
 	 * 
@@ -487,11 +496,11 @@ public abstract class InputObject {
 	 * @throws IOException 
 	 */
 	protected int nextId() throws IOException {
-	    return (int)sequenceManager.retrieveValue();
+		return (int)sequenceManager.retrieveValue();
 		//return id.intValue() + (++readCount);
 	}
-	
-		
+
+
 	/**
 	 * Returns the main id of the imported object.
 	 * 
@@ -504,7 +513,7 @@ public abstract class InputObject {
 	protected int getIdTematico(SimpleFeature inputFeature, Map mappings) throws NumberFormatException, IOException {
 		return (int)Double.parseDouble(getMapping(inputFeature, mappings, "id_tematico_shape").toString());
 	}
-	
+
 	/**
 	 * @param alternativeGeo
 	 * @return
@@ -512,7 +521,7 @@ public abstract class InputObject {
 	protected String getAlternativeTypeName(String alternativeGeo) {		
 		return inputTypeName.substring(0, inputTypeName.lastIndexOf('_'))+"_"+alternativeGeo;
 	}
-	
+
 	/**
 	 * Returns the mapped value of a given attribute for the current input feature.
 	 * 
@@ -528,25 +537,25 @@ public abstract class InputObject {
 			expression = expression.trim().substring(2,expression.length()-1);
 			org.springframework.expression.Expression spelExpression = expressionParser
 					.parseExpression(expression);
-			
+
 			return spelExpression
 					.getValue(evaluationContext, inputFeature);
 		} else {
 			return inputFeature.getAttribute(expression);
 		}
 	}
-	
+
 	/**
 	 * @param outputObjects
 	 */
 	protected void setTransaction(OutputObject[] outputObjects, Transaction transaction) {
 		for(OutputObject obj : outputObjects) {
-		        if(obj != null){
-		            obj.getWriter().setTransaction(transaction);
-		        }
+			if(obj != null){
+				obj.getWriter().setTransaction(transaction);
+			}
 		}
 	}
-	
+
 	/**
 	 * Updates the import progress ( progress / total )
 	 * for the listeners.
@@ -562,7 +571,7 @@ public abstract class InputObject {
 			}
 		}
 	}
-	
+
 	/**
 	 * Updates the import progress ( progress / total )
 	 * for the listeners.
@@ -579,7 +588,7 @@ public abstract class InputObject {
 			}
 		}		
 	}
-	
+
 	/**
 	 * 
 	 * @param filter
@@ -593,7 +602,7 @@ public abstract class InputObject {
 			inputQuery.setFilter(filter);			
 		}
 	}
-	
+
 	/**
 	 * Drops the input feature.
 	 * 
@@ -605,7 +614,7 @@ public abstract class InputObject {
 		if(LOGGER.isInfoEnabled()) {
 			LOGGER.info("Dropping table "+inputTypeName);
 		}
-		
+
 		try {
 			DbUtils.dropFeatureType(datastoreParams, inputTypeName);
 			listenerForwarder.setTask("Table dropped");
@@ -616,19 +625,19 @@ public abstract class InputObject {
 			LOGGER.error("Error dropping table "+inputTypeName+": "+e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Drops the input feature.
 	 * 
 	 * @param datastoreParams
 	 * @throws IOException
 	 */
-	protected void dropInputFeature(JDBCDataStore dataStore) throws IOException {
+	protected void dropInputFeature(DataStore dataStore) throws IOException {
 		listenerForwarder.setTask("Dropping table "+inputTypeName);
 		if(LOGGER.isInfoEnabled()) {
 			LOGGER.info("Dropping table "+inputTypeName);
 		}
-		
+
 		try {
 			DbUtils.dropFeatureType(dataStore, inputTypeName);
 			listenerForwarder.setTask("Table dropped");
@@ -639,12 +648,12 @@ public abstract class InputObject {
 			LOGGER.error("Error dropping table "+inputTypeName+": "+e.getMessage());
 		}
 	}
-	
+
 	public static Object readResourceFromXML(String resourceName) {
 		return xstream.fromXML(TargetIngestionProcess.class.getResourceAsStream(resourceName));
 	}
-	
-//	private createSequenceForInputType(){
-//	    this.inputTypeName
-//	}
+
+	//	private createSequenceForInputType(){
+	//	    this.inputTypeName
+	//	}
 }

@@ -5,9 +5,11 @@ import it.geosolutions.geobatch.destination.common.utils.DbUtils;
 import it.geosolutions.geobatch.destination.datamigration.ProductionUpdater;
 import it.geosolutions.geobatch.destination.datamigration.configuration.ProductionUpdaterConfiguration;
 import it.geosolutions.geobatch.destination.ingestion.MetadataIngestionHandler;
+import it.geosolutions.geobatch.destination.streetuser.configuration.StreetUserConfiguration;
 import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,10 +54,8 @@ public class ProductionUpdaterTest{
 
 	@Before
 	public void before() throws Exception { 
-		XStream xstream = new XStream();
-		xstream.alias("ProductionUpdaterConfiguration", ProductionUpdaterConfiguration.class);	
-		File configurationFile = new File("src/test/resources/TS_C_ZURB_20130613.xml");
-		this.productionUpdaterConfiguration = (ProductionUpdaterConfiguration)xstream.fromXML(configurationFile);
+		File inputXML = new File("src/test/resources/TS_C_ZURB_20130613.xml");
+		this.productionUpdaterConfiguration = ProductionUpdaterConfiguration.fromXML(new FileInputStream(inputXML));
 		clearAll();
 	};
 
