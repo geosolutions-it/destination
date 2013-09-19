@@ -23,8 +23,8 @@
 
 	<feature>
 		<target>true</target>
-		<featureName>siig_geo_bersaglio_umano_pl</featureName>
-		<featureParentRelation>siig_t_bersaglio_non_umano</featureParentRelation>
+		<featureName>siig_geo_bersaglio_umano_ln</featureName>
+		<featureParentRelation>siig_t_bersaglio_umano</featureParentRelation>
 	</feature>
 	<feature>
 		<target>true</target>

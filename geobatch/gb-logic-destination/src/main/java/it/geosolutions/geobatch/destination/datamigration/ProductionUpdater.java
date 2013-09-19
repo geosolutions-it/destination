@@ -161,7 +161,7 @@ public class ProductionUpdater extends InputObject{
 
 	private Queue<EventObject> getEvents() throws URISyntaxException {
 		Queue<EventObject> events = new LinkedList<EventObject>();
-		FileSystemEvent event = new FileSystemEvent(new File(this.getClass().getClassLoader().getResource("dummyInput.xml").toURI()) , FileSystemEventType.FILE_ADDED);
+		FileSystemEvent event = new FileSystemEvent(new File("run.run") , FileSystemEventType.FILE_ADDED);
 		events.add(event);
 		return events;
 	}

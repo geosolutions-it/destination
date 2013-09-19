@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.collections.map.MultiKeyMap;
+import org.geotools.data.DataStore;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
@@ -205,7 +206,7 @@ public class FeatureLoaderUtils {
 	 * @return
 	 * @throws IOException
 	 */
-	public static FeatureStore<SimpleFeatureType, SimpleFeature> createFeatureSource(JDBCDataStore dataStore, 
+	public static FeatureStore<SimpleFeatureType, SimpleFeature> createFeatureSource(DataStore dataStore, 
 			Transaction transaction, String typeName)
 			throws IOException {
 		FeatureStore<SimpleFeatureType, SimpleFeature> geoFeatureWriter = (FeatureStore<SimpleFeatureType, SimpleFeature>) dataStore
