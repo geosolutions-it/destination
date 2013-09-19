@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.geotools.data.DataStore;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.Transaction;
 import org.geotools.jdbc.JDBCDataStore;
@@ -36,79 +37,81 @@ import org.slf4j.LoggerFactory;
  */
 public class SequenceManager {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(SequenceManager.class);
-        
-    private JDBCDataStore datastore = null;
-    private String seqName = null;
-    
-    public SequenceManager(JDBCDataStore dataStore, String seqName){
-        try {
-            seqName = seqName.replaceAll("-", "_");
-            seqName = seqName.replaceAll("\\.", "_");
-            seqName = seqName.toLowerCase();
-            createSequence(dataStore, seqName);            
-            this.datastore = dataStore;
-            this.seqName = seqName;
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage(), e);
-        }
-    }
-    
-    public long retrieveValue() throws IOException {
+	private final static Logger LOGGER = LoggerFactory.getLogger(SequenceManager.class);
 
-        String sql = null;
-        Long id = null;
-        try {
-            sql = "SELECT nextval('" + this.seqName + "')";
-            id = (Long)DbUtils.executeScalar(datastore, null, sql);
-        } catch (SQLException e) {
-            throw new IOException(e);
-        } 
-        return id;
-    }
-    
-    public void disposeManager(){
-          datastore = null;          
-    }
+	private JDBCDataStore datastore = null;
+	private String seqName = null;
 
-    private boolean createSequence(JDBCDataStore dataStore, String seqName)
-            throws IOException {
+	public SequenceManager(DataStore dataStore, String seqName){
+		if(dataStore instanceof JDBCDataStore){
+			this.datastore = (JDBCDataStore)dataStore;
+			try {
+				seqName = seqName.replaceAll("-", "_");
+				seqName = seqName.replaceAll("\\.", "_");
+				seqName = seqName.toLowerCase();
+				createSequence(this.datastore, seqName);    
+				this.seqName = seqName;
+			} catch (IOException e) {
+				LOGGER.error(e.getMessage(), e);
+			}
+		}
+	}
 
-        String sql = null;
+	public long retrieveValue() throws IOException {
 
-        Transaction transaction = null;
-        Connection conn = null;
+		String sql = null;
+		Long id = null;
+		try {
+			sql = "SELECT nextval('" + this.seqName + "')";
+			id = (Long)DbUtils.executeScalar(datastore, null, sql);
+		} catch (SQLException e) {
+			throw new IOException(e);
+		} 
+		return id;
+	}
 
-        transaction = new DefaultTransaction();
-        conn = dataStore.getConnection(transaction);
-        try {
-            sql = "CREATE SEQUENCE " + seqName;
-            DbUtils.executeSql(conn, transaction, sql, true, true);
-        } catch (SQLException e) {
-        	// existing sequence
-            if ("42P07".equals(e.getSQLState())) {
-                return false;
-            } else {
-                throw new IOException(e);
-            }
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.commit();
-                    conn.close();
-                } catch (SQLException e) {
-                    throw new IOException(e);
-                }
-            }
-            if (transaction != null) {
-                transaction.close();
-            }
-        }
-        return true;
-    }
+	public void disposeManager(){
+		datastore = null;          
+	}
 
-    
+	private boolean createSequence(JDBCDataStore dataStore, String seqName)
+			throws IOException {
 
-    
+		String sql = null;
+
+		Transaction transaction = null;
+		Connection conn = null;
+
+		transaction = new DefaultTransaction();
+		conn = dataStore.getConnection(transaction);
+		try {
+			sql = "CREATE SEQUENCE " + seqName;
+			DbUtils.executeSql(conn, transaction, sql, true, true);
+		} catch (SQLException e) {
+			// existing sequence
+			if ("42P07".equals(e.getSQLState())) {
+				return false;
+			} else {
+				throw new IOException(e);
+			}
+		} finally {
+			if (conn != null) {
+				try {
+					conn.commit();
+					conn.close();
+				} catch (SQLException e) {
+					throw new IOException(e);
+				}
+			}
+			if (transaction != null) {
+				transaction.close();
+			}
+		}
+		return true;
+	}
+
+
+
+
 
 }

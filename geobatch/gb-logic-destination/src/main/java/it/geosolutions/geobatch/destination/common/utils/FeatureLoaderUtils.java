@@ -74,7 +74,7 @@ public class FeatureLoaderUtils {
      * @param forceLoading
      * @return
      */
-    public static List<String> loadFeatureAttributes(JDBCDataStore datastore, String featureTypeName,
+    public static List<String> loadFeatureAttributes(DataStore datastore, String featureTypeName,
             String attribute, boolean forceLoading){
         List<BigDecimal> list = loadFeatureAttributesInternal(datastore, featureTypeName,
                 attribute, forceLoading);
@@ -96,7 +96,7 @@ public class FeatureLoaderUtils {
      * @param forceLoading
      * @return
      */
-    public static List<Double> loadFeatureAttributesInt(JDBCDataStore datastore, String featureTypeName,
+    public static List<Double> loadFeatureAttributesInt(DataStore datastore, String featureTypeName,
             String attribute, boolean forceLoading){
         List<BigDecimal> list = loadFeatureAttributesInternal(datastore, featureTypeName,
                 attribute, forceLoading);
@@ -107,7 +107,7 @@ public class FeatureLoaderUtils {
         return resultList;
     }
     
-    private static List<BigDecimal> loadFeatureAttributesInternal(JDBCDataStore datastore, String featureTypeName,
+    private static List<BigDecimal> loadFeatureAttributesInternal(DataStore datastore, String featureTypeName,
             String attribute, boolean forceLoading) {
 
         List<BigDecimal> attributes = (List<BigDecimal>) featureAttributesMap.get(featureTypeName,
