@@ -32,15 +32,15 @@ public class ProductionUpdaterConfiguration extends Ds2dsConfiguration{
 		super(id, name, description);
 		// TODO Auto-generated constructor stub
 	}
-    
-	private static final XStream xstream = new XStream();
 
-	static {
+	private static final XStream xstream = new XStream();
+    
+    static {
 		xstream.alias("ProductionUpdaterConfiguration", ProductionUpdaterConfiguration.class);                                                     
 	}
 
 	public static ProductionUpdaterConfiguration fromXML(InputStream inputXML) {
 		return (ProductionUpdaterConfiguration) xstream.fromXML(inputXML);                
-	}
+    }
     
  }

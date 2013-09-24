@@ -91,7 +91,7 @@ public class MetadataIngestionHandler {
 	 * @param dataStore
 	 */
 	public MetadataIngestionHandler(DataStore dataStore) {
-		super();		
+		super();
 		if(dataStore instanceof JDBCDataStore){
 			this.dataStore =  (JDBCDataStore)dataStore;	
 			processSequenceManager = new SequenceManager(this.dataStore, "process_seq");

@@ -37,81 +37,81 @@ import org.slf4j.LoggerFactory;
  */
 public class SequenceManager {
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(SequenceManager.class);
-
-	private JDBCDataStore datastore = null;
-	private String seqName = null;
-
+    private final static Logger LOGGER = LoggerFactory.getLogger(SequenceManager.class);
+        
+    private JDBCDataStore datastore = null;
+    private String seqName = null;
+    
 	public SequenceManager(DataStore dataStore, String seqName){
 		if(dataStore instanceof JDBCDataStore){
 			this.datastore = (JDBCDataStore)dataStore;
-			try {
-				seqName = seqName.replaceAll("-", "_");
-				seqName = seqName.replaceAll("\\.", "_");
-				seqName = seqName.toLowerCase();
+        try {
+            seqName = seqName.replaceAll("-", "_");
+            seqName = seqName.replaceAll("\\.", "_");
+            seqName = seqName.toLowerCase();
 				createSequence(this.datastore, seqName);    
-				this.seqName = seqName;
-			} catch (IOException e) {
-				LOGGER.error(e.getMessage(), e);
-			}
-		}
+            this.seqName = seqName;
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+    }
 	}
+    
+    public long retrieveValue() throws IOException {
 
-	public long retrieveValue() throws IOException {
+        String sql = null;
+        Long id = null;
+        try {
+            sql = "SELECT nextval('" + this.seqName + "')";
+            id = (Long)DbUtils.executeScalar(datastore, null, sql);
+        } catch (SQLException e) {
+            throw new IOException(e);
+        } 
+        return id;
+    }
+    
+    public void disposeManager(){
+          datastore = null;          
+    }
 
-		String sql = null;
-		Long id = null;
-		try {
-			sql = "SELECT nextval('" + this.seqName + "')";
-			id = (Long)DbUtils.executeScalar(datastore, null, sql);
-		} catch (SQLException e) {
-			throw new IOException(e);
-		} 
-		return id;
-	}
+    private boolean createSequence(JDBCDataStore dataStore, String seqName)
+            throws IOException {
 
-	public void disposeManager(){
-		datastore = null;          
-	}
+        String sql = null;
 
-	private boolean createSequence(JDBCDataStore dataStore, String seqName)
-			throws IOException {
+        Transaction transaction = null;
+        Connection conn = null;
 
-		String sql = null;
+        transaction = new DefaultTransaction();
+        conn = dataStore.getConnection(transaction);
+        try {
+            sql = "CREATE SEQUENCE " + seqName;
+            DbUtils.executeSql(conn, transaction, sql, true, true);
+        } catch (SQLException e) {
+        	// existing sequence
+            if ("42P07".equals(e.getSQLState())) {
+                return false;
+            } else {
+                throw new IOException(e);
+            }
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.commit();
+                    conn.close();
+                } catch (SQLException e) {
+                    throw new IOException(e);
+                }
+            }
+            if (transaction != null) {
+                transaction.close();
+            }
+        }
+        return true;
+    }
 
-		Transaction transaction = null;
-		Connection conn = null;
+    
 
-		transaction = new DefaultTransaction();
-		conn = dataStore.getConnection(transaction);
-		try {
-			sql = "CREATE SEQUENCE " + seqName;
-			DbUtils.executeSql(conn, transaction, sql, true, true);
-		} catch (SQLException e) {
-			// existing sequence
-			if ("42P07".equals(e.getSQLState())) {
-				return false;
-			} else {
-				throw new IOException(e);
-			}
-		} finally {
-			if (conn != null) {
-				try {
-					conn.commit();
-					conn.close();
-				} catch (SQLException e) {
-					throw new IOException(e);
-				}
-			}
-			if (transaction != null) {
-				transaction.close();
-			}
-		}
-		return true;
-	}
-
-
-
-
+    
 
 }
