@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <features>
-
+ 
 <!-- BERSAGLI -->
 
 	<feature>
@@ -123,6 +123,20 @@
 		<featureParentRelation>siig_geo_pl_arco_3</featureParentRelation>
 	</feature>
 
+<!-- VULNERABILITA -->	
+	<feature>
+		<featureName>siig_r_scen_vuln_1</featureName>
+		<featureParentRelation>siig_geo_ln_arco_1</featureParentRelation>
+	</feature>
+	<feature>
+		<featureName>siig_r_scen_vuln_2</featureName>
+		<featureParentRelation>siig_geo_ln_arco_2</featureParentRelation>
+	</feature>
+	<feature>
+		<featureName>siig_r_scen_vuln_3</featureName>
+		<featureParentRelation>siig_geo_pl_arco_3</featureParentRelation>
+	</feature>
+
 <!-- ARCHI -->
 	<feature>
 		<featureName>siig_geo_ln_arco_1</featureName>
@@ -136,4 +150,5 @@
 	<feature>
 		<featureName>siig_geo_pl_arco_3</featureName>
 	</feature>
+	
 </features>

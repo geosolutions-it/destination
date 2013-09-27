@@ -196,6 +196,39 @@ public class FeatureLoaderUtils {
         return attributes;
     }
     
+    public static List<SimpleFeature> loadFeatures(JDBCDataStore datastore, String featureTypeName) {
+
+        List<SimpleFeature> features = new ArrayList<SimpleFeature>();
+        FeatureIterator iter = null;
+        Transaction transaction = null;
+        try {
+            transaction = new DefaultTransaction();
+            OutputObject tipobersObject = new OutputObject(datastore, transaction, featureTypeName,
+                    "");
+            FeatureCollection<SimpleFeatureType, SimpleFeature> bersaglioCollection = tipobersObject
+                    .getReader().getFeatures();
+            iter = bersaglioCollection.features();
+
+            while (iter.hasNext()) {
+                SimpleFeature sf = (SimpleFeature) iter.next();
+                features.add(sf);
+            }
+        } catch (IOException e) {
+        } finally {
+            if (iter != null) {
+                iter.close();
+            }
+            if (transaction != null) {
+                try {
+                    transaction.close();
+                } catch (IOException e) {
+                    LOGGER.error(e.getMessage(), e);
+                }
+            }
+        }
+        return features;
+    }
+    
     /**
 	 * Creates a FeatureSource for the given typeName on the given DataStore.
 	 * Optionally the source is bound to a transaction, if not null.

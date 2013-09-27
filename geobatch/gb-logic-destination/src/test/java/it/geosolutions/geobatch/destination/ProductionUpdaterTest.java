@@ -5,9 +5,11 @@ import it.geosolutions.geobatch.destination.common.utils.DbUtils;
 import it.geosolutions.geobatch.destination.datamigration.ProductionUpdater;
 import it.geosolutions.geobatch.destination.datamigration.configuration.ProductionUpdaterConfiguration;
 import it.geosolutions.geobatch.destination.ingestion.MetadataIngestionHandler;
+import it.geosolutions.geobatch.destination.streetuser.configuration.StreetUserConfiguration;
 import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,10 +54,8 @@ public class ProductionUpdaterTest{
 
 	@Before
 	public void before() throws Exception { 
-		XStream xstream = new XStream();
-		xstream.alias("ProductionUpdaterConfiguration", ProductionUpdaterConfiguration.class);	
-		File configurationFile = new File("src/test/resources/TS_C_ZURB_20130613.xml");
-		this.productionUpdaterConfiguration = (ProductionUpdaterConfiguration)xstream.fromXML(configurationFile);
+		File inputXML = new File("src/test/resources/TS_C_ZURB_20130613.xml");
+		this.productionUpdaterConfiguration = ProductionUpdaterConfiguration.fromXML(new FileInputStream(inputXML));
 		clearAll();
 	};
 
@@ -317,6 +317,39 @@ public class ProductionUpdaterTest{
 		this.checkDestiantion("siig_t_elab_standard_3","siig_geo_pl_arco_3","fk_partner = '-1'");
 	}
 
+	@Test
+	public void copy_siig_r_scen_vuln_1_toProduction() throws Exception {	
+		List<String> list = new ArrayList<String>();
+		list.add("1|||||||-1|LINESTRING(3 4,10 50,20 25)||S|S ");
+		list.add("2|||||||-1|LINESTRING(3 4,10 50,20 25)||S|S ");
+		this.populateSourceArc(list,"siig_r_scen_vuln_1","siig_geo_ln_arco_1","id_geo_arco","id_geo_arco");
+		this.execute();
+		//Check destination
+		this.checkDestiantion("siig_r_scen_vuln_1","siig_geo_ln_arco_1","fk_partner = '-1'");
+	}
+
+	@Test
+	public void copy_siig_r_scen_vuln_2_toProduction() throws Exception {	
+		List<String> list = new ArrayList<String>();
+		list.add("1|||||||-1|LINESTRING(3 4,10 50,20 25)||S|S ");
+		list.add("2|||||||-1|LINESTRING(3 4,10 50,20 25)||S|S ");
+		this.populateSourceArc(list,"siig_r_scen_vuln_2","siig_geo_ln_arco_2","id_geo_arco","id_geo_arco");
+		this.execute();
+		//Check destination
+		this.checkDestiantion("siig_r_scen_vuln_2","siig_geo_ln_arco_2","fk_partner = '-1'");
+	}
+
+	@Test
+	public void copy_siig_r_scen_vuln_3_toProduction() throws Exception {	
+		List<String> list = new ArrayList<String>();
+		list.add("1|||||||-1|LINESTRING(3 4,10 50,20 25)||S|S ");
+		list.add("2|||||||-1|LINESTRING(3 4,10 50,20 25)||S|S ");
+		this.populateSourceArc(list,"siig_r_scen_vuln_3","siig_geo_pl_arco_3","id_geo_arco","id_geo_arco");
+		this.execute();
+		//Check destination
+		this.checkDestiantion("siig_r_scen_vuln_3","siig_geo_pl_arco_3","fk_partner = '-1'");
+	}
+
 	/*
 	 * Private methods
 	 */
@@ -331,6 +364,7 @@ public class ProductionUpdaterTest{
 				outputDatastore);
 		pu.setDs2DsConfiguration(productionUpdaterConfiguration);
 		pu.execute();
+		outputDatastore.dispose();
 	}
 
 	private void checkDestiantion(String originTable, String relatedTable, String cqlFilter) throws Exception{
@@ -340,6 +374,7 @@ public class ProductionUpdaterTest{
 		assertEquals(reloaded.toArray().length,2);
 		clear_destination(originTable);
 		clear_destination(relatedTable);
+		destinationDataStore.dispose();
 	}
 
 	private void clearAll() throws Exception{
@@ -371,7 +406,10 @@ public class ProductionUpdaterTest{
 		clear_destination("siig_t_vulnerabilita_3");		
 		clear_destination("siig_t_elab_standard_1");
 		clear_destination("siig_t_elab_standard_2");
-		clear_destination("siig_t_elab_standard_3");
+		clear_destination("siig_t_elab_standard_3");		
+		clear_destination("siig_r_scen_vuln_1");
+		clear_destination("siig_r_scen_vuln_2");
+		clear_destination("siig_r_scen_vuln_3");
 	}
 
 	private void clear_destination(String table) throws Exception{
@@ -379,56 +417,72 @@ public class ProductionUpdaterTest{
 		DefaultTransaction transaction = new DefaultTransaction();
 		try {
 			DbUtils.executeSql(sourceDataStore.getConnection(transaction), transaction, "delete from " + table, true);
+			transaction.commit();
 		} finally {
 			transaction.close();
+			sourceDataStore.dispose();
 		}		
 	}
 
 	private void clear_source(String table) throws Exception{
 		JDBCDataStore sourceDataStore = (JDBCDataStore) DataStoreFinder.getDataStore(productionUpdaterConfiguration.getSourceFeature().getDataStore());
-		SimpleFeatureStore store = (SimpleFeatureStore) sourceDataStore.getFeatureSource(table);
-		store.setTransaction(Transaction.AUTO_COMMIT);					
-		store.removeFeatures(Filter.INCLUDE);
+		DefaultTransaction transaction = new DefaultTransaction();
+		try {			
+			SimpleFeatureStore store = (SimpleFeatureStore) sourceDataStore.getFeatureSource(table);
+			store.setTransaction(transaction);					
+			store.removeFeatures(Filter.INCLUDE);
+			transaction.commit();
+		} finally {
+			transaction.close();
+			sourceDataStore.dispose();
+		}	
 	}
 
 	private void populateSourceTarget(List<String> featureList, String originTable, String relatedTable, String pkAttributeName, String fkAttributeName) throws Exception{
 		clear_source(originTable);
 		clear_source(relatedTable);
-		JDBCDataStore sourceDataStore = (JDBCDataStore) DataStoreFinder.getDataStore(productionUpdaterConfiguration.getSourceFeature().getDataStore());
-		SimpleFeatureStore store = (SimpleFeatureStore) sourceDataStore.getFeatureSource(originTable);
+		JDBCDataStore sourceDataStore = (JDBCDataStore) DataStoreFinder.getDataStore(productionUpdaterConfiguration.getSourceFeature().getDataStore());	
+		try{
+			SimpleFeatureStore store = (SimpleFeatureStore) sourceDataStore.getFeatureSource(originTable);
 
-		//Add test data
-		{
-			SimpleFeatureType featureType = (SimpleFeatureType) sourceDataStore.getSchema(originTable);
+			//Add test data
+			{
+				SimpleFeatureType featureType = (SimpleFeatureType) sourceDataStore.getSchema(originTable);
 
-			List<SimpleFeature> list = new ArrayList<SimpleFeature>();
-			for(String f : featureList){
-				list.add(DataUtilities.createFeature(store.getSchema(), f));
+				List<SimpleFeature> list = new ArrayList<SimpleFeature>();
+				for(String f : featureList){
+					list.add(DataUtilities.createFeature(store.getSchema(), f));
+				}
+
+				SimpleFeatureCollection collection = new ListFeatureCollection(featureType, list);
+				store.addFeatures(collection);
 			}
 
-			SimpleFeatureCollection collection = new ListFeatureCollection(featureType, list);
-			store.addFeatures(collection);
+			//Read test data and add related data
+			SimpleFeatureCollection reloaded = store.getFeatures(CQL.toFilter("id_partner = '-1'"));
+			SimpleFeatureIterator iterator = reloaded.features();
+			try{
+				SimpleFeatureStore relatedStore = (SimpleFeatureStore) sourceDataStore.getFeatureSource(relatedTable);
+				int featureCount = 1;
+				while(iterator.hasNext()){
+					SimpleFeature sourceFeature = iterator.next();
+					SimpleFeatureType featureType = (SimpleFeatureType) sourceDataStore.getSchema(relatedTable);
+					List<SimpleFeature> list = new ArrayList<SimpleFeature>();
+					String fid = featureCount + "." + sourceFeature.getAttribute("id_bersaglio") + "." + sourceFeature.getAttribute("id_partner");
+					SimpleFeature feature = SimpleFeatureBuilder.build(featureType, new Object[] {  }, fid);
+					feature.setAttribute(fkAttributeName, sourceFeature.getAttribute(pkAttributeName));
+					feature.getUserData().put(Hints.USE_PROVIDED_FID, true);
+					list.add(feature);
+					SimpleFeatureCollection collection = new ListFeatureCollection(featureType, list);
+					relatedStore.addFeatures(collection);			
+					featureCount++;
+				}
+			}finally{
+				iterator.close();			
+			}
+		}finally{
+			sourceDataStore.dispose();
 		}
-
-		//Read test data and add related data
-		SimpleFeatureCollection reloaded = store.getFeatures(CQL.toFilter("id_partner = '-1'"));
-		SimpleFeatureIterator iterator = reloaded.features();
-		SimpleFeatureStore relatedStore = (SimpleFeatureStore) sourceDataStore.getFeatureSource(relatedTable);
-		int featureCount = 1;
-		while(iterator.hasNext()){
-			SimpleFeature sourceFeature = iterator.next();
-			SimpleFeatureType featureType = (SimpleFeatureType) sourceDataStore.getSchema(relatedTable);
-			List<SimpleFeature> list = new ArrayList<SimpleFeature>();
-			String fid = featureCount + "." + sourceFeature.getAttribute("id_bersaglio") + "." + sourceFeature.getAttribute("id_partner");
-			SimpleFeature feature = SimpleFeatureBuilder.build(featureType, new Object[] {  }, fid);
-			feature.setAttribute(fkAttributeName, sourceFeature.getAttribute(pkAttributeName));
-			feature.getUserData().put(Hints.USE_PROVIDED_FID, true);
-			list.add(feature);
-			SimpleFeatureCollection collection = new ListFeatureCollection(featureType, list);
-			relatedStore.addFeatures(collection);			
-			featureCount++;
-		}
-		iterator.close();
 	}
 
 	private void populateSourceArc(List<String> featureList, String originTable, String relatedTable, String pkAttributeName, String fkAttributeName) throws Exception{
@@ -455,25 +509,33 @@ public class ProductionUpdaterTest{
 		SimpleFeatureIterator iterator = reloaded.features();
 		SimpleFeatureStore originStore = (SimpleFeatureStore) sourceDataStore.getFeatureSource(originTable);
 		int featureCount = 1;
-		while(iterator.hasNext()){
-			SimpleFeature sourceFeature = iterator.next();
-			SimpleFeatureType featureType = (SimpleFeatureType) sourceDataStore.getSchema(originTable);
-			List<SimpleFeature> list = new ArrayList<SimpleFeature>();
-			String fid = "";
-			if(originTable.contains("siig_t_elab_standard")){
-				fid = 0 + "." + sourceFeature.getAttribute("id_geo_arco") + "." + featureCount + "." + featureCount + "." + featureCount;
-			}else{
-				fid = featureCount + "." + sourceFeature.getAttribute("id_geo_arco");
+		try{
+			while(iterator.hasNext()){
+				SimpleFeature sourceFeature = iterator.next();
+				SimpleFeatureType featureType = (SimpleFeatureType) sourceDataStore.getSchema(originTable);
+				List<SimpleFeature> list = new ArrayList<SimpleFeature>();
+				String fid = "";
+				if(originTable.contains("siig_t_elab_standard")){
+					fid = 0 + "." + sourceFeature.getAttribute("id_geo_arco") + "." + featureCount + "." + featureCount + "." + featureCount;
+				}else{
+					if(originTable.contains("siig_r_scen_vuln_")){					
+						fid = featureCount + "." + sourceFeature.getAttribute("id_geo_arco") + "." + featureCount;
+					}else{
+						fid = featureCount + "." + sourceFeature.getAttribute("id_geo_arco");
+					}
+				}
+				SimpleFeature feature = SimpleFeatureBuilder.build(featureType, new Object[] {  }, fid);
+				feature.setAttribute("fk_partner", -1);
+				feature.getUserData().put(Hints.USE_PROVIDED_FID, true);
+				list.add(feature);
+				SimpleFeatureCollection collection = new ListFeatureCollection(featureType, list);
+				originStore.addFeatures(collection);			
+				featureCount++;
 			}
-			SimpleFeature feature = SimpleFeatureBuilder.build(featureType, new Object[] {  }, fid);
-			feature.setAttribute("fk_partner", -1);
-			feature.getUserData().put(Hints.USE_PROVIDED_FID, true);
-			list.add(feature);
-			SimpleFeatureCollection collection = new ListFeatureCollection(featureType, list);
-			originStore.addFeatures(collection);			
-			featureCount++;
+		}finally{
+			iterator.close();
+			sourceDataStore.dispose();
 		}
-		iterator.close();
 	}
 
 }
