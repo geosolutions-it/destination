@@ -239,7 +239,7 @@ public class ArcsIngestionProcess extends InputObject {
 				OutputObject tipobersObject = new OutputObject(dataStore,
 						transaction, tipobersName, "");
 
-				// setup sostanza output object
+				// setup sostanza / PADR output object
 				String tiposostName = getTypeName(sostanzaArcoTypeName,
 						aggregationLevel);
 				OutputObject tiposostObject = new OutputObject(dataStore,
@@ -426,6 +426,9 @@ public class ArcsIngestionProcess extends InputObject {
 		int[] tgm = new int[] {0, 0};
 		int[] velocita = new int[] {0, 0};
 		double[] cff = new double[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		
+		double[] padr = new double[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		
 		ElementsCounter flgTgmCounter = new ElementsCounter();
 		ElementsCounter flgVelocCounter = new ElementsCounter();
 		ElementsCounter flgCorsieCounter = new ElementsCounter();
@@ -508,9 +511,17 @@ public class ArcsIngestionProcess extends InputObject {
 					for (int i = 0; i < cff.length; i++) {
 						cff[i] += cffs[i] * currentLunghezza.intValue();
 					}
+					
+					// padr
+					double[] padrs = extractMultipleValuesDouble(inputFeature,
+							"PADR", padr.length);
+					for (int i = 0; i < padrs.length; i++) {
+						padr[i] += padrs[i] * currentLunghezza.intValue();
+					}
 				}
 				
-			} catch(Exception e) {						
+			} catch(Exception e) {	
+				LOGGER.error(e.getMessage(),e);
 				errors++;
 				metadataHandler.logError(trace, errors,
 						"Error writing output feature", getError(e),
@@ -533,11 +544,14 @@ public class ArcsIngestionProcess extends InputObject {
 							lunghezza, pterr, inputFeature);
 					addAggregateCFFFeature(outputObjects[2], id, lunghezza, cff,
 							inputFeature);
+					addAggregatePADRFeature(outputObjects[3], id, lunghezza, padr,
+							inputFeature);
 					// no need for aggregation until paddr will be a constant
+					/*
 					addSostanzaFeature(outputObjects[3], id, inputFeature,
 							FeatureLoaderUtils.loadFeatureAttributes(dataStore,
 									sostanzaTypeName, "id_sostanza", false),
-							dataStore);
+							dataStore);*/
 				}
 				rowTransaction.commit();
 				
@@ -692,6 +706,40 @@ public class ArcsIngestionProcess extends InputObject {
 				.collection(geoFeature));
 	}
 	
+	private void addAggregatePADRFeature(OutputObject padrObject,
+			int id, int lunghezza, double padr[], SimpleFeature inputFeature) throws IOException {
+		List<String> sostanze = FeatureLoaderUtils.loadFeatureAttributes(dataStore, sostanzaTypeName, "id_sostanza", false);
+		SimpleFeatureBuilder featureBuilder = padrObject.getBuilder();
+		for(int count=0; count < padr.length; count++) {
+			try {
+				double padrElement = padr[count];
+				featureBuilder.reset();
+				// compiles the attributes from target and read feature data, using mappings
+				// to match input attributes with output ones
+				for(AttributeDescriptor attr : padrObject.getSchema().getAttributeDescriptors()) {
+					if(attr.getLocalName().equals("padr")) {
+						// compute the aritmetic average
+						featureBuilder.add(padrElement/lunghezza);
+					}else if(attr.getLocalName().equals("fk_partner")) {
+						featureBuilder.add(partner+"");
+					} else {
+						featureBuilder.add(null);
+					}
+				}
+
+				String idSostanza = sostanze.get(count);
+				String featureid = id + "." + idSostanza;
+				SimpleFeature feature = featureBuilder.buildFeature(featureid);
+				feature.getUserData().put(Hints.USE_PROVIDED_FID, true);                        
+
+				padrObject.getWriter().addFeatures(DataUtilities
+						.collection(feature));
+			} catch(NumberFormatException e) {
+
+			}
+		}
+	}
+	
 	private void addAggregateCFFFeature(OutputObject cffObject,
                 int id, int lunghezza, double cff[], SimpleFeature inputFeature) throws IOException {
             
@@ -756,7 +804,8 @@ public class ArcsIngestionProcess extends InputObject {
 			rowTransaction.commit();
 			
 			updateImportProgress(total, errors, "Importing data in " + outputName);
-		} catch(Exception e) {						
+		} catch(Exception e) {	
+			LOGGER.error(e.getMessage(),e);
 			errors++;			
 			rowTransaction.rollback();
 			metadataHandler.logError(trace, errors,
@@ -870,7 +919,7 @@ public class ArcsIngestionProcess extends InputObject {
         		return new double[valueNumber];
         	}
             String[] svalues = inputFeature.getAttribute(attributeName).toString().split("\\|");                            
-            double[] values = new double[13];
+            double[] values = new double[valueNumber];
             
             for(int count=0; count < svalues.length; count++) {
                     try {
@@ -968,33 +1017,45 @@ public class ArcsIngestionProcess extends InputObject {
             }
 	}
 	
-        private void addSostanzaFeature(OutputObject sostanzaObject, int id,
-                SimpleFeature inputFeature, List<String> sostanze, DataStore datastore)
-                throws IOException {
-    
-            SimpleFeatureBuilder featureBuilder = sostanzaObject.getBuilder();
-    
-            for (String id_sostanza : sostanze) {
-                for (AttributeDescriptor attr : sostanzaObject.getSchema().getAttributeDescriptors()) {
-                    if (attr.getLocalName().equals(geoId)) {
-                        featureBuilder.add(id);
-                    } else if (attr.getLocalName().equals("id_sostanza")) {
-                        featureBuilder.add(id_sostanza);
-                    } else if (attr.getLocalName().equals("padr")) {
-                        featureBuilder.add(PADDR_WORKAROUTD_VALUE);
-                    } else if (attr.getLocalName().equals("fk_partner")) {
-                        featureBuilder.add(partner + "");
-                    } else {
-                        featureBuilder.add(null);
-                    }
-                }
-                String featureid = id + "." + id_sostanza;
-                SimpleFeature feature = featureBuilder.buildFeature(featureid);
-                feature.getUserData().put(Hints.USE_PROVIDED_FID, true);
-    
-                sostanzaObject.getWriter().addFeatures(DataUtilities.collection(feature));
-            }
-        }
+	private void addSostanzaFeature(OutputObject sostanzaObject, int id,
+			SimpleFeature inputFeature, List<String> sostanze, DataStore datastore)
+					throws IOException {
+
+		SimpleFeatureBuilder featureBuilder = sostanzaObject.getBuilder();
+		Object padrAttribute = inputFeature.getAttribute("PADR");	    
+		String[] padrAttributeSplitted =  padrAttribute == null ? new String[] {} : padrAttribute.toString().split("\\|");                                       
+
+		for(int count=0; count < padrAttributeSplitted.length; count++) {
+			try {
+				String el = padrAttributeSplitted[count].replace(",", ".");
+				double padrElement = Double.parseDouble(el);
+				featureBuilder.reset();
+				String id_sostanza = sostanze.get(count);
+				//for (String id_sostanza : sostanze) {
+				for (AttributeDescriptor attr : sostanzaObject.getSchema().getAttributeDescriptors()) {
+					if (attr.getLocalName().equals(geoId)) {
+						featureBuilder.add(id);
+					} else if (attr.getLocalName().equals("id_sostanza")) {
+						featureBuilder.add(id_sostanza);
+					} else if (attr.getLocalName().equals("padr")) {
+						featureBuilder.add(padrElement);
+					} else if (attr.getLocalName().equals("fk_partner")) {
+						featureBuilder.add(partner + "");
+					} else {
+						featureBuilder.add(null);
+					}
+				}
+				String featureid = id + "." + id_sostanza;
+				SimpleFeature feature = featureBuilder.buildFeature(featureid);
+				feature.getUserData().put(Hints.USE_PROVIDED_FID, true);
+
+				sostanzaObject.getWriter().addFeatures(DataUtilities.collection(feature));
+				//}
+			} catch(NumberFormatException e) {
+
+			}
+		}
+	}
 	
 	
 	

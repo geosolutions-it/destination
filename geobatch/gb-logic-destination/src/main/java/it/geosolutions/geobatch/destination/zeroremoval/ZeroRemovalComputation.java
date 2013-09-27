@@ -27,7 +27,10 @@ import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -35,11 +38,13 @@ import java.util.regex.Pattern;
 
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureStore;
+import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.jdbc.JDBCDataStore;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
+import org.opengis.filter.PropertyIsEqualTo;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,20 +84,20 @@ public class ZeroRemovalComputation extends InputObject {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(ZeroRemovalComputation.class);
 
-	public static Pattern TYPE_NAME_PARTS = Pattern
-			.compile("^([A-Z]{2})_([A-Z]{1})_([A-Za-z]+)_([0-9]{8})$");;
+	private static Pattern TYPE_NAME_PARTS = Pattern
+			.compile("^([A-Z]{2})_([A-Z]{1})_([A-Za-z]+)_([0-9]{8})$");
 
 	public static String GEO_TYPE_NAME = "siig_geo_ln_arco_X";
-	private static final String NR_INCIDENTI = "nr_incidenti";
+	//private static final String NR_INCIDENTI = "nr_incidenti";
 	private static final String LUNGHEZZA = "lunghezza";
 	private static final String GEOID = "id_geo_arco";
 	private static final String ID_ORIGIN = "id_origine";
 	private static final String PARTNER_FIELD = "fk_partner";
 	private static final double KINCR_DEFAULT_VALUE = .2;
-	
-    String codicePartner;
-    int partner;
-	
+	private DecimalFormat df = new DecimalFormat("0.00");
+	String codicePartner;
+	int partner;
+
 	/**
 	 * A value that multiply all weightedAverage in order to avoid negative results
 	 */
@@ -132,7 +137,7 @@ public class ZeroRemovalComputation extends InputObject {
 			codicePartner = m.group(1);
 			// partner numerical id (from siig_t_partner)
 			partner = Integer.parseInt(partners.get(codicePartner).toString());			
-			
+
 			return true;
 		}
 		return false;
@@ -160,123 +165,153 @@ public class ZeroRemovalComputation extends InputObject {
 	 * @throws IOException
 	 */
 	public void removeZeros(CoordinateReferenceSystem crs, int aggregationLevel, String closePhase)
-					throws IOException {
+			throws IOException {
 		reset();
 
 		if (isValid()) {
-			
 
 			crs = checkCrs(crs);
 
 			int process = -1;
 			int trace = -1;
-
 			int errors = 0;
-			
+			int startErrors = 0;
 			// existing process
 			MetadataIngestionHandler.Process importData = getProcessData();
-			process = importData.getId();
-			trace = importData.getMaxTrace();
-			errors = importData.getMaxError();
-			int startErrors = errors;
+			if(importData != null){
+				process = importData.getId();
+				trace = importData.getMaxTrace();
+				errors = importData.getMaxError();
+				startErrors = errors;
+			}
 
-			if(process == -1) {
+			if(metadataHandler != null && process == -1) {
 				LOGGER.error("Cannot find process for input file");
 				throw new IOException("Cannot find process for input file");
 			}
-			
-			Transaction transaction = new DefaultTransaction("ZeroRemoval");
-			try {
-				// setup geo input / output object
-				String geoName = getTypeName(GEO_TYPE_NAME, aggregationLevel);
 
-				// setup input reader
-				createInputReader(dataStore, null, geoName);
+			//First iteration on NR_INCIDENTI -> NR_INCIDENTI_ELAB
+			LOGGER.debug("Start first iteration");
+			this.iterativeProcess("nr_incidenti", "nr_incidenti_elab", true, aggregationLevel, startErrors, errors, trace, process, closePhase);
+			//Check for zero nr_incidenti_elab
 
-				
-				OutputObject geoObject = new OutputObject(dataStore, null, geoName, GEOID);
+			//Second iteration on NR_INCIDENTI_ELAB -> NR_INCIDENTI_ELAB
+			if(this.existsZeroInElab(aggregationLevel,"nr_incidenti_elab")){
+				LOGGER.debug("Start second iteration");
+				this.iterativeProcess("nr_incidenti_elab", "nr_incidenti_elab", false, aggregationLevel, startErrors, errors, trace, process, closePhase);
+			}
 
-				setInputFilter(filterFactory.equals(filterFactory.property(PARTNER_FIELD),
-						filterFactory.literal(partner)));
-				int total = getImportCount();
-				// get unique aggregation values in order to identify the roads
-				Set<BigDecimal> aggregationValues = getAggregationBigValues(ID_ORIGIN);
+		}
 
-				for (BigDecimal aggregationValue : aggregationValues) {
-					//
-					// First of all filter all the arcs to a specified road and partner 
-					//
-					setInputFilter(filterFactory.and(filterFactory.equals(
-							filterFactory.property(ID_ORIGIN),
-							filterFactory.literal(aggregationValue)),
-							filterFactory.equals(filterFactory.property(PARTNER_FIELD),
-									filterFactory.literal(partner))));
-					//int arcs = getImportCount();
-					Long incidenti = (Long) getSumOnInput(NR_INCIDENTI, new Long(0)).longValue();
-					if (incidenti != 0) {
-						Long lunghezzaTotale = (Long) getSumOnInput(LUNGHEZZA, new Long(0)).longValue();
-						DecIncManager decIncManager = new DecIncManager(kInc, lunghezzaTotale);
+	}	
 
-						//
-						// Calculate elaborated incident
-						// In each iteration decrease the kInc and check if no negative values are computed
-						// 
-						//
-						decIncManager.computeNextIteration();
-						while(decIncManager.computeZeros()){
-							decIncManager.computeNextIteration();
-						}
+	private Boolean existsZeroInElab(int aggregationLevel, String field){
+		Boolean nElabZero = false;
+		try{
+			//Check if exists almost one arc for partner with NR_INCIDENTI_ELAB = 0
+			String geoName = getTypeName(GEO_TYPE_NAME, aggregationLevel);
+			createInputReader(dataStore, null, geoName);
+			setInputFilter(
+					filterFactory.and(
+							filterFactory.equals(filterFactory.property(PARTNER_FIELD),filterFactory.literal(partner)),
+							filterFactory.equals(filterFactory.property(field),filterFactory.literal(0))
+							)
+					);
+			nElabZero = (getImportCount() > 0);
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage(), e);
+		}
+		return nElabZero;
+	}
 
-						//Update features
-						int count = 0;
-						FeatureStore<SimpleFeatureType, SimpleFeature> writer = geoObject.getWriter();
-						writer.setTransaction(transaction);
-						for(SimpleFeature inputFeature : decIncManager.getElabIncident().keySet()){
-							//updateImportProgress(total, errors - startErrors, "Update feature N. incidenti elaborati = " +  decIncManager.getElabIncident().get(inputFeature));
-							LOGGER.debug("Update feature N. incidenti elaborati = " +  decIncManager.getElabIncident().get(inputFeature));
-							updateIncidentalita(writer,geoObject, inputFeature, decIncManager.getElabIncident().get(inputFeature));
-							if(count%50 == 0){
-								transaction.commit();
-							}
-							count++;
-						}
-						transaction.commit();
-					}/* else {						
-						// we write all zeros when no accident is found
-						SimpleFeature inputFeature;
-						int count = 0;
-						FeatureStore<SimpleFeatureType, SimpleFeature> writer = geoObject.getWriter();
-						writer.setTransaction(transaction);
-						while((inputFeature = readInput()) != null) {
-							LOGGER.debug("Update feature N. incidenti elaborati = 0");
-							updateIncidentalita(writer,geoObject, inputFeature, 0.0);
-							if(count%50 == 0){
-								transaction.commit();
-							}
-							count++;
-						}
-						transaction.commit();
-					}*/
+	private void iterativeProcess(String inputField, String outputField, Boolean streetAggregation, int aggregationLevel, int startErrors, int errors, int trace, int process, String closePhase) throws IOException{
+		Transaction transaction = new DefaultTransaction("ZeroRemoval");
+		try {
+			// setup geo input / output object
+			String geoName = getTypeName(GEO_TYPE_NAME, aggregationLevel);
+
+			// setup input reader
+			createInputReader(dataStore, null, geoName);
+
+
+			OutputObject geoObject = new OutputObject(dataStore, null, geoName, GEOID);
+
+			setInputFilter(filterFactory.equals(filterFactory.property(PARTNER_FIELD),
+					filterFactory.literal(partner)));
+			int total = getImportCount();
+			// get unique aggregation values in order to identify the roads
+			Set<BigDecimal> aggregationValues = null;
+			if(streetAggregation){
+				aggregationValues = getAggregationBigValues(ID_ORIGIN);
+			}else{
+				aggregationValues = new HashSet<BigDecimal>(Arrays.asList(new BigDecimal(-1)));
+			}
+
+			for (BigDecimal aggregationValue : aggregationValues) {
+				//
+				// First of all filter all the arcs to a specified road and partner 
+				//
+				Filter filter = filterFactory.equals(filterFactory.property(PARTNER_FIELD),filterFactory.literal(partner));
+				if(streetAggregation){
+					filter = filterFactory.and(
+							filter,
+							filterFactory.equals(filterFactory.property(ID_ORIGIN),filterFactory.literal(aggregationValue))
+							);
 				}
-				importFinished(total, errors - startErrors, "Accident data updated in " + geoName);
-			} catch (Exception e) {
-				LOGGER.error(e.getMessage(), e);
-				transaction.rollback();
-				errors++;
-				metadataHandler
-					.logError(trace, errors, "Error importing data", getError(e), 0);
-				throw new IOException(e);
-			} finally {
-				if (process != -1 && closePhase != null) {
-					// close current process phase
+				setInputFilter(filter);
+				//int arcs = getImportCount();
+				Long incidenti = (Long) getSumOnInput(inputField, new Long(0)).longValue();
+				if (incidenti != 0) {
+					Long lunghezzaTotale = (Long) getSumOnInput(LUNGHEZZA, new Long(0)).longValue();
+					DecIncManager decIncManager = new DecIncManager(inputField, kInc, lunghezzaTotale);
+
+					//
+					// Calculate elaborated incident
+					// In each iteration decrease the kInc and check if no negative values are computed
+					// 
+					//
+					decIncManager.computeNextIteration();
+					while(decIncManager.computeZeros()){
+						decIncManager.computeNextIteration();
+					}
+
+					//Update features
+					int count = 0;
+					FeatureStore<SimpleFeatureType, SimpleFeature> writer = geoObject.getWriter();
+					writer.setTransaction(transaction);
+					for(SimpleFeature inputFeature : decIncManager.getElabIncident().keySet()){
+						//updateImportProgress(total, errors - startErrors, "Update feature N. incidenti elaborati = " +  decIncManager.getElabIncident().get(inputFeature));
+						//LOGGER.debug("Update feature N. incidenti elaborati = " +  decIncManager.getElabIncident().get(inputFeature));
+						updateIncidentalita(outputField, writer,geoObject, inputFeature, decIncManager.getElabIncident().get(inputFeature));
+						if(count%50 == 0){
+							transaction.commit();
+						}
+						count++;
+					}
+					transaction.commit();
+				}
+			}
+			importFinished(total, errors - startErrors, "Accident data updated in " + geoName);
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage(), e);
+			transaction.rollback();
+			errors++;
+			if(metadataHandler != null){
+				metadataHandler.logError(trace, errors, "Error importing data", getError(e), 0);
+			}
+			throw new IOException(e);
+		} finally {
+			if (process != -1 && closePhase != null) {
+				// close current process phase
+				if(metadataHandler != null){
 					metadataHandler.closeProcessPhase(process, closePhase);
 				}
-				closeInputReader();
-				
-				transaction.close();
 			}
+			closeInputReader();
+
+			transaction.close();
 		}
-	}	
+	}
 
 	/**
 	 * @param writer 
@@ -285,15 +320,15 @@ public class ZeroRemovalComputation extends InputObject {
 	 * @param newIncidenti
 	 * @throws IOException
 	 */
-	private void updateIncidentalita(FeatureStore<SimpleFeatureType, SimpleFeature> writer, OutputObject geoObject, SimpleFeature inputFeature,
+	private void updateIncidentalita(String outputField, FeatureStore<SimpleFeatureType, SimpleFeature> writer, OutputObject geoObject, SimpleFeature inputFeature,
 			double newIncidenti) throws IOException {
 		Filter updateFilter = filterFactory.equals(filterFactory.property(GEOID),
 				filterFactory.literal(inputFeature.getAttribute(GEOID)));
 		writer.modifyFeatures(
-				geoObject.getSchema().getDescriptor("nr_incidenti_elab").getName(), newIncidenti,
+				geoObject.getSchema().getDescriptor(outputField).getName(), newIncidenti,
 				updateFilter);
 	}
-	
+
 	/**
 	 * @param e
 	 * @return
@@ -301,21 +336,23 @@ public class ZeroRemovalComputation extends InputObject {
 	private class DecIncManager{
 
 		private Map<SimpleFeature,Double> elabIncident = new HashMap<SimpleFeature,Double>();
-		private static final double KINCR_DECR_STEP = .05;
+		private static final double KINCR_DECR_STEP = .01;
 		private int kIter;
 		private double kInc;
 		private double dec;
 		private double inc;
 		private long lunghezzaTotale;
+		private String inputField;
 
 		public Map<SimpleFeature, Double> getElabIncident() {
 			return elabIncident;
 		}
 
-		public DecIncManager(double kIncStart, long lunghezzaTotale) throws IOException {
+		public DecIncManager(String inputField, double kIncStart, long lunghezzaTotale) throws IOException {
 			super();
-			this.kInc = kIncStart;
+			this.kInc = kIncStart + KINCR_DECR_STEP;
 			this.lunghezzaTotale = lunghezzaTotale;
+			this.inputField = inputField;
 
 			SimpleFeature in;
 			while((in = readInput()) != null){
@@ -328,13 +365,17 @@ public class ZeroRemovalComputation extends InputObject {
 			boolean noValidValueFound = false;
 			try {
 				for (SimpleFeature inputFeature : this.elabIncident.keySet() ) {
-					int nrIncidenti = ((BigDecimal) inputFeature
-							.getAttribute(NR_INCIDENTI)).intValue();
+					Object value = inputFeature.getAttribute(this.inputField);
+					double nrIncidenti = 0;
+					if(value instanceof Double){
+						nrIncidenti = ((Double) inputFeature.getAttribute(this.inputField)).doubleValue();
+					}
+					if(value instanceof BigDecimal){
+						nrIncidenti = ((BigDecimal) inputFeature.getAttribute(this.inputField)).doubleValue();
+					}
 					if(nrIncidenti < 0) {
 						nrIncidenti = 0;
 					}
-					int lunghezza = ((BigDecimal) inputFeature.getAttribute(LUNGHEZZA))
-							.intValue();
 					double newIncidenti = (double) nrIncidenti;
 					if (newIncidenti == 0) {
 						newIncidenti += inc;
@@ -342,7 +383,7 @@ public class ZeroRemovalComputation extends InputObject {
 						newIncidenti -= dec;
 						if(newIncidenti <= 0){
 							noValidValueFound = true;
-							LOGGER.debug("No valid value (less than 0 for non zero ARC) found for feature kInc = " + this.kInc);
+							LOGGER.debug("No valid value (less than 0 for non zero ARC) found for feature kInc = " + df.format(this.kInc));
 							break;
 						}
 					}
@@ -355,7 +396,7 @@ public class ZeroRemovalComputation extends InputObject {
 		}
 
 		public void computeNextIteration() throws Exception{
-			this.kInc = this.kInc - KINCR_DECR_STEP * kIter;
+			this.kInc = this.kInc - KINCR_DECR_STEP;
 			if(this.kInc <= 0){
 				throw new Exception("No valid kInc found!");
 			}
@@ -365,8 +406,14 @@ public class ZeroRemovalComputation extends InputObject {
 
 			try {
 				for (SimpleFeature inputFeature : this.elabIncident.keySet() ) {
-					int nrIncidenti = ((BigDecimal) inputFeature
-							.getAttribute(NR_INCIDENTI)).intValue();
+					double nrIncidenti = 0;
+					Object value = inputFeature.getAttribute(this.inputField);
+					if(value instanceof Double){
+						nrIncidenti = ((Double) inputFeature.getAttribute(this.inputField)).doubleValue();
+					}
+					if(value instanceof BigDecimal){
+						nrIncidenti = ((BigDecimal) inputFeature.getAttribute(this.inputField)).doubleValue();
+					}					
 					int lunghezza = ((BigDecimal) inputFeature.getAttribute(LUNGHEZZA))
 							.intValue();
 					if (nrIncidenti == 0) {
@@ -386,7 +433,6 @@ public class ZeroRemovalComputation extends InputObject {
 			} catch(Exception e){
 				LOGGER.error(e.getMessage(), e);
 			}
-
 		}
 	}
 }

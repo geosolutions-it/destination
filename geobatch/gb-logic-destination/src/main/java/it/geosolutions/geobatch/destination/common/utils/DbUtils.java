@@ -39,9 +39,9 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class DbUtils {
-	
+
 	private final static Logger LOGGER = LoggerFactory.getLogger(DbUtils.class);
-	
+
 	/**
 	 * Drops a feature from the given DataStore.
 	 * 
@@ -57,7 +57,7 @@ public class DbUtils {
 			executeSql((JDBCDataStore)dataStore, null, "DROP TABLE \"" + typeName + "\" CASCADE", true);
 		}
 	}
-	
+
 	/**
 	 * Drops a feature from the given DataStore.
 	 * 
@@ -95,9 +95,9 @@ public class DbUtils {
 				transaction.close();
 			}
 		}
-		
+
 	}
-	
+
 	/**
 	 * Executes an sql query on the given datastore connection.
 	 */
@@ -109,7 +109,7 @@ public class DbUtils {
 		}
 		try {						
 			conn = dataStore.getConnection(queryTransaction);
-			
+
 			if(conn == null || conn.isClosed()) {
 				throw new IOException("Unable to connect to datastore");
 			}
@@ -119,19 +119,19 @@ public class DbUtils {
 				queryTransaction.close();
 			}
 		}
-		
+
 	}
-	
+
 	/**
-         * Executes an sql query on the given datastore connection.
-         */
+	 * Executes an sql query on the given datastore connection.
+	 */
 	public static void executeSql(Connection conn, Transaction transaction, String sql, boolean commit) throws IOException, SQLException {
-	    executeSql(conn, transaction, sql, commit, false);
+		executeSql(conn, transaction, sql, commit, false);
 	}
-	
+
 	public static void executeSql(Connection conn, Transaction transaction, String sql, boolean commit, boolean silent) throws IOException, SQLException {		
 		Statement stmt = null;
-		
+
 		try {						
 			stmt = conn.createStatement();
 			stmt.execute(sql);
@@ -145,16 +145,16 @@ public class DbUtils {
 		} catch (SQLException e) {
 			transaction.rollback();		
 			if(!silent){
-			    LOGGER.error(e.getMessage(), e);
+				LOGGER.error(e.getMessage(), e);
 			}
 			throw e;
-			
+
 		} finally {
 			if(stmt != null) {
 				stmt.close();
 			}			
 		}
-		
+
 	}
 
 	/**
@@ -231,7 +231,7 @@ public class DbUtils {
 		} catch (SQLException e) {				
 			LOGGER.error(e.getMessage(), e);
 			throw e;
-			
+
 		} finally {
 			if(rs != null) {
 				rs.close();
