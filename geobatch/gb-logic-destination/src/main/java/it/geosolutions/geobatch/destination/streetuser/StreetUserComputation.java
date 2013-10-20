@@ -9,7 +9,9 @@ import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,7 +24,6 @@ import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.jdbc.JDBCDataStore;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.slf4j.Logger;
@@ -37,6 +38,7 @@ public class StreetUserComputation extends InputObject {
 	private Double SECONDS_IN_HOUR = 3600d;
 	private String codicePartner;
 	private int partner;
+	private boolean removeFeatures = true;
 
 	private String siig_r_scen_vuln_X_type;
 
@@ -71,16 +73,45 @@ public class StreetUserComputation extends InputObject {
 		return false;
 	}
 
-	public void execute(Integer aggregationLevel) throws Exception{
+	public void clearOutputFeature(Integer aggregationLevel){
+		Transaction transaction = new DefaultTransaction("handle");
+		try{						
+			FeatureStore<SimpleFeatureType, SimpleFeature> inputReader = FeatureLoaderUtils.createFeatureSource(dataStore, Transaction.AUTO_COMMIT,"siig_t_vulnerabilita_" + aggregationLevel);
+			Query inputQuery = new Query("siig_t_vulnerabilita_" + aggregationLevel);
+			inputQuery.setFilter(filterFactory.equals(filterFactory.property("fk_partner"),filterFactory.literal(partner)));
+			FeatureIterator<SimpleFeature> inputIterator = inputReader.getFeatures(inputQuery).features();
 
-		LOGGER.debug("Start execution with partner="+partner+" and aggregationLevel="+aggregationLevel);
+			FeatureStore<SimpleFeatureType, SimpleFeature> outputFeatureStore = FeatureLoaderUtils.createFeatureSource(dataStore, transaction,this.siig_r_scen_vuln_X_type);
+			Query clearQuery = new Query(this.siig_r_scen_vuln_X_type);
+			while(inputIterator.hasNext()) {
+				SimpleFeature sf = inputIterator.next();
+				Integer idGeoArco = (Integer) sf.getAttribute("id_geo_arco");
+				//Clear output				
+				clearQuery.setFilter(filterFactory.equals(filterFactory.property("id_geo_arco"),filterFactory.literal(idGeoArco)));
+				outputFeatureStore.removeFeatures(clearQuery.getFilter());
+			}
 
-		siig_r_scen_vuln_X_type = "siig_r_scen_vuln_"+aggregationLevel;
-		siig_r_scen_vuln_X = DataUtilities.createType(siig_r_scen_vuln_X_type, 
-				"id_distanza:int," + "id_geo_arco:int," + "id_scenario:int," + "utenti_carr_bersaglio:int," + "utenti_carr_sede_inc:int");
+			inputIterator.close();			
+			transaction.commit(); 
+		}catch (Exception ex){
+			LOGGER.error(ex.getMessage(),ex);
+			try {
+				transaction.rollback();
+			} catch (IOException e) {
+				LOGGER.error(e.getMessage(),e);
+			}
+		}
+		finally {
+			try {
+				transaction.close();
+			} catch (IOException e) {
+				LOGGER.error(e.getMessage(),e);
+			}
+		}
+	}
 
+	private List<StreetScenario> getScenari() throws Exception{
 		List<StreetScenario> scenari = new ArrayList<StreetScenario>();
-
 		//Get "scenario" info
 		FeatureStore<SimpleFeatureType, SimpleFeature> inputReader = FeatureLoaderUtils.createFeatureSource(dataStore, Transaction.AUTO_COMMIT,"siig_t_scenario");
 		Query inputQuery = new Query("siig_t_scenario");
@@ -96,54 +127,213 @@ public class StreetUserComputation extends InputObject {
 
 		}
 		inputIterator.close();
+		return scenari;
+	}
 
-		//Get "distanza" info
-		TreeMap<Integer,StreetDistance> distanze = getDistanze();
-
-		/*
-		String basePath = System.getProperty(EXTERNAL_PROP_DIR_PATH, "");
-		Properties properties = PropertiesManager.loadProperty(basePath, STREET_USERS_PROP);
-		List<StreetDistance> distanze = new ArrayList<StreetDistance>();
-		Iterator iter = properties.keySet().iterator();
-        while(iter.hasNext()){
-            String key = (String)iter.next();
-            Integer value = Integer.parseInt(properties.getProperty(key));
-            distanze.add(new StreetDistance(value));			
+	public void execute(Integer aggregationLevel) throws Exception{
+		if(aggregationLevel == 1 || aggregationLevel == 2){
+			executeArc(aggregationLevel);
 		}
-		 */
+		if(aggregationLevel == 3){
+			executeCell(aggregationLevel);
+		}
+	}
+	
+	public void executeCell(Integer aggregationLevel)  throws Exception{
+		LOGGER.debug("Start execution for CELL with partner="+partner+" and aggregationLevel="+aggregationLevel);
 
-		inputReader = FeatureLoaderUtils.createFeatureSource(dataStore, Transaction.AUTO_COMMIT,"siig_t_vulnerabilita_" + aggregationLevel);
-		inputQuery = new Query("siig_t_vulnerabilita_" + aggregationLevel);
-		inputQuery.setFilter(filterFactory.equals(filterFactory.property("fk_partner"),filterFactory.literal(partner)));
-		inputIterator = inputReader.getFeatures(inputQuery).features();
-		while(inputIterator.hasNext()) {
-			SimpleFeature sf = inputIterator.next();
-			Integer idGeoArco = (Integer) sf.getAttribute("id_geo_arco");
-			Integer idDistanza = (Integer) sf.getAttribute("id_distanza");
-			StreetDistance distanza = distanze.get(idDistanza);
-			if(distanza != null){
-				computeArcoDistanza(idGeoArco,distanza,scenari,aggregationLevel);
+		Transaction transaction = new DefaultTransaction("handle");
+		try{
+			siig_r_scen_vuln_X_type = "siig_r_scen_vuln_"+aggregationLevel;
+			siig_r_scen_vuln_X = DataUtilities.createType(siig_r_scen_vuln_X_type, 
+					"id_distanza:int," + "id_geo_arco:int," + "id_scenario:int," + "utenti_carr_bersaglio:int," + "utenti_carr_sede_inc:int");
+
+			if(removeFeatures) {
+				clearOutputFeature(aggregationLevel);
+			}
+			
+			List<StreetScenario> scenari = getScenari();
+
+			TreeMap<Integer,StreetDistance> distanze = getDistanze();
+
+			SimpleFeatureStore featureStore = (SimpleFeatureStore) this.dataStore.getFeatureSource(this.siig_r_scen_vuln_X_type);
+			featureStore.setTransaction( transaction );
+
+			FeatureStore<SimpleFeatureType, SimpleFeature> inputReader = FeatureLoaderUtils.createFeatureSource(dataStore, transaction,"siig_t_vulnerabilita_" + aggregationLevel);
+			Query inputQuery = new Query("siig_t_vulnerabilita_" + aggregationLevel);
+			inputQuery.setFilter(filterFactory.equals(filterFactory.property("fk_partner"),filterFactory.literal(partner)));
+			FeatureIterator<SimpleFeature> inputIterator = inputReader.getFeatures(inputQuery).features();
+
+			while(inputIterator.hasNext()) {
+				SimpleFeature sf = inputIterator.next();
+				//Found record on pl_arco3
+				Integer idGeoCell = (Integer) sf.getAttribute("id_geo_arco");
+				Integer idDistanza = (Integer) sf.getAttribute("id_distanza");
+				StreetDistance distanza = distanze.get(idDistanza);
+				if(distanza == null){
+					continue;
+				}
+				/*
+				 * SEARCH for cell
+				 */	
+				SimpleFeature sfCell = null;
+				FeatureStore<SimpleFeatureType, SimpleFeature> inputReaderCell = FeatureLoaderUtils.createFeatureSource(dataStore, transaction,"siig_geo_pl_arco_" + aggregationLevel);
+				Query inputQueryCell = new Query("siig_geo_pl_arco_" + aggregationLevel);
+				
+				inputQueryCell.setFilter(filterFactory.and(
+						filterFactory.equals(filterFactory.property("fk_partner"),filterFactory.literal(partner)),
+						filterFactory.equals(filterFactory.property("id_geo_arco"), filterFactory.literal(idGeoCell))
+						));
+
+				FeatureIterator<SimpleFeature>  inputIteratorCell = inputReaderCell.getFeatures(inputQueryCell).features();
+				if(inputIteratorCell.hasNext()) {
+					sfCell = inputIteratorCell.next();					
+				}
+				inputIteratorCell.close();
+				if(sfCell == null){
+					continue;
+				}
+				/*
+				 * START cell computation
+				 */				
+				//Found all arc that intercept cell and override the intersected geometry
+				Map<Integer,StreetUserResult> cellResults = new HashMap<Integer, StreetUserResult>();
+				FeatureStore<SimpleFeatureType, SimpleFeature> inputReaderArc = FeatureLoaderUtils.createFeatureSource(dataStore, Transaction.AUTO_COMMIT,"siig_geo_ln_arco_" + aggregationLevel);
+				Query inputQueryArc = new Query("siig_geo_ln_arco_" + aggregationLevel);
+				inputQueryArc.setFilter(filterFactory.and(
+						filterFactory.equals(filterFactory.property("fk_partner"),filterFactory.literal(partner)),
+						filterFactory.intersects(filterFactory.property("geometria"), filterFactory.literal(sfCell.getDefaultGeometry()))
+						));
+				FeatureIterator<SimpleFeature> inputIteratorArc = inputReaderArc.getFeatures(inputQueryArc).features();
+				while(inputIteratorArc.hasNext()) {
+					SimpleFeature sfArc = inputIteratorArc.next();
+					Geometry intersection = ((Geometry) sfArc.getDefaultGeometry()).intersection( (Geometry) sfCell.getDefaultGeometry() );
+					Integer idGeoArco = (Integer) sfArc.getAttribute("id_geo_arco");
+					Map<Integer,StreetUserResult> arcResults = computeArcoDistanza(idGeoArco,intersection,distanza,scenari,aggregationLevel);	
+					//Cumulate arc result to cell result
+					for(Integer scenarioId : arcResults.keySet()){
+						StreetUserResult rArc = arcResults.get(scenarioId);
+						StreetUserResult rCell = cellResults.get(scenarioId);
+						if(rCell==null){
+							rCell = new StreetUserResult(idGeoArco, idDistanza, scenarioId, rArc.getUtentiSede(), rArc.getUtentiBersaglio());
+							cellResults.put(scenarioId, rCell);
+						}else{
+							Double utentiSedeCell =  rArc.getUtentiSede() + rCell.getUtentiSede();
+							Double utentiBersaglioCell = rArc.getUtentiBersaglio() + rCell.getUtentiBersaglio();
+							rCell.setUtentiBersaglio(utentiBersaglioCell);
+							rCell.setUtentiSede(utentiSedeCell);							
+						}
+					}
+				}
+				inputIteratorArc.close();
+
+
+				for(Integer idScenario : cellResults.keySet()){
+					StreetUserResult celResult = cellResults.get(idScenario);
+					persistStreetUsersData(idGeoCell, idDistanza, idScenario, celResult.getUtentiSede(), celResult.getUtentiBersaglio(), featureStore);
+				}
+
+			}
+			inputIterator.close();
+			transaction.commit();
+		}catch (Exception ex){
+			LOGGER.error(ex.getMessage(),ex);
+			try {
+				transaction.rollback();
+			} catch (IOException e) {
+				LOGGER.error(e.getMessage(),e);
 			}
 		}
-		inputIterator.close();
+		finally {
+			try {
+				transaction.close();
+			} catch (IOException e) {
+				LOGGER.error(e.getMessage(),e);
+			}
+		}
+	}
+
+	public void executeArc(Integer aggregationLevel) throws Exception{
+
+		LOGGER.debug("Start execution with partner="+partner+" and aggregationLevel="+aggregationLevel);
+		Transaction transaction = new DefaultTransaction("handle");		
+		try{
+			siig_r_scen_vuln_X_type = "siig_r_scen_vuln_"+aggregationLevel;
+			siig_r_scen_vuln_X = DataUtilities.createType(siig_r_scen_vuln_X_type, 
+					"id_distanza:int," + "id_geo_arco:int," + "id_scenario:int," + "utenti_carr_bersaglio:int," + "utenti_carr_sede_inc:int");
+
+			if(removeFeatures) {
+				clearOutputFeature(aggregationLevel);
+			}
+
+			List<StreetScenario> scenari = getScenari();
+
+			TreeMap<Integer,StreetDistance> distanze = getDistanze();
+
+			FeatureStore<SimpleFeatureType, SimpleFeature> inputReader = FeatureLoaderUtils.createFeatureSource(dataStore, Transaction.AUTO_COMMIT,"siig_t_vulnerabilita_" + aggregationLevel);
+			Query inputQuery = new Query("siig_t_vulnerabilita_" + aggregationLevel);
+			inputQuery.setFilter(filterFactory.equals(filterFactory.property("fk_partner"),filterFactory.literal(partner)));
+			FeatureIterator<SimpleFeature> inputIterator = inputReader.getFeatures(inputQuery).features();
+
+			SimpleFeatureStore featureStore = (SimpleFeatureStore) this.dataStore.getFeatureSource(this.siig_r_scen_vuln_X_type);
+			featureStore.setTransaction( transaction );
+
+			while(inputIterator.hasNext()) {
+				SimpleFeature sf = inputIterator.next();
+				Integer idGeoArco = (Integer) sf.getAttribute("id_geo_arco");
+				Integer idDistanza = (Integer) sf.getAttribute("id_distanza");
+				StreetDistance distanza = distanze.get(idDistanza);
+				if(distanza != null){
+					Map<Integer,StreetUserResult> results = computeArcoDistanza(idGeoArco,null,distanza,scenari,aggregationLevel);
+					for(Integer key : results.keySet()){
+						StreetUserResult r = results.get(key);
+						persistStreetUsersData(r.getIdArco(),r.getIdDistanza(),r.getIdScenario(),r.getUtentiSede(),r.getUtentiBersaglio(),featureStore);
+					}
+				}
+			}
+			inputIterator.close();
+			transaction.commit(); 
+		}catch (Exception ex){
+			LOGGER.error(ex.getMessage(),ex);
+			try {
+				transaction.rollback();
+			} catch (IOException e) {
+				LOGGER.error(e.getMessage(),e);
+			}
+		}
+		finally {
+			try {
+				transaction.close();
+			} catch (IOException e) {
+				LOGGER.error(e.getMessage(),e);
+			}
+		}
 	}
 
 
-	private void computeArcoDistanza(Integer idGeoArco, StreetDistance distanza, List<StreetScenario> scenari , Integer aggregationLevel){
+	private Map<Integer,StreetUserResult> computeArcoDistanza(Integer idGeoArco, Geometry overrideGeometry, StreetDistance distanza, List<StreetScenario> scenari , Integer aggregationLevel){
+		Map<Integer,StreetUserResult> result = new HashMap<Integer,StreetUserResult>();
 		FeatureIterator<SimpleFeature> inputIterator = null;
 		try{
-			FeatureStore<SimpleFeatureType, SimpleFeature> inputReader = FeatureLoaderUtils.createFeatureSource(dataStore, Transaction.AUTO_COMMIT,"siig_geo_ln_arco_" + aggregationLevel);
-			Query inputQuery = new Query("siig_geo_ln_arco_" + aggregationLevel);
-			inputQuery.setFilter(filterFactory.equals(filterFactory.property("fk_partner"),filterFactory.literal(partner)));
+			String typeName = "siig_geo_ln_arco_";
+			FeatureStore<SimpleFeatureType, SimpleFeature> inputReader = FeatureLoaderUtils.createFeatureSource(dataStore, Transaction.AUTO_COMMIT,typeName + aggregationLevel);
+			Query inputQuery = new Query(typeName + aggregationLevel);
+			inputQuery.setFilter(filterFactory.and(
+					filterFactory.equals(filterFactory.property("fk_partner"),filterFactory.literal(partner)),
+					filterFactory.equals(filterFactory.property("id_geo_arco"),filterFactory.literal(idGeoArco))
+					));			
 			inputIterator = inputReader.getFeatures(inputQuery).features();
-			while(inputIterator.hasNext()) {
+			if(inputIterator.hasNext()) {
 				SimpleFeature sf = inputIterator.next();
 				LOGGER.debug("Feature found : " + sf.toString());		
-				Integer id = (Integer) sf.getAttribute("id_geo_arco");
-				StreetUser streetUser = new StreetUser(id,(Geometry) sf.getDefaultGeometry(),distanza);
+				Geometry geometry = (Geometry) sf.getDefaultGeometry();
+				if(overrideGeometry != null){
+					geometry = overrideGeometry;
+				}
+				StreetUser streetUser = new StreetUser(idGeoArco,geometry,distanza);
 				retrieveStreetInBuffer(streetUser.getDistance(),streetUser,aggregationLevel);
 				computeVeicles(streetUser,scenari);		
-				computeUsers(streetUser,scenari);
+				result = computeUsers(streetUser,scenari);
 			}
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(),e);
@@ -152,6 +342,7 @@ public class StreetUserComputation extends InputObject {
 				inputIterator.close();
 			}
 		}
+		return result;
 	}
 
 	private TreeMap<Integer,StreetDistance> getDistanze(){
@@ -177,59 +368,38 @@ public class StreetUserComputation extends InputObject {
 		return distanze;	
 	}
 
-	private void computeUsers(StreetUser streetUser, List<StreetScenario> scenari) {
+	private Map<Integer,StreetUserResult> computeUsers(StreetUser streetUser, List<StreetScenario> scenari) {
+		Map<Integer,StreetUserResult> result = new HashMap<Integer,StreetUserResult>();
 
-		Transaction transaction = new DefaultTransaction("handle");
-		try{
-			SimpleFeatureStore featureStore = (SimpleFeatureStore) this.dataStore.getFeatureSource(this.siig_r_scen_vuln_X_type);
-			featureStore.setTransaction( transaction );
+		Integer idArco = (Integer) streetUser.getIdArco();
+		Integer idDistanza = streetUser.getDistance().getIdDistanza();
 
-			Integer idArco = (Integer) streetUser.getIdArco();
-			Integer idDistanza = streetUser.getDistance().getIdDistanza();
+		for(StreetScenario scenario : scenari){
+			Integer idScenario = scenario.getIdScenario();
+			Double utentiSede = 0d;
+			Double utentiBersaglio = 0d;
 
-			for(StreetScenario scenario : scenari){
+			for(StreetInfo streetInfo  : streetUser.getDistance().getStreetsInfo()){			
 
-				Integer idScenario = scenario.getIdScenario();
-				Double utentiSede = 0d;
-				Double utentiBersaglio = 0d;
+				for(StreetVeicle veicle : streetInfo.getVeicleTypes()){
 
-				for(StreetInfo streetInfo  : streetUser.getDistance().getStreetsInfo()){			
+					ComputedData computed = veicle.getComputedData(scenario);
 
-					for(StreetVeicle veicle : streetInfo.getVeicleTypes()){
-
-						ComputedData computed = veicle.getComputedData(scenario);
-
-						if(streetInfo.getOriginStreet()){
-							Double nCoinvolti = correctCodaByStorage(computed.getN_territoriali(),computed.getN_coda(),streetInfo.getStorage());
-							Double utentiVeicoli = nCoinvolti * veicle.getOccupationCoeff();
-							utentiSede = utentiSede + utentiVeicoli;
-						}else{
-							Double utentiVeicoli = (computed.getN_territoriali() + computed.getN_transito())*veicle.getOccupationCoeff();
-							utentiBersaglio = utentiBersaglio + utentiVeicoli;
-						}
-
+					if(streetInfo.getOriginStreet()){
+						Double nCoinvolti = correctCodaByStorage(computed.getN_territoriali(),computed.getN_coda(),streetInfo.getStorage());
+						Double utentiVeicoli = nCoinvolti * veicle.getOccupationCoeff();
+						utentiSede = utentiSede + utentiVeicoli;
+					}else{
+						Double utentiVeicoli = (computed.getN_territoriali() + computed.getN_transito())*veicle.getOccupationCoeff();
+						utentiBersaglio = utentiBersaglio + utentiVeicoli;
 					}
 
 				}
 
-				persistStreetUsersData(idArco,idDistanza,idScenario,utentiSede,utentiBersaglio,featureStore);
 			}
-			transaction.commit(); 
-		}catch (Exception ex){
-			LOGGER.error(ex.getMessage(),ex);
-			try {
-				transaction.rollback();
-			} catch (IOException e) {
-				LOGGER.error(e.getMessage(),e);
-			}
+			result.put(idScenario,new StreetUserResult(idArco,idDistanza,idScenario,utentiSede,utentiBersaglio));
 		}
-		finally {
-			try {
-				transaction.close();
-			} catch (IOException e) {
-				LOGGER.error(e.getMessage(),e);
-			}
-		}
+		return result;
 
 	}
 
@@ -366,5 +536,8 @@ public class StreetUserComputation extends InputObject {
 		}
 	}
 
+	public void setRemoveFeatures(boolean removeFeatures) {
+		this.removeFeatures = removeFeatures;
+	}
 
 }
