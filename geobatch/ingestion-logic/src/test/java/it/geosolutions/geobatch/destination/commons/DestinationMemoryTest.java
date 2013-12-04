@@ -6,6 +6,7 @@ import it.geosolutions.geobatch.destination.TestMetadataIngestionHandler;
 import it.geosolutions.geobatch.destination.ingestion.MetadataIngestionHandler;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
@@ -26,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class DestinationMemoryTest {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DestinationMemoryTest.class);
+	protected static final Logger LOGGER = LoggerFactory.getLogger(DestinationMemoryTest.class);
 
 	protected MemoryDataStore dataStore;
 	protected Map<String, SimpleFeatureType> model;
@@ -92,6 +93,10 @@ public abstract class DestinationMemoryTest {
 		} finally {
 			iterator.close();
 		}
+	}
+	
+	protected void checkFile(String filePath) throws IOException {
+		assertEquals(new File(filePath).exists(), true);
 	}
 
 	/**
