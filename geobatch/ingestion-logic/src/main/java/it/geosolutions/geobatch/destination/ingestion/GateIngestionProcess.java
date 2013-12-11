@@ -17,9 +17,9 @@
 package it.geosolutions.geobatch.destination.ingestion;
 
 import it.geosolutions.geobatch.destination.common.InputObject;
-import it.geosolutions.geobatch.destination.common.utils.DbUtils;
-import it.geosolutions.geobatch.destination.common.utils.SequenceManager;
-import it.geosolutions.geobatch.destination.common.utils.TimeUtils;
+import it.geosolutions.geobatch.destination.ingestion.gate.dao.TransitDao;
+import it.geosolutions.geobatch.destination.ingestion.gate.dao.impl.TransitDaoJDBCImpl;
+import it.geosolutions.geobatch.destination.ingestion.gate.dao.impl.TransitDaoMemoryImpl;
 import it.geosolutions.geobatch.destination.ingestion.gate.model.ExportData;
 import it.geosolutions.geobatch.destination.ingestion.gate.model.Transit;
 import it.geosolutions.geobatch.destination.ingestion.gate.model.Transits;
@@ -27,9 +27,6 @@ import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -38,8 +35,7 @@ import java.util.regex.Pattern;
 import javax.xml.bind.JAXB;
 
 import org.geotools.data.DataStore;
-import org.geotools.data.DefaultTransaction;
-import org.geotools.data.Transaction;
+import org.geotools.data.memory.MemoryDataStore;
 import org.geotools.jdbc.JDBCDataStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,14 +110,9 @@ private static String PARTNER_CODE = "A";
 private Boolean ignorePks;
 
 /**
- * Sequence manager to generate transits PKs
+ * DAO to store transit objects
  */
-private SequenceManager transitSequenceManager;
-
-/**
- * Database connection for the insert
- */
-private JDBCDataStore dataStore;
+private TransitDao transitDao;
 
 /**
  * File with the data to be inserted
@@ -148,11 +139,11 @@ public GateIngestionProcess(String typeName,
 
     super(typeName, listenerForwarder, metadataHandler, dataStore);
 
-    // init datastore
+    // init transit dao
     if (dataStore instanceof JDBCDataStore) {
-        this.dataStore = (JDBCDataStore) dataStore;
-        transitSequenceManager = new SequenceManager(this.dataStore,
-                "transit_seq");
+        this.transitDao = new TransitDaoJDBCImpl((JDBCDataStore) dataStore);
+    }else if (dataStore instanceof MemoryDataStore){
+        this.transitDao = new TransitDaoMemoryImpl((MemoryDataStore) dataStore);
     }
 
     // init from file to be inserted
@@ -209,6 +200,7 @@ public List<Long> importGates(boolean ignorePks) throws IOException {
     List<Long> ids = new ArrayList<Long>();
     reset();
     this.ignorePks = ignorePks;
+    this.transitDao.setIgnorePks(this.ignorePks);
     if (isValid()) {
 
         int process = -1;
@@ -345,58 +337,11 @@ private int closeProcess(int process) throws IOException {
  * Creates a new transit in the transit table.
  * 
  * @return id of the transit
- * @throws IOException if an exception occur when execute sql insert
+ * @throws Exception if an exception occur when execute sql insert
  */
-public Long createTransit(Transit transit) throws IOException {
-
-    Transaction transaction = null;
-    Connection conn = null;
-    try {
-        transaction = new DefaultTransaction();
-        conn = dataStore.getConnection(transaction);
-
-        // ignored pk (use generated) or not
-        Long id = (Boolean.TRUE.equals(ignorePks) ? transitSequenceManager
-                .retrieveValue() : transit.getIdTransito());
-
-        Timestamp timestamp = TimeUtils.getTimeStamp(transit
-                .getDataRilevamento());
-
-        // null value should throw an exception
-        String arriveDate = timestamp != null ? "'" + timestamp + "'" : null;
-
-        // sql insert into transit
-        String sql = "insert into siig_gate_t_dato(" + "id_dato, "
-                + "fk_gate, " + "data_rilevamento, " + "data_ricezione, "
-                + "flg_corsia, " + "direzione, " + "codice_kemler, "
-                + "codice_onu)" + " values(" + id + ", " + transit.getIdGate()
-                + ", " + arriveDate + ", '" + TimeUtils.getTodayTimestamp()
-                + "', " + transit.getCorsia() + ", '" + transit.getDirezione()
-                + "', '" + transit.getKemlerCode() + "', '"
-                + transit.getOnuCode() + "')";
-
-        // trace sql
-        if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("SQL insert: " + sql);
-        }
-
-        DbUtils.executeSql(conn, transaction, sql, true);
-        return id;
-    } catch (SQLException e) {
-        throw new IOException(e);
-    } finally {
-        if (conn != null) {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new IOException(e);
-            }
-        }
-        if (transaction != null) {
-            transaction.close();
-        }
-    }
-
+public Long createTransit(Transit transit) throws Exception {
+    // DAO delegate
+    return transitDao.createTransit(transit);
 }
 
 /**
