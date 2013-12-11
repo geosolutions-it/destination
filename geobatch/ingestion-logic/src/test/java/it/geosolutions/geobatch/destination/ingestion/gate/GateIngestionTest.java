@@ -16,10 +16,13 @@
  */
 package it.geosolutions.geobatch.destination.ingestion.gate;
 
-import it.geosolutions.geobatch.destination.common.utils.DbUtils;
+import it.geosolutions.geobatch.destination.TestMetadataIngestionHandler;
 import it.geosolutions.geobatch.destination.common.utils.TimeUtils;
 import it.geosolutions.geobatch.destination.ingestion.GateIngestionProcess;
 import it.geosolutions.geobatch.destination.ingestion.MetadataIngestionHandler;
+import it.geosolutions.geobatch.destination.ingestion.gate.dao.TransitDao;
+import it.geosolutions.geobatch.destination.ingestion.gate.dao.impl.TransitDaoJDBCImpl;
+import it.geosolutions.geobatch.destination.ingestion.gate.dao.impl.TransitDaoMemoryImpl;
 import it.geosolutions.geobatch.destination.ingestion.gate.model.ExportData;
 import it.geosolutions.geobatch.destination.ingestion.gate.model.Transit;
 import it.geosolutions.geobatch.destination.ingestion.gate.model.TransitBeanTest;
@@ -29,9 +32,6 @@ import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,15 +40,17 @@ import java.util.Random;
 import javax.xml.bind.JAXB;
 
 import org.apache.commons.io.FileUtils;
+import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
-import org.geotools.data.DefaultTransaction;
-import org.geotools.data.Transaction;
+import org.geotools.data.memory.MemoryDataStore;
 import org.geotools.jdbc.JDBCDataStore;
 import org.geotools.jdbc.JDBCDataStoreFactory;
 import org.geotools.test.OnlineTestCase;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Gate ingestion test:
@@ -64,6 +66,9 @@ import org.junit.Test;
  */
 public class GateIngestionTest extends OnlineTestCase {
 
+private final static Logger LOGGER = LoggerFactory
+        .getLogger(GateIngestionTest.class);
+
 /**
  * Separator
  */
@@ -72,7 +77,12 @@ public static final String SEPARATOR = System.getProperty("file.separator");
 /**
  * JDBC connection
  */
-JDBCDataStore datastore;
+protected DataStore datastore;
+
+/**
+ * Metadata ingestion handler
+ */
+protected MetadataIngestionHandler metadataHandler;
 
 /**
  * Random to generate magic keys and random strings
@@ -100,19 +110,43 @@ private String FAKE_GATE_KEY = "TEST_GATE";
 private Integer numberOrTransits = new Integer(50);
 
 /**
- * Initialization of datastore
+ * DAO to store transit objects
+ */
+private TransitDao transitDao;
+
+/**
+ * Initialization of data store
+ * 
+ * @throws Exception if create fake gate throws an exception 
  */
 @Before
-public void init() {
+public void init() throws Exception {
     try {
         if (datastore == null) {
-            datastore = (JDBCDataStore) DataStoreFinder
+            datastore = DataStoreFinder
                     .getDataStore(getPostgisParams());
+            if(datastore instanceof JDBCDataStore){
+                metadataHandler = new MetadataIngestionHandler(datastore);
+                transitDao = new TransitDaoJDBCImpl((JDBCDataStore) datastore);
+            }else{
+                // if default data store is not found, use a memory datastore
+                datastore = new MemoryDataStore();
+                metadataHandler = new TestMetadataIngestionHandler(datastore);
+                transitDao = new TransitDaoMemoryImpl((MemoryDataStore) datastore);
+            }
         }
-        createFakeGate();
     } catch (Exception e) {
-        e.printStackTrace();
+        LOGGER.info("JDBC connection is not available. We're going to test with mocked data");
+        if(datastore != null){
+            // TODO: close transaction
+            datastore.dispose();
+        }
+        // if default data store fails, use a memory data store
+        datastore = new MemoryDataStore();
+        metadataHandler = new TestMetadataIngestionHandler(datastore);
+        transitDao = new TransitDaoMemoryImpl((MemoryDataStore) datastore);
     }
+    createFakeGate();
 }
 
 protected String getFixtureId() {
@@ -125,7 +159,6 @@ protected String getFixtureId() {
 @Test
 public void testImportGatesProcess() {
 
-    MetadataIngestionHandler metadataHandler = null;
     File file;
     List<Long> ids = null;
     boolean failCleanning = false;
@@ -136,7 +169,6 @@ public void testImportGatesProcess() {
 
         // Prepare process
         file = getTestFile(FAKE_GATE_ID, numberOrTransits);
-        metadataHandler = new MetadataIngestionHandler(datastore);
         GateIngestionProcess gateIngestion = new GateIngestionProcess("",
                 new ProgressListenerForwarder(null), metadataHandler,
                 datastore, file);
@@ -195,16 +227,13 @@ public Map<String, Serializable> getPostgisParams() {
 
 /**
  * Create a fake gate to make the test
- * 
- * @throws IOException
+ * @throws Exception 
  */
-private void createFakeGate() throws IOException {
+private void createFakeGate() throws Exception {
     // its numeric(5,0)
     FAKE_GATE_ID = new Long(RANDOM.nextInt(100000));
-
-    // Execute transaction with the insert
-    executeSQL("INSERT INTO siig_gate_geo_gate(" + "id_gate, descrizione) "
-            + "VALUES (" + FAKE_GATE_ID + ", '" + FAKE_GATE_KEY + "')");
+    // create test gate
+    transitDao.createGate(FAKE_GATE_ID, FAKE_GATE_KEY);
 }
 
 /**
@@ -212,9 +241,9 @@ private void createFakeGate() throws IOException {
  * 
  * @param ids of the inserted data
  * @param file used to execute the process
- * @throws IOException 
+ * @throws Exception 
  */
-private void checkData(List<Long> ids, File file) throws IOException {
+private void checkData(List<Long> ids, File file) throws Exception {
     // the number of inserts it's OK
     assertEquals(ids.size(), (int) numberOrTransits);
     // check one by one
@@ -230,30 +259,10 @@ private void checkData(List<Long> ids, File file) throws IOException {
  * 
  * @param idTransit id of the transit in the database
  * @param transit bean with the data
- * 
- * @throws IOException if an error occur when check the data
+ * @throws Exception 
  */
-private void checkData(Long idTransit, Transit transit) throws IOException {
-    
-    // Date
-    Timestamp timestamp = TimeUtils.getTimeStamp(transit
-            .getDataRilevamento());
-    String arriveDate = timestamp != null ? "'" + timestamp + "'" : null;
-    
-    // sql count
-    String sql = "select count(*) from siig_gate_t_dato "
-            + "where id_dato = " + idTransit
-            + " and fk_gate = " + transit.getIdGate()
-            + " and data_rilevamento = " + arriveDate
-            + " and data_ricezione = " + arriveDate
-            + " and flg_corsia = "  + transit.getCorsia()
-            + " and direzione = '" + transit.getDirezione() + "'"
-            + " and codice_kemler = '" + transit.getKemlerCode() + "'"
-            + " and codice_onu = '" + transit.getOnuCode() + "'";
-    
-    // must return one
-    long scalar = (Long) executeScalar(sql); 
-    assertEquals(scalar, (long)1);
+private void checkData(Long idTransit, Transit transit) throws Exception {
+    assertTrue(transitDao.exists(idTransit, transit));
             
 }
 
@@ -264,78 +273,9 @@ private void checkData(Long idTransit, Transit transit) throws IOException {
  * @throws Exception
  */
 private void cleanUp(List<Long> insertedTransitsIds) throws Exception {
-    // clean inserted transits
-    cleanTransits(insertedTransitsIds);
+    transitDao.cleanAll(insertedTransitsIds);
     // clean fake gate
-    executeSQL("delete from siig_gate_geo_gate where id_gate = " + FAKE_GATE_ID);
-}
-
-private void cleanTransits(List<Long> ids) throws IOException {
-    String sql = "delete from siig_gate_t_dato where id_dato in (";
-    int count = 0;
-    for (Long id : ids) {
-        count++;
-        sql += id;
-        if (count == ids.size()) {
-            sql += ")";
-        } else {
-            sql += ",";
-        }
-    }
-
-    // Execute transaction with the remove
-    executeSQL(sql);
-}
-
-/**
- * Execute a transaction with sql sentence
- * 
- * @param sql
- * @throws IOException if an error occur on the execution
- */
-private void executeSQL(String sql) throws IOException {
-    Transaction transaction = null;
-    Connection conn = null;
-    try {
-        transaction = new DefaultTransaction();
-        conn = datastore.getConnection(transaction);
-        DbUtils.executeSql(conn, transaction, sql, true);
-    } catch (SQLException e) {
-        throw new IOException(e);
-    } finally {
-        if (conn != null) {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new IOException(e);
-            }
-        }
-        if (transaction != null) {
-            transaction.close();
-        }
-    }
-}
-
-/**
- * Execute a transaction with sql sentence
- * 
- * @param sql
- * @throws IOException if an error occur on the execution
- */
-private Object executeScalar(String sql) throws IOException {
-    Transaction transaction = null;
-    Object scalar = null;
-    try {
-        transaction = new DefaultTransaction();
-        scalar = DbUtils.executeScalar(datastore, transaction, sql);
-        return scalar;
-    } catch (SQLException e) {
-        throw new IOException(e);
-    } finally {
-        if (transaction != null) {
-            transaction.close();
-        }
-    }
+    transitDao.deleteGate(FAKE_GATE_ID);
 }
 
 /**
