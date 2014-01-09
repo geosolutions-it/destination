@@ -77,9 +77,34 @@
             <type>pom</type>
             <version>1.4-SNAPSHOT</version>
         </dependency>
-
-
+        
         <dependency>
+            <groupId>it.geosolutions.geobatch</groupId>
+            <artifactId>gb-action-ftp</artifactId>
+        </dependency>
+
+        <!-- Apache Commons VFS -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-vfs2</artifactId>
+            <version>2.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency> 
+
+        <!-- JSch -->
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.42</version>
+        </dependency>
+
+
+        <!-- <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <scope>test</scope>
@@ -89,13 +114,20 @@
             <artifactId>jcl-over-slf4j</artifactId>
             <version>1.6.6</version>
             <scope>test</scope>
-        </dependency>
+        </dependency> -->
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+        <groupId>org.mockftpserver</groupId>
+        <artifactId>MockFtpServer</artifactId>
+        <version>2.4</version>
+        <scope>test</scope>
+      </dependency>
 
     </dependencies>
 </project>
