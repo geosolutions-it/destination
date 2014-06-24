@@ -282,9 +282,11 @@ public Map<String, Object> doProcess(boolean ignorePks) throws IOException {
                         String msg = "Importing data in transit table: "
                                 + (processed) + "/" + total;
                         percent = (fproc++ / ftot);
-                        updateProgress(percent * 100, msg);
-                        if (LOGGER.isInfoEnabled()) {
-                            LOGGER.info(msg);
+                        if(processed % 100 == 0) {
+	                        updateProgress(percent * 100, msg);
+	                        if (LOGGER.isInfoEnabled()) {
+	                            LOGGER.info(msg);
+	                        }
                         }
 
                         // insert
@@ -298,8 +300,10 @@ public Map<String, Object> doProcess(boolean ignorePks) throws IOException {
                             }
                             ids.add(id);
                         } else {
-                            LOGGER.error("Error on gate ingestion for element "
-                                    + inputCount);
+                        	if (LOGGER.isTraceEnabled()) {
+	                            LOGGER.trace("Error on gate ingestion for element "
+	                                    + inputCount);
+                        	}
                         }
 
                     } catch (Exception e) {
@@ -308,18 +312,18 @@ public Map<String, Object> doProcess(boolean ignorePks) throws IOException {
                             metadataHandler.logError(trace, errors,
                                     "Error on gate ingestion", getError(e),
                                     id.intValue());
-                            String msg = "Error on gate ingestion for id "
+                            /*String msg = "Error on gate ingestion for id "
                                     + id.intValue();
                             updateProgress(percent * 100, msg);
-                            LOGGER.error(msg);
+                            LOGGER.error(msg);*/
                         } else {
                             metadataHandler.logError(trace, errors,
                                     "Error importing element " + inputCount,
                                     getError(e), 0);
-                            String msg = "Error on gate ingestion for element "
+                            /*String msg = "Error on gate ingestion for element "
                                     + inputCount;
                             updateProgress(percent * 100, msg);
-                            LOGGER.error(msg);
+                            LOGGER.error(msg);*/
                         }
                     }
                 }

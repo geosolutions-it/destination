@@ -258,9 +258,11 @@ public List<Long> generateStatistics(boolean purgeData) throws IOException {
                         String msg = "Importing data in statistic table: "
                                 + (processed) + "/" + total;
                         percent = (fproc++ / ftot);
-                        updateProgress((percent * 50) + 50f, msg);
-                        if (LOGGER.isInfoEnabled()) {
-                            LOGGER.info(msg);
+                        if(processed % 100 == 0) {
+	                        updateProgress((percent * 50) + 50f, msg);
+	                        if (LOGGER.isInfoEnabled()) {
+	                            LOGGER.info(msg);
+	                        }
                         }
                         if(purgeData) {
                         	idTematico++;

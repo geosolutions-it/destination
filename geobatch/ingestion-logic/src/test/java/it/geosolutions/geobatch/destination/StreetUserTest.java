@@ -17,6 +17,7 @@
 package it.geosolutions.geobatch.destination;
 
 //import it.geosolutions.geobatch.actions.ds2ds.dao.FeatureConfiguration;
+import static org.junit.Assert.assertTrue;
 import it.geosolutions.geobatch.destination.common.utils.SequenceManager;
 import it.geosolutions.geobatch.destination.commons.DestinationMemoryTest;
 import it.geosolutions.geobatch.destination.streetuser.StreetUserComputation;
@@ -78,6 +79,10 @@ public class StreetUserTest extends DestinationMemoryTest{
 
 		});
 		return process;
+	}
+	@Test
+	public void test() {
+		assertTrue(true);
 	}
 
 	@Override
