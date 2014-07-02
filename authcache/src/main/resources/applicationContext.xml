@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+    <!--  
+        Guava based authentication cache
+        to replace internal LRUAuthenticationCacheImpl
+     -->
+    <bean id="authenticationCache" class="it.geosolutions.security.cache.GuavaAuthenticationCache">
+        <!-- maxEntries -->
+        <constructor-arg value="1000"/>
+    </bean>
+    
+</beans>

@@ -1,0 +1,76 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>it.geosolutions</groupId>
+  <artifactId>gs-authcache-guava</artifactId>
+  <version>2.2-ENTERPRISE-SNAPSHOT-DESTINATION-20140328</version>
+  <packaging>jar</packaging>
+
+  <name>gs-authcache-guava</name>
+  <url>http://maven.apache.org</url>
+
+  <description>
+      Destination AuthenticationCache alternative implementation based on guava Cache.
+  </description>
+  
+    <licenses>
+        <license>
+            <name>Lesser General Public License (LGPL)</name>
+            <url>http://www.gnu.org/copyleft/lesser.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+  
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <gs.version>2.2-ENTERPRISE-SNAPSHOT-DESTINATION-20140328</gs.version>
+  </properties>
+  
+  <build>
+      <plugins>
+      
+       <!-- compilation -->
+       <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-compiler-plugin</artifactId>
+         <version>2.3.2</version>
+         <configuration>
+           <source>1.6</source>
+           <target>1.6</target>
+           <debug>true</debug>
+           <encoding>UTF-8</encoding>
+           <!-- 
+               On the win32 build box the compiler oom's due to the compiler accumulating
+               too many classes in the permanent generation, similar to GEOT-2462  
+           -->
+           <fork>${fork.javac}</fork> 
+           <maxmem>${javac.maxHeapSize}</maxmem>
+         </configuration>
+       </plugin>
+      </plugins>
+  </build>
+  
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    
+     <dependency>
+        <groupId>org.geoserver</groupId>
+        <artifactId>main</artifactId>
+        <version>${gs.version}</version>
+        <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>11.0.1</version>
+    </dependency>
+  </dependencies>
+  
+  
+</project>
