@@ -1,0 +1,122 @@
+<coverage>
+  <id>CoverageInfoImpl-704fb44d:14724705f27:-2d4b</id>
+  <name>strutture_scolastiche_lu</name>
+  <nativeName>strutture_scolastiche_lu</nativeName>
+  <namespace>
+    <id>NamespaceInfoImpl--570ae188:124761b8d78:-7ffc</id>
+  </namespace>
+  <title>strutture_scolastiche_lu</title>
+  <description>Generated from GeoTIFF</description>
+  <keywords>
+    <string>WCS</string>
+    <string>GeoTIFF</string>
+    <string>strutture_scolastiche_lu</string>
+  </keywords>
+  <nativeCRS class="projected">PROJCS[&quot;Monte Mario / Italy zone 1&quot;, &#xd;
+  GEOGCS[&quot;Monte Mario&quot;, &#xd;
+    DATUM[&quot;Monte Mario&quot;, &#xd;
+      SPHEROID[&quot;International 1924&quot;, 6378388.0, 297.0, AUTHORITY[&quot;EPSG&quot;,&quot;7022&quot;]], &#xd;
+      TOWGS84[-104.1, -49.1, -9.9, 0.971, -2.917, 0.714, -11.68], &#xd;
+      AUTHORITY[&quot;EPSG&quot;,&quot;6265&quot;]], &#xd;
+    PRIMEM[&quot;Greenwich&quot;, 0.0, AUTHORITY[&quot;EPSG&quot;,&quot;8901&quot;]], &#xd;
+    UNIT[&quot;degree&quot;, 0.017453292519943295], &#xd;
+    AXIS[&quot;Geodetic longitude&quot;, EAST], &#xd;
+    AXIS[&quot;Geodetic latitude&quot;, NORTH], &#xd;
+    AUTHORITY[&quot;EPSG&quot;,&quot;4265&quot;]], &#xd;
+  PROJECTION[&quot;Transverse_Mercator&quot;, AUTHORITY[&quot;EPSG&quot;,&quot;9807&quot;]], &#xd;
+  PARAMETER[&quot;central_meridian&quot;, 9.0], &#xd;
+  PARAMETER[&quot;latitude_of_origin&quot;, 0.0], &#xd;
+  PARAMETER[&quot;scale_factor&quot;, 0.9996], &#xd;
+  PARAMETER[&quot;false_easting&quot;, 1500000.0], &#xd;
+  PARAMETER[&quot;false_northing&quot;, 0.0], &#xd;
+  UNIT[&quot;m&quot;, 1.0], &#xd;
+  AXIS[&quot;Easting&quot;, EAST], &#xd;
+  AXIS[&quot;Northing&quot;, NORTH], &#xd;
+  AUTHORITY[&quot;EPSG&quot;,&quot;3003&quot;]]</nativeCRS>
+  <srs>EPSG:3003</srs>
+  <nativeBoundingBox>
+    <minx>1593423.3399999999</minx>
+    <maxx>1637943.3399999999</maxx>
+    <miny>4847199.26</miny>
+    <maxy>4898759.26</maxy>
+    <crs class="projected">EPSG:3003</crs>
+  </nativeBoundingBox>
+  <latLonBoundingBox>
+    <minx>10.160455766803537</minx>
+    <maxx>10.726820158158299</maxx>
+    <miny>43.76485827430938</miny>
+    <maxy>44.235925728493456</maxy>
+    <crs>GEOGCS[&quot;WGS84(DD)&quot;, &#xd;
+  DATUM[&quot;WGS84&quot;, &#xd;
+    SPHEROID[&quot;WGS84&quot;, 6378137.0, 298.257223563]], &#xd;
+  PRIMEM[&quot;Greenwich&quot;, 0.0], &#xd;
+  UNIT[&quot;degree&quot;, 0.017453292519943295], &#xd;
+  AXIS[&quot;Geodetic longitude&quot;, EAST], &#xd;
+  AXIS[&quot;Geodetic latitude&quot;, NORTH]]</crs>
+  </latLonBoundingBox>
+  <projectionPolicy>REPROJECT_TO_DECLARED</projectionPolicy>
+  <enabled>true</enabled>
+  <metadata>
+    <entry key="cachingEnabled">false</entry>
+    <entry key="dirName">strutture_scolastiche_lu_strutture_scolastiche_lu</entry>
+  </metadata>
+  <store class="coverageStore">
+    <id>CoverageStoreInfoImpl-704fb44d:14724705f27:-2d4c</id>
+  </store>
+  <nativeFormat>GeoTIFF</nativeFormat>
+  <grid dimension="2">
+    <range>
+      <low>0 0</low>
+      <high>4452 5156</high>
+    </range>
+    <transform>
+      <scaleX>10.0</scaleX>
+      <scaleY>-10.0</scaleY>
+      <shearX>0.0</shearX>
+      <shearY>0.0</shearY>
+      <translateX>1593428.3399999999</translateX>
+      <translateY>4898754.26</translateY>
+    </transform>
+    <crs>EPSG:3003</crs>
+  </grid>
+  <supportedFormats>
+    <string>GEOTIFF</string>
+    <string>GIF</string>
+    <string>PNG</string>
+    <string>JPEG</string>
+    <string>TIFF</string>
+  </supportedFormats>
+  <interpolationMethods>
+    <string>bilinear</string>
+    <string>bicubic</string>
+  </interpolationMethods>
+  <dimensions>
+    <coverageDimension>
+      <name>GRAY_INDEX</name>
+      <description>GridSampleDimension[0.0,0.0]</description>
+      <range>
+        <min>0.0</min>
+        <max>0.0</max>
+      </range>
+      <nullValues>
+        <double>0.0</double>
+      </nullValues>
+    </coverageDimension>
+  </dimensions>
+  <requestSRS>
+    <string>EPSG:3003</string>
+  </requestSRS>
+  <responseSRS>
+    <string>EPSG:3003</string>
+  </responseSRS>
+  <parameters>
+    <entry>
+      <string>InputTransparentColor</string>
+      <string></string>
+    </entry>
+    <entry>
+      <string>SUGGESTED_TILE_SIZE</string>
+      <string>512,512</string>
+    </entry>
+  </parameters>
+</coverage>

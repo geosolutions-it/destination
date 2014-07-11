@@ -1,0 +1,11 @@
+<coverageStore>
+  <id>CoverageStoreInfoImpl--3a2d072a:1472102e92f:-41ca</id>
+  <name>popolazione_turistica_lu</name>
+  <type>GeoTIFF</type>
+  <enabled>true</enabled>
+  <workspace>
+    <id>WorkspaceInfoImpl--570ae188:124761b8d78:-7ffb</id>
+  </workspace>
+  <__default>false</__default>
+  <url>file:coverages/lose/popolazione_turistica/popolazione_turistica_lu.tif</url>
+</coverageStore>

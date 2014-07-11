@@ -1,0 +1,67 @@
+<layerGroup>
+  <id>LayerGroupInfoImpl--529052f4:13d6830255c:-32c8</id>
+  <name>industria_servizi_all</name>
+  <workspace>
+    <id>WorkspaceInfoImpl--570ae188:124761b8d78:-7ffb</id>
+  </workspace>
+  <layers>
+    <layer>
+      <id>LayerInfoImpl--529052f4:13d6830255c:-32ca</id>
+    </layer>
+    <layer>
+      <id>LayerInfoImpl-704fb44d:14724705f27:-7f55</id>
+    </layer>
+  </layers>
+  <styles>
+    <style>
+      <id>StyleInfoImpl-50bf8b26:13cce86fb2a:-7fff</id>
+    </style>
+    <style/>
+  </styles>
+  <bounds>
+    <minx>770522.3495671228</minx>
+    <maxx>1882978.212074563</maxx>
+    <miny>384206.7841604461</miny>
+    <maxy>5237830.757100702</maxy>
+    <crs class="projected">EPSG:3003</crs>
+  </bounds>
+  <metadata>
+    <entry key="title">industria_servizi_all</entry>
+  </metadata>
+  <authorityURLs>
+    <AuthorityURL>
+      <name>en</name>
+      <href>http://destination.geo-solutions.it/en</href>
+    </AuthorityURL>
+    <AuthorityURL>
+      <name>it</name>
+      <href>http://destination.geo-solutions.it/it</href>
+    </AuthorityURL>
+    <AuthorityURL>
+      <name>fr</name>
+      <href>http://destination.geo-solutions.it/fr</href>
+    </AuthorityURL>
+    <AuthorityURL>
+      <name>de</name>
+      <href>http://destination.geo-solutions.it/de</href>
+    </AuthorityURL>
+  </authorityURLs>
+  <identifiers>
+    <Identifier>
+      <authority>en</authority>
+      <identifier>Industry and Service Employees</identifier>
+    </Identifier>
+    <Identifier>
+      <authority>it</authority>
+      <identifier>Addetti industria e servizi</identifier>
+    </Identifier>
+    <Identifier>
+      <authority>fr</authority>
+      <identifier>employés Industrie et services</identifier>
+    </Identifier>
+    <Identifier>
+      <authority>de</authority>
+      <identifier>Industrie und Dienstleistungen</identifier>
+    </Identifier>
+  </identifiers>
+</layerGroup>
