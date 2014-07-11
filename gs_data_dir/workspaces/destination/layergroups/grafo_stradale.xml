@@ -11,6 +11,9 @@
     <layer>
       <id>LayerInfoImpl-6081ad47:1444e75fb17:36cc</id>
     </layer>
+    <layer>
+      <id>LayerInfoImpl-78a95515:14714e98bc3:-5d93</id>
+    </layer>
   </layers>
   <styles>
     <style>
@@ -18,6 +21,9 @@
     </style>
     <style>
       <id>StyleInfoImpl--7e9de184:13f61c0b107:-4d9d</id>
+    </style>
+    <style>
+      <id>StyleInfoImpl-78a95515:14714e98bc3:-5d97</id>
     </style>
   </styles>
   <bounds>

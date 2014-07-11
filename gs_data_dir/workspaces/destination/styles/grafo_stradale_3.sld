@@ -16,8 +16,7 @@
       <!-- A FeatureTypeStyle for rendering lines -->
       <FeatureTypeStyle>
         <Rule>
-          <MinScaleDenominator>17070</MinScaleDenominator>
-          <MaxScaleDenominator>68500</MaxScaleDenominator>
+          <MinScaleDenominator>68500</MinScaleDenominator>
           <Name>rule1</Name>
           <Title>Grafo Stradale</Title>
           <Abstract>A solid blue line with a 1 pixel width</Abstract>

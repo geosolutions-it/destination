@@ -1,14 +1,14 @@
 <featureType>
-  <id>FeatureTypeInfoImpl--1e42b0ac:143e2ea9419:-1acc</id>
-  <name>gate_geo</name>
-  <nativeName>gate_geo</nativeName>
+  <id>FeatureTypeInfoImpl-78a95515:14714e98bc3:-5d94</id>
+  <name>v_geo_grafo_ln_3</name>
+  <nativeName>v_geo_grafo_ln_3</nativeName>
   <namespace>
     <id>NamespaceInfoImpl--570ae188:124761b8d78:-7ffc</id>
   </namespace>
-  <title>gate_geo</title>
+  <title>v_geo_grafo_ln_3</title>
   <keywords>
     <string>features</string>
-    <string>gate_geo</string>
+    <string>v_geo_grafo_ln_3</string>
   </keywords>
   <nativeCRS class="projected">PROJCS[&quot;WGS 84 / UTM zone 32N&quot;, &#xd;
   GEOGCS[&quot;WGS 84&quot;, &#xd;
@@ -32,17 +32,17 @@
   AUTHORITY[&quot;EPSG&quot;,&quot;32632&quot;]]</nativeCRS>
   <srs>EPSG:32632</srs>
   <nativeBoundingBox>
-    <minx>405470.45</minx>
-    <maxx>737197.52</maxx>
-    <miny>4973796.84</miny>
-    <maxy>5198378.45</maxy>
+    <minx>317643.718518518</minx>
+    <maxx>761707.75</maxx>
+    <miny>4881314.0</miny>
+    <maxy>5216902.50012207</maxy>
     <crs class="projected">EPSG:32632</crs>
   </nativeBoundingBox>
   <latLonBoundingBox>
-    <minx>7.758172132933858</minx>
-    <maxx>12.114065495981869</maxx>
-    <miny>44.87809582607804</miny>
-    <maxy>46.93874302342541</maxy>
+    <minx>6.597724864109119</minx>
+    <maxx>12.445969435320345</maxx>
+    <miny>44.038289999473655</miny>
+    <maxy>47.10473618861847</maxy>
     <crs>GEOGCS[&quot;WGS84(DD)&quot;, &#xd;
   DATUM[&quot;WGS84&quot;, &#xd;
     SPHEROID[&quot;WGS84&quot;, 6378137.0, 298.257223563]], &#xd;
@@ -55,30 +55,8 @@
   <enabled>true</enabled>
   <advertised>true</advertised>
   <metadata>
-    <entry key="cachingEnabled">false</entry>
-    <entry key="JDBC_VIRTUAL_TABLE">
-      <virtualTable>
-        <name>gate_geo</name>
-        <sql>select id_gate,&#xd;
-fk_partner,&#xd;
-fk_server,&#xd;
-descrizione,&#xd;
-collocazione,&#xd;
-geometria,&#xd;
-data_inizio_validita,&#xd;
-data_fine_validita,&#xd;
-concessionaria_sito,&#xd;
-nr_corsie_carreggiata&#xd;
-from siig_gate_geo_gate&#xd;
-where data_cancellazione is null and geometria is not null</sql>
-        <keyColumn>id_gate</keyColumn>
-        <geometry>
-          <name>geometria</name>
-          <type>Point</type>
-          <srid>32632</srid>
-        </geometry>
-      </virtualTable>
-    </entry>
+    <entry key="cacheAgeMax">120</entry>
+    <entry key="cachingEnabled">true</entry>
   </metadata>
   <store class="dataStore">
     <id>DataStoreInfoImpl--3970ff67:13c00cf828a:-7fef</id>

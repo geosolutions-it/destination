@@ -55,7 +55,8 @@
   <enabled>true</enabled>
   <advertised>true</advertised>
   <metadata>
-    <entry key="cachingEnabled">false</entry>
+    <entry key="cacheAgeMax">120</entry>
+    <entry key="cachingEnabled">true</entry>
   </metadata>
   <store class="dataStore">
     <id>DataStoreInfoImpl--3970ff67:13c00cf828a:-7fef</id>
