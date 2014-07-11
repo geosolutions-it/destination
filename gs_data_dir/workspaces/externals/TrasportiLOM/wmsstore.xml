@@ -1,0 +1,18 @@
+<wmsStore>
+  <id>WMSStoreInfoImpl--e78c94c:13cb5732574:-44e6</id>
+  <name>TrasportiLOM</name>
+  <description>TrasportiLOM</description>
+  <type>WMS</type>
+  <enabled>true</enabled>
+  <workspace>
+    <id>WorkspaceInfoImpl-2b4b0732:1471f573b45:75ed</id>
+  </workspace>
+  <metadata>
+    <entry key="useConnectionPooling">true</entry>
+  </metadata>
+  <__default>false</__default>
+  <capabilitiesURL>http://www.gruppoiit.lispa.it/ArcGISM/services/pta/LOM_WMS03_Trasporti/MapServer/WMSServer?request=getCapabilities</capabilitiesURL>
+  <maxConnections>6</maxConnections>
+  <readTimeout>5</readTimeout>
+  <connectTimeout>5</connectTimeout>
+</wmsStore>
