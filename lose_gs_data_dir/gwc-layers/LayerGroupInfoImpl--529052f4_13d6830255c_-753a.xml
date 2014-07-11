@@ -1,0 +1,29 @@
+<GeoServerTileLayer>
+  <id>LayerGroupInfoImpl--529052f4:13d6830255c:-753a</id>
+  <enabled>true</enabled>
+  <name>lose:popolazione_turistica_all</name>
+  <mimeFormats>
+    <string>image/jpeg</string>
+    <string>image/png</string>
+    <string>image/png8</string>
+  </mimeFormats>
+  <gridSubsets>
+    <gridSubset>
+      <gridSetName>EPSG:4326</gridSetName>
+    </gridSubset>
+    <gridSubset>
+      <gridSetName>EPSG:900913</gridSetName>
+      <zoomStart>5</zoomStart>
+      <zoomStop>19</zoomStop>
+      <minCachedLevel>5</minCachedLevel>
+      <maxCachedLevel>19</maxCachedLevel>
+    </gridSubset>
+  </gridSubsets>
+  <metaWidthHeight>
+    <int>3</int>
+    <int>3</int>
+  </metaWidthHeight>
+  <parameterFilters/>
+  <gutter>0</gutter>
+  <autoCacheStyles>false</autoCacheStyles>
+</GeoServerTileLayer>
