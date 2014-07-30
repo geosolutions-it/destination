@@ -37,6 +37,12 @@ public class GateIngestionConfiguration extends Ds2dsConfiguration {
  */
 private Boolean ignorePks;
 
+private Boolean copyFilesAtEnd = false;
+
+private String failPath;
+
+private String successPath;
+
 /**
  * Time format configuration for the ingestion
  */
@@ -74,5 +80,31 @@ public void setTimeFormatConfiguration(
         TimeFormatConfiguration timeFormatConfiguration) {
     this.timeFormatConfiguration = timeFormatConfiguration;
 }
+
+public Boolean getCopyFilesAtEnd() {
+	return copyFilesAtEnd;
+}
+
+public void setCopyFilesAtEnd(Boolean copyFilesAtEnd) {
+	this.copyFilesAtEnd = copyFilesAtEnd;
+}
+
+public String getFailPath() {
+	return failPath;
+}
+
+public void setFailPath(String failPath) {
+	this.failPath = failPath;
+}
+
+public String getSuccessPath() {
+	return successPath;
+}
+
+public void setSuccessPath(String successPath) {
+	this.successPath = successPath;
+}
+
+
 
 }

@@ -138,7 +138,7 @@ public class GateIngestionMemoryTest extends DestinationMemoryTest {
 	                dataStore, file, new TimeFormatConfiguration(null, null, null));
 	
 	        // process execution
-	        ids = gateIngestion.importGates(false);
+	        ids = gateIngestion.importGates(false, false, "", "");
 	
 	        // Check if was inserted correctly
 	        checkData(ids, file);

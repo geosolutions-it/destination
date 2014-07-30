@@ -38,6 +38,7 @@ import java.util.regex.Pattern;
 
 import javax.xml.bind.JAXB;
 
+import org.apache.commons.io.FileUtils;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultTransaction;
@@ -219,9 +220,10 @@ protected boolean parseTypeName(String inputTypeName) {
  * @return list of ids inserted on database
  */
 @SuppressWarnings("unchecked")
-public List<Long> importGates(boolean ignorePks) throws IOException {
-    return (List<Long>) doProcess(ignorePks).get(IDS);
+public List<Long> importGates(boolean ignorePks, boolean copyFileAtEnd, String successPath, String failPath) throws IOException {
+    return (List<Long>) doProcess(ignorePks, copyFileAtEnd, successPath, failPath).get(IDS);
 }
+
 
 /**
  * Imports the gate data from the exported file to database.
@@ -232,7 +234,7 @@ public List<Long> importGates(boolean ignorePks) throws IOException {
  * 
  * @return resume of the operation in a map
  */
-public Map<String, Object> doProcess(boolean ignorePks) throws IOException {
+public Map<String, Object> doProcess(boolean ignorePks, boolean copyFileAtEnd, String successPath, String failPath) throws IOException {
     
     Map<String, Object> result = new HashMap<String, Object>();
     List<Long> ids = new ArrayList<Long>();
@@ -357,6 +359,14 @@ public Map<String, Object> doProcess(boolean ignorePks) throws IOException {
         result.put(PROCESSED_COUNT, processed);
         result.put(TOTAL_COUNT, total);
 
+        if(copyFileAtEnd) {
+        	if(errors > 0) {
+        		copyFile(file, failPath);
+        	} else {
+        		copyFile(file, successPath);
+        	}
+        }
+        
         // close current process phase
         process = closeProcess(process);
     }
@@ -365,6 +375,11 @@ public Map<String, Object> doProcess(boolean ignorePks) throws IOException {
     result.put(IDS, ids);
     
     return result;
+}
+
+private void copyFile(File file, String path) throws IOException {
+	File target = new File(path, file.getName());
+	FileUtils.copyFile(file, target);
 }
 
 private void updateProgress(float progress, String msg) {

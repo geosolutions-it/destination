@@ -630,4 +630,22 @@ public String getDate(Date date, int format) {
     return outputFormats.get(format).format(date);
 }
 
+public Timestamp getPreviousWeekSpan() {
+	Calendar previousWeek = getTodayCalendar();
+    previousWeek.add(Calendar.DAY_OF_MONTH, -7);
+    return new Timestamp(previousWeek.getTime().getTime());
+}
+
+public Timestamp getPreviousMonthSpan() {
+	Calendar previousMonth = getTodayCalendar();
+    previousMonth.add(Calendar.MONTH, -1);
+    return new Timestamp(previousMonth.getTime().getTime());
+}
+
+public Timestamp getPreviousYearSpan() {
+	Calendar previousMonth = getTodayCalendar();
+    previousMonth.add(Calendar.YEAR, -1);
+    return new Timestamp(previousMonth.getTime().getTime());
+}
+
 }

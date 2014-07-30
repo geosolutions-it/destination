@@ -30,6 +30,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -104,13 +105,13 @@ public List<StatisticsBean> getStatistics(StatisticInterval interval)
         start = timeFormat.getTodayStartTime();
         break;
     case LAST_WEEK:
-        start = timeFormat.getWeekStartTime();
+        start = timeFormat.getPreviousWeekSpan();
         break;
     case LAST_MONTH:
-        start = timeFormat.getMonthStartTime();
+        start = timeFormat.getPreviousMonthSpan();
         break;
     case LAST_YEAR:
-        start = timeFormat.getYearStartTime();
+        start = timeFormat.getPreviousYearSpan();
         break;
     default:
         start = timeFormat.getTodayStartTime();
@@ -132,9 +133,9 @@ public List<StatisticsBean> getStatistics() throws IOException {
     // create time stamps
     Timestamp end = timeFormat.getTodayEndTime();
     Timestamp startDay = timeFormat.getTodayStartTime();
-    Timestamp startWeek = timeFormat.getWeekStartTime();
-    Timestamp startMonth = timeFormat.getMonthStartTime();
-    Timestamp startYear = timeFormat.getYearStartTime();
+    Timestamp startWeek = timeFormat.getPreviousWeekSpan();
+    Timestamp startMonth = timeFormat.getPreviousMonthSpan();
+    Timestamp startYear = timeFormat.getPreviousYearSpan();
 
     // obtain data for each interval
     all.addAll(getStatistics(startDay, end, StatisticInterval.LAST_DAY));

@@ -298,7 +298,7 @@ public void doProcess(GateFileHandlingConfiguration cfg,
 	                                metadataHandler, dataStore, inputFile,
 	                                configuration.getTimeFormatConfiguration());
 	                        Map<String, Object> procResult = computation
-	                                .doProcess(cfg.getIgnorePks());
+	                                .doProcess(cfg.getIgnorePks(), false, "", "");
 
 	                        // is correct?
 	                        if (procResult != null

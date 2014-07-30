@@ -166,7 +166,7 @@ protected void doProcess(GateIngestionConfiguration cfg,
                 getInputTypeName(file), listenerForwarder, metadataHandler,
                 dataStore, file, configuration.getTimeFormatConfiguration());
 
-        computation.importGates(cfg.getIgnorePks());
+        computation.importGates(cfg.getIgnorePks(), cfg.getCopyFilesAtEnd(), cfg.getSuccessPath(), cfg.getFailPath());
 
     } catch (Exception ex) {
         // TODO: what shall we do here??
