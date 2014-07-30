@@ -44,11 +44,7 @@
                    </entry>
                    <entry>
                      <string>database</string>
-                     <string>destination</string>
-                   </entry>
-                   <entry>
-                     <string>database</string>
-                     <string>destination</string>
+                     <string>destination_staging</string>
                    </entry>
                    <entry>
                      <string>schema</string>
@@ -66,6 +62,9 @@
             </outputFeature>
             <projectOnMappings>false</projectOnMappings>
             <ignorePks>false</ignorePks>
+            <successPath>J:\Develop\destination\geobatch_config_dir_temp\GATES\Elaborati</successPath>
+            <failPath>J:\Develop\destination\geobatch_config_dir_temp\GATES\Scarti</failPath>
+            <copyFilesAtEnd>true</copyFilesAtEnd>
             <attributeMappings/>
             <!-- Listeners -->
             <listenerId>ConsumerLogger0</listenerId>
