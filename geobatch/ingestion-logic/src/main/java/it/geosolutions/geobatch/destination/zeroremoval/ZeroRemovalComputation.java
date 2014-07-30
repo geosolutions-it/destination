@@ -196,7 +196,7 @@ public class ZeroRemovalComputation extends InputObject {
 
 			// First iteration on NR_INCIDENTI -> NR_INCIDENTI_ELAB
 			LOGGER.debug("Start first iteration");
-			this.iterativeProcess("nr_incidenti", "nr_incidenti_elab", true,
+			errors = this.iterativeProcess("nr_incidenti", "nr_incidenti_elab", true,
 					aggregationLevel, startErrors, errors, trace, process,
 					closePhase);
 			// Check for zero nr_incidenti_elab
@@ -232,7 +232,7 @@ public class ZeroRemovalComputation extends InputObject {
 		return nElabZero;
 	}
 
-        private void iterativeProcess(String inputField, String outputField, Boolean streetAggregation,
+        private int iterativeProcess(String inputField, String outputField, Boolean streetAggregation,
                 int aggregationLevel, int startErrors, int errors, int trace, int process,
                 String closePhase) throws IOException {
             Transaction transaction = new DefaultTransaction("ZeroRemoval");
@@ -318,6 +318,7 @@ public class ZeroRemovalComputation extends InputObject {
                     }
                 }
                 importFinished(aggregationCount, errors - startErrors, "Accident data updated in " + geoName);
+                return errors;
             } catch (Exception e) {
                 LOGGER.error(e.getMessage(), e);
                 transaction.rollback();
@@ -335,6 +336,7 @@ public class ZeroRemovalComputation extends InputObject {
                 }
                 closeInputReader();    
                 transaction.close();
+                
             }
         }
 

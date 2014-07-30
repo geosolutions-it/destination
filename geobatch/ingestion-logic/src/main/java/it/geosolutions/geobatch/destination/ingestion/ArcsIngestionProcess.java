@@ -537,7 +537,7 @@ public class ArcsIngestionProcess extends InputObject {
 		
 		SimpleFeature inputFeature;
 		Geometry geo = null;
-		int lunghezza = 0;
+		double lunghezza = 0;
 		double incidenti = 0;
 		int corsie = 0;
 		int[] tgm = new int[] {0, 0};
@@ -566,7 +566,7 @@ public class ArcsIngestionProcess extends InputObject {
 				Number currentLunghezza = (Number) getMapping(inputFeature,
 						attributeMappings, "lunghezza");
 				if (currentLunghezza != null) {
-					lunghezza += currentLunghezza.intValue();
+					lunghezza += currentLunghezza.doubleValue();
 				}
 				Number currentIncidenti = (Number) getMapping(inputFeature,
 						attributeMappings, "nr_incidenti");
@@ -577,7 +577,7 @@ public class ArcsIngestionProcess extends InputObject {
 						attributeMappings, "nr_corsie");
 				if (currentCorsie != null && currentLunghezza != null) {
 					corsie += currentCorsie.intValue()
-							* currentLunghezza.intValue();
+							* currentLunghezza.doubleValue();
 				}
 				
 				String currentFlgCorsie = (String)getMapping(inputFeature,
@@ -594,9 +594,9 @@ public class ArcsIngestionProcess extends InputObject {
 							"VELOCITA");
 					for (int i = 0; i < tgms.length; i++) {
 						if (currentLunghezza != null) {
-							tgm[i] += tgms[i] * currentLunghezza.intValue();
+							tgm[i] += tgms[i] * currentLunghezza.doubleValue();
 							velocita[i] += velocitas[i]
-									* currentLunghezza.intValue();
+									* currentLunghezza.doubleValue();
 						}
 					}
 					String currentFlgTGM = (String)getMapping(inputFeature,
@@ -626,13 +626,13 @@ public class ArcsIngestionProcess extends InputObject {
 					double[] cffs = extractMultipleValuesDouble(inputFeature,
 							"CFF", cff.length);
 					for (int i = 0; i < cff.length; i++) {
-						cff[i] += cffs[i] * currentLunghezza.intValue();
+						cff[i] += cffs[i] * currentLunghezza.doubleValue();
 					}
 					// padr
 					double[] padrs = extractMultipleValuesDouble(inputFeature,
 							"PADR", padr.length);
 					for (int i = 0; i < padrs.length; i++) {
-						padr[i] += padrs[i] * currentLunghezza.intValue();
+						padr[i] += padrs[i] * currentLunghezza.doubleValue();
 					}
 				}
 				
@@ -646,7 +646,10 @@ public class ArcsIngestionProcess extends InputObject {
 		}
 		if(lunghezza <= 0 && geo != null) {
 		    lunghezza = (int)geo.getLength();
-		}		
+		}
+		if((int)lunghezza <= 0) {
+			lunghezza = 1.0;
+		}
 		if(geo != null) {
 			Transaction rowTransaction = new DefaultTransaction();
 			setTransaction(outputObjects, rowTransaction);			
@@ -654,24 +657,24 @@ public class ArcsIngestionProcess extends InputObject {
 			try {		
 				if(update) {
 					updateAggregateGeoFeature(outputObjects[4], id, idTematico, geo,
-							lunghezza, corsie, incidenti, inputFeature, idOrigin, 
+							(int)lunghezza, corsie, incidenti, inputFeature, idOrigin, 
 							flgCorsieCounter.getMax(), flgIncidentiCounter.getMax());
 				} else {
 					addAggregateGeoFeature(outputObjects[4], id, idTematico, geo,
-							lunghezza, corsie, incidenti, inputFeature, idOrigin, 
+							(int)lunghezza, corsie, incidenti, inputFeature, idOrigin, 
 							flgCorsieCounter.getMax(), flgIncidentiCounter.getMax());						
 					if(!dontComputeVehicle) {
-						addAggregateVehicleFeature(outputObjects[0], id, lunghezza,
+						addAggregateVehicleFeature(outputObjects[0], id, (int)lunghezza,
 								tgm, velocita, flgTgmCounter.getMax(),
 								flgVelocCounter.getMax(), inputFeature);
 					}
 					
 					if(!computeOnlyGeoFeature){
 						addAggregateDissestoFeature(outputObjects[1], id,
-								lunghezza, pterr, inputFeature);
-						addAggregateCFFFeature(outputObjects[2], id, lunghezza, cff,
+								(int)lunghezza, pterr, inputFeature);
+						addAggregateCFFFeature(outputObjects[2], id, (int)lunghezza, cff,
 								inputFeature);
-						addAggregatePADRFeature(outputObjects[3], id, lunghezza,
+						addAggregatePADRFeature(outputObjects[3], id, (int)lunghezza,
 								padr, inputFeature);
 						
 					}
