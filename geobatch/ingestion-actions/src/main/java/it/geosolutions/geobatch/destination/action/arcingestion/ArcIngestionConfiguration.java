@@ -34,6 +34,8 @@ public class ArcIngestionConfiguration extends ActionConfiguration {
     private String closePhase = null;
     private boolean segmentation = false;
     private boolean newProcess = false;
+    private int lastYear = -1;
+    private int years = -1;
 
 	public ArcIngestionConfiguration(String id, String name, String description) {
 		super(id, name, description);
@@ -90,6 +92,26 @@ public class ArcIngestionConfiguration extends ActionConfiguration {
 	 */
 	public void setNewProcess(boolean newProcess) {
 		this.newProcess = newProcess;
+	}
+	
+	
+
+	public int getLastYear() {
+		return lastYear;
+	}
+
+	public void setLastYear(int lastYear) {
+		this.lastYear = lastYear;
+	}
+	
+	
+
+	public int getYears() {
+		return years;
+	}
+
+	public void setYears(int years) {
+		this.years = years;
 	}
 
 	@Override

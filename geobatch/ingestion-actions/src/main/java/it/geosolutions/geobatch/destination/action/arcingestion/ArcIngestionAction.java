@@ -54,7 +54,7 @@ public class ArcIngestionAction extends DestinationBaseAction<ArcIngestionConfig
 			if(cfg.isSegmentation()) {
 				OriginalArcsIngestionProcess arcIngestion = new OriginalArcsIngestionProcess(
 						featureCfg.getTypeName(), listenerForwarder,
-						metadataHandler, dataStore, -1, -1);
+						metadataHandler, dataStore, cfg.getLastYear(), cfg.getYears());
 				arcIngestion.importArcs(null, cfg.isDropInput());
 				
 			} else {
