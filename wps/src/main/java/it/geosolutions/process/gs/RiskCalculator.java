@@ -229,7 +229,7 @@ public class RiskCalculator extends RiskCalculatorBase {
         if (extendedSchema == null) {
             extendedSchema = false;
         }
-        checkProcessingAllowed(dataStore, processing);
+        checkProcessingAllowed(dataStore, storeName, processing);
         if (processing == 3) {
             // simulation
             List<String> pscs = new ArrayList<String>();
@@ -300,10 +300,10 @@ public class RiskCalculator extends RiskCalculatorBase {
      * @param dataStore
      * @throws IOException
      */
-    private void checkProcessingAllowed(JDBCDataStore dataStore, int processing)
+    private void checkProcessingAllowed(JDBCDataStore dataStore, String dataStoreName, int processing)
             throws IOException {
         // access through catalog to let the security jump in
-        FeatureTypeInfo ft = catalog.getResourceByName("destination",
+        FeatureTypeInfo ft = catalog.getResourceByName(dataStoreName,
                 "siig_mtd_d_elaborazione", FeatureTypeInfo.class);
         FeatureSource source = ft.getFeatureSource(null, null);
         FeatureCollection fc = source.getFeatures(ff2.equals(
