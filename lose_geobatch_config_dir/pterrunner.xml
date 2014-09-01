@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
 
-    <id>ds2ds</id>
+    <id>pterrunner</id>
 
-    <name>DS2DS</name>
-    <description>Target ingestion and post processing</description>
+    <name>Pter ingestion</name>
+    <description>Pter ingestion</description>
 
     <autorun>true</autorun>
 
     <EventGeneratorConfiguration>
         <serviceID>fsEventGeneratorService</serviceID>
         <wildCard>*.zip</wildCard>
-        <watchDirectory>ds2ds/in</watchDirectory>
+        <watchDirectory>pterrunner/in</watchDirectory>
         <osType>OS_UNDEFINED</osType>
         <eventType>FILE_ADDED</eventType>
     </EventGeneratorConfiguration>
@@ -46,9 +46,8 @@
                    </entry>
                    <entry>
                      <string>database</string>
-                     <string>lose_staging</string>
+                     <string>lose</string>
                    </entry>
-                   
                    <entry>
                      <string>schema</string>
                      <string>siig_p</string>
@@ -70,7 +69,16 @@
             <listenerId>Cumulator</listenerId>
         </Ds2dsConfiguration>
 
+        <PterIngestionConfiguration>
+            <id>pter_ingestion</id>
+            <name>pter_ingestion</name>
+            <description>Pter Ingestion</description>
 
+            <dropInput>true</dropInput>
+            <!-- Listeners -->
+            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>Cumulator</listenerId>
+        </PterIngestionConfiguration>
         
 
     </EventConsumerConfiguration>

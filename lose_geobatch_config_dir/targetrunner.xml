@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
 
-    <id>ds2ds</id>
+    <id>targetrunner</id>
 
-    <name>DS2DS</name>
+    <name>Target ingestion</name>
     <description>Target ingestion and post processing</description>
 
     <autorun>true</autorun>
@@ -11,7 +11,7 @@
     <EventGeneratorConfiguration>
         <serviceID>fsEventGeneratorService</serviceID>
         <wildCard>*.zip</wildCard>
-        <watchDirectory>ds2ds/in</watchDirectory>
+        <watchDirectory>targetrunner/in</watchDirectory>
         <osType>OS_UNDEFINED</osType>
         <eventType>FILE_ADDED</eventType>
     </EventGeneratorConfiguration>
@@ -71,7 +71,52 @@
         </Ds2dsConfiguration>
 
 
-        
+        <TargetIngestionConfiguration>
+            <id>target_processing</id>
+            <name>Target processing</name>
+            <description>Target postprocessing</description>
+            <dropInput>true</dropInput>
+            <!-- Listeners -->
+            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>Cumulator</listenerId>
+        </TargetIngestionConfiguration>
+		
+		<ScriptingConfiguration>
+			<id>scripting</id>
+			<description>Groovy to generate XML input for task executor action in rasterize process</description>
+			<name>GroovyRasterizeAction</name>
+			
+			<listenerId>ScriptActionLogger0</listenerId>
+			<listenerId>ScriptActionStatus0</listenerId>
+
+            <language>groovy</language>
+
+            <scriptFile>gdalTaskInputXmlCreator.groovy</scriptFile>
+
+			<!--
+		    <properties>
+				 <entry>
+				    <string>baseOutputPath</string>
+				    <string>C:/temp/</string>
+				  </entry>
+			</properties>
+			-->
+            <!-- Listeners -->
+            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>Cumulator</listenerId>
+			
+		</ScriptingConfiguration>
+
+		<RasterizeConfiguration>
+            <id>raster_processing</id>
+            <name>Raster processing</name>
+            <description>Raster postprocessing</description>
+            <closePhase>B</closePhase>
+			<!--<baseOutputPath>C:/temp/</baseOutputPath>-->
+            <!-- Listeners -->
+            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>Cumulator</listenerId>
+        </RasterizeConfiguration>
 
     </EventConsumerConfiguration>
 
