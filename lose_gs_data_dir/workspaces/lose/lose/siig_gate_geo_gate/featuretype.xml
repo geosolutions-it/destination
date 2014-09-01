@@ -6,33 +6,34 @@
     <id>NamespaceInfoImpl--570ae188:124761b8d78:-7ffc</id>
   </namespace>
   <title>siig_gate_geo_gate</title>
-  <nativeCRS class="projected">PROJCS[&quot;WGS 84 / UTM zone 32N&quot;, &#xd;
-  GEOGCS[&quot;WGS 84&quot;, &#xd;
-    DATUM[&quot;World Geodetic System 1984&quot;, &#xd;
-      SPHEROID[&quot;WGS 84&quot;, 6378137.0, 298.257223563, AUTHORITY[&quot;EPSG&quot;,&quot;7030&quot;]], &#xd;
-      AUTHORITY[&quot;EPSG&quot;,&quot;6326&quot;]], &#xd;
+  <nativeCRS class="projected">PROJCS[&quot;Monte Mario / Italy zone 1&quot;, &#xd;
+  GEOGCS[&quot;Monte Mario&quot;, &#xd;
+    DATUM[&quot;Monte Mario&quot;, &#xd;
+      SPHEROID[&quot;International 1924&quot;, 6378388.0, 297.0, AUTHORITY[&quot;EPSG&quot;,&quot;7022&quot;]], &#xd;
+      TOWGS84[-104.1, -49.1, -9.9, 0.971, -2.917, 0.714, -11.68], &#xd;
+      AUTHORITY[&quot;EPSG&quot;,&quot;6265&quot;]], &#xd;
     PRIMEM[&quot;Greenwich&quot;, 0.0, AUTHORITY[&quot;EPSG&quot;,&quot;8901&quot;]], &#xd;
     UNIT[&quot;degree&quot;, 0.017453292519943295], &#xd;
     AXIS[&quot;Geodetic longitude&quot;, EAST], &#xd;
     AXIS[&quot;Geodetic latitude&quot;, NORTH], &#xd;
-    AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]], &#xd;
+    AUTHORITY[&quot;EPSG&quot;,&quot;4265&quot;]], &#xd;
   PROJECTION[&quot;Transverse_Mercator&quot;, AUTHORITY[&quot;EPSG&quot;,&quot;9807&quot;]], &#xd;
   PARAMETER[&quot;central_meridian&quot;, 9.0], &#xd;
   PARAMETER[&quot;latitude_of_origin&quot;, 0.0], &#xd;
   PARAMETER[&quot;scale_factor&quot;, 0.9996], &#xd;
-  PARAMETER[&quot;false_easting&quot;, 500000.0], &#xd;
+  PARAMETER[&quot;false_easting&quot;, 1500000.0], &#xd;
   PARAMETER[&quot;false_northing&quot;, 0.0], &#xd;
   UNIT[&quot;m&quot;, 1.0], &#xd;
   AXIS[&quot;Easting&quot;, EAST], &#xd;
   AXIS[&quot;Northing&quot;, NORTH], &#xd;
-  AUTHORITY[&quot;EPSG&quot;,&quot;32632&quot;]]</nativeCRS>
-  <srs>EPSG:32632</srs>
+  AUTHORITY[&quot;EPSG&quot;,&quot;3003&quot;]]</nativeCRS>
+  <srs>EPSG:3003</srs>
   <nativeBoundingBox>
     <minx>405470.45</minx>
     <maxx>737197.52</maxx>
     <miny>4973796.84</miny>
     <maxy>5198378.45</maxy>
-    <crs class="projected">EPSG:32632</crs>
+    <crs class="projected">EPSG:3003</crs>
   </nativeBoundingBox>
   <latLonBoundingBox>
     <minx>7.758172132933858</minx>

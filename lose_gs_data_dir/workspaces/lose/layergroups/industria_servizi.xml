@@ -25,7 +25,7 @@
     <maxx>445100.0</maxx>
     <miny>4953660.0</miny>
     <maxy>4961564.0</maxy>
-    <crs class="projected">EPSG:32632</crs>
+    <crs class="projected">EPSG:3003</crs>
   </bounds>
   <metadata>
     <entry key="title">industria_servizi</entry>

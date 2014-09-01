@@ -25,7 +25,7 @@
     <maxx>900671.5313320523</maxx>
     <miny>4874090.566204824</miny>
     <maxy>5625667.172375287</maxy>
-    <crs class="projected">EPSG:32632</crs>
+    <crs class="projected">EPSG:3003</crs>
   </bounds>
   <metadata>
     <entry key="title">aree_agricole_all</entry>

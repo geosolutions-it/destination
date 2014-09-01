@@ -13,7 +13,7 @@
               </ogc:Function>
               <ogc:Function name="parameter">
                 <ogc:Literal>store</ogc:Literal>
-                <ogc:Literal>destination</ogc:Literal>
+                <ogc:Literal>lose</ogc:Literal>
               </ogc:Function>
               <ogc:Function name="parameter">
                 <ogc:Literal>precision</ogc:Literal>

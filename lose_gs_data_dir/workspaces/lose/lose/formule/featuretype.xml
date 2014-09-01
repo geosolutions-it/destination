@@ -10,7 +10,7 @@
     <string>formule</string>
     <string>features</string>
   </keywords>
-  <srs>EPSG:32632</srs>
+  <srs>EPSG:3003</srs>
   <nativeBoundingBox>
     <minx>-1.0</minx>
     <maxx>0.0</maxx>

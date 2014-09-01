@@ -25,7 +25,7 @@
     <maxx>445666.25837243785</maxx>
     <miny>4952984.336357996</miny>
     <maxy>4962686.559477547</maxy>
-    <crs class="projected">EPSG:32632</crs>
+    <crs class="projected">EPSG:3003</crs>
   </bounds>
   <metadata>
     <entry key="title">buffer_human</entry>

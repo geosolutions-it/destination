@@ -25,7 +25,7 @@
     <maxx>444331.937650249</maxx>
     <miny>-1.0</miny>
     <maxy>4961887.00008071</maxy>
-    <crs class="projected">EPSG:32632</crs>
+    <crs class="projected">EPSG:3003</crs>
   </bounds>
   <metadata>
     <entry key="title">beni_culturali</entry>

@@ -91,7 +91,7 @@
     <maxx>447988.9844</maxx>
     <miny>4951293.26559946</miny>
     <maxy>4963180.90629946</maxy>
-    <crs class="projected">EPSG:32632</crs>
+    <crs class="projected">EPSG:3003</crs>
   </bounds>
   <metadata>
     <entry key="title">bersagli_all</entry>

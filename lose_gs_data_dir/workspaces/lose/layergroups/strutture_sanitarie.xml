@@ -25,7 +25,7 @@
     <maxx>0.0</maxx>
     <miny>-1.0</miny>
     <maxy>0.0</maxy>
-    <crs class="projected">EPSG:32632</crs>
+    <crs class="projected">EPSG:3003</crs>
   </bounds>
   <metadata>
     <entry key="title">strutture_sanitarie</entry>

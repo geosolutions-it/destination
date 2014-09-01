@@ -37,7 +37,7 @@
     <maxx>762726.755417868</maxx>
     <miny>4879418.296363637</miny>
     <maxy>5219037.90218021</maxy>
-    <crs class="projected">EPSG:32632</crs>
+    <crs class="projected">EPSG:3003</crs>
   </bounds>
   <metadata>
     <entry key="title">popolazione_residente_mosaic</entry>

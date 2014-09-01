@@ -78,7 +78,7 @@
       <translateX>314505.0</translateX>
       <translateY>5219480.813925303</translateY>
     </transform>
-    <crs>EPSG:32632</crs>
+    <crs>EPSG:3003</crs>
   </grid>
   <supportedFormats>
     <string>GIF</string>
@@ -105,10 +105,10 @@
     </coverageDimension>
   </dimensions>
   <requestSRS>
-    <string>EPSG:32632</string>
+    <string>EPSG:3003</string>
   </requestSRS>
   <responseSRS>
-    <string>EPSG:32632</string>
+    <string>EPSG:3003</string>
   </responseSRS>
   <parameters>
     <entry>

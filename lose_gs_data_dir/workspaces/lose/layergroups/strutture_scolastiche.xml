@@ -25,6 +25,6 @@
     <maxx>444347.636836422</maxx>
     <miny>4954100.4982</miny>
     <maxy>4960028.4716</maxy>
-    <crs class="projected">EPSG:32632</crs>
+    <crs class="projected">EPSG:3003</crs>
   </bounds>
 </layerGroup>

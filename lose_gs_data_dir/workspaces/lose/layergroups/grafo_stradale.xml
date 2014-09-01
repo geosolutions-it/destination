@@ -27,11 +27,11 @@
     </style>
   </styles>
   <bounds>
-    <minx>310013.78282365296</minx>
-    <maxx>699271.0148156345</maxx>
-    <miny>4878667.062845654</miny>
-    <maxy>5157308.485221588</maxy>
-    <crs class="projected">EPSG:32632</crs>
+    <minx>1591079.5628589755</minx>
+    <maxx>1640229.90155363</maxx>
+    <miny>4845260.460797358</miny>
+    <maxy>4905220.7288650945</maxy>
+    <crs class="projected">EPSG:3003</crs>
   </bounds>
   <metadata>
     <entry key="title">grafo_stradale</entry>

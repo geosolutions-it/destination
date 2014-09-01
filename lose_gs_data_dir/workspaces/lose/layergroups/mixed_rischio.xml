@@ -31,7 +31,7 @@
     <maxx>517643.0</maxx>
     <miny>4881313.0</miny>
     <maxy>5141313.0</maxy>
-    <crs class="projected">EPSG:32632</crs>
+    <crs class="projected">EPSG:3003</crs>
   </bounds>
   <authorityURLs>
     <AuthorityURL>

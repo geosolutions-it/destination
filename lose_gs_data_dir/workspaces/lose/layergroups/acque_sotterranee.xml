@@ -25,7 +25,7 @@
     <maxx>444042.377027668</maxx>
     <miny>4953811.55737735</miny>
     <maxy>4962018.5044</maxy>
-    <crs class="projected">EPSG:32632</crs>
+    <crs class="projected">EPSG:3003</crs>
   </bounds>
   <metadata>
     <entry key="title">acque_sotterranee</entry>
