@@ -201,7 +201,8 @@ public class RiskCalculator extends RiskCalculatorBase {
             @DescribeParameter(name = "distances", description = "optional list of distances for the simulation processing", min = 0) String distances,
     
             @DescribeParameter(name = "damageArea", description = "optional field containing damage area geometry or an id for the ProcessingRepository storing the same data", min = 0) String damageArea,
-            @DescribeParameter(name = "extendedSchema", description = "optional field that chooses an extended schema for the result (useful for download)", min = 0) Boolean extendedSchema
+            @DescribeParameter(name = "extendedSchema", description = "optional field that chooses an extended schema for the result (useful for download)", min = 0) Boolean extendedSchema,
+            @DescribeParameter(name = "crs", description ="EPSG code of the crs to use for damage calculation", min=0) String crs
     
     ) throws IOException, SQLException {
         // building DataStore connection using Catalog/storeName or connection input
@@ -270,8 +271,11 @@ public class RiskCalculator extends RiskCalculatorBase {
             // damage calculus
             try {
                 Geometry damageAreaGeometry = loadDamageArea(dataStore, damageArea);
+                if(crs == null) {
+                	crs = "32632";
+                }
                 Map<Integer, Double> damageValues = calculateDamageValues(
-                        dataStore, damageAreaGeometry, target);
+                        dataStore, damageAreaGeometry, target, crs);
                 return calculateRisk(features, dataStore, storeName, precision,
                         connectionParams, processing, formula, target, materials,
                         scenarios, entities, severeness, fpfield, 1, false,
@@ -325,7 +329,7 @@ public class RiskCalculator extends RiskCalculatorBase {
      * @throws SQLException
      */
     public static Map<Integer, Double> calculateDamageValues(
-            JDBCDataStore dataStore, Geometry damageArea, int target)
+            JDBCDataStore dataStore, Geometry damageArea, int target, String crs)
             throws IOException, SQLException {
         String wkt = damageArea.toText();
         DefaultTransaction transaction = new DefaultTransaction();
@@ -336,22 +340,22 @@ public class RiskCalculator extends RiskCalculatorBase {
     
             if (FormulaUtils.isSimpleTarget(target)) {
                 if (FormulaUtils.checkTarget(target, FormulaUtils.humanTargetsList)) {
-                    addDamageValuesByField(damageValues, conn, target + "", wkt);
+                    addDamageValuesByField(damageValues, conn, target + "", wkt, crs);
                 } else {
-                    addDamageValuesByArea(damageValues, conn, target + "", wkt);
+                    addDamageValuesByArea(damageValues, conn, target + "", wkt, crs);
                 }
     
             } else if (FormulaUtils.isAllHumanTargets(target)) {
                 addDamageValuesByField(damageValues, conn,
-                        FormulaUtils.humanTargetsList, wkt);
+                        FormulaUtils.humanTargetsList, wkt, crs);
             } else if (FormulaUtils.isAllNotHumanTargets(target)) {
                 addDamageValuesByArea(damageValues, conn,
-                        FormulaUtils.notHumanTargetsList, wkt);
+                        FormulaUtils.notHumanTargetsList, wkt, crs);
             } else {
                 addDamageValuesByField(damageValues, conn,
-                        FormulaUtils.humanTargetsList, wkt);
+                        FormulaUtils.humanTargetsList, wkt, crs);
                 addDamageValuesByArea(damageValues, conn,
-                        FormulaUtils.notHumanTargetsList, wkt);
+                        FormulaUtils.notHumanTargetsList, wkt, crs);
             }
     
             return damageValues;
@@ -372,12 +376,12 @@ public class RiskCalculator extends RiskCalculatorBase {
      * @throws SQLException
      */
     private static void addDamageValuesByArea(Map<Integer, Double> damageValues,
-            Connection conn, String targets, String wkt) throws SQLException {
+            Connection conn, String targets, String wkt, String crs) throws SQLException {
     
         String sql = "select id_bersaglio,ST_Area(ST_Intersection(geometria,ST_GeomFromText('"
                 + wkt
-                + "','32632'))) from v_geo_bersagli_ambientali where st_intersects(geometria,ST_GeomFromText('"
-                + wkt + "','32632')) and id_bersaglio in(" + targets + ")";
+                + "','"+crs+"'))) from v_geo_bersagli_ambientali where st_intersects(geometria,ST_GeomFromText('"
+                + wkt + "','"+crs+"')) and id_bersaglio in(" + targets + ")";
     
         addDamageValue(damageValues, conn, sql);
     }
@@ -426,9 +430,9 @@ public class RiskCalculator extends RiskCalculatorBase {
      * @throws SQLException
      */
     private static void addDamageValuesByField(Map<Integer, Double> damageValues,
-            Connection conn, String targets, String wkt) throws SQLException {
+            Connection conn, String targets, String wkt,String crs) throws SQLException {
         String sql = "select id_bersaglio,umani from v_geo_bersagli_umani where st_intersects(geometria,ST_GeomFromText('"
-                + wkt + "','32632')) and id_bersaglio in(" + targets + ")";
+                + wkt + "','"+crs+"')) and id_bersaglio in(" + targets + ")";
     
         addDamageValue(damageValues, conn, sql);
     }

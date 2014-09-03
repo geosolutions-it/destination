@@ -332,7 +332,8 @@ public class DestinationDownload extends RiskCalculatorBase {
 			@DescribeParameter(name = "distanceNames", description = "optional list of distance names for damage areas", min = 0) String distanceNames,
 			@DescribeParameter(name = "damageArea", description = "optional field containing damage area geometry or an id for the ProcessingRepository storing the same data", min = 0) String damageArea,
 			@DescribeParameter(name = "language", description = "optional field containing language to be used in localized data", min = 0) String language,
-			@DescribeParameter(name = "onlyarcs", description = "optional flag to include only arcs in download", min = 0) Boolean onlyArcs
+			@DescribeParameter(name = "onlyarcs", description = "optional flag to include only arcs in download", min = 0) Boolean onlyArcs,
+            @DescribeParameter(name = "crs", description ="EPSG code of the crs to use for damage calculation", min=0) String crs
 
 		)  {
 		try {
@@ -356,7 +357,9 @@ public class DestinationDownload extends RiskCalculatorBase {
 			if(onlyArcs == null) {
 				onlyArcs = true;
 			}
-			
+			if(crs == null) {
+				crs = "32632";
+			}
 			List<String> finalZipFileNames = new ArrayList<String>();
 			
 			DefaultTransaction transaction = new DefaultTransaction();
@@ -404,7 +407,7 @@ public class DestinationDownload extends RiskCalculatorBase {
 					finalZipFileNames.add(createRiskShapefile(features, storeName, batch, precision,
 							connectionParams, processing, formula, target, materials,
 							scenarios, entities, severeness, fpfield, changedTargets, cff,
-							psc, padr, pis, distances, damageArea));
+							psc, padr, pis, distances, damageArea, crs));
 				} else {
 					// tabular data in CSV format
 					finalZipFileNames.add(createSimpleRiskShapefile(features, storeName, batch, precision,
@@ -425,11 +428,11 @@ public class DestinationDownload extends RiskCalculatorBase {
 							storeName, distances,
 							distanceNames,
 							processing,
-							damageArea));
+							damageArea, crs));
 					
 					// selected targets shapefiles
 					addTargets(features, storeName, connectionParams, target, distances,
-							finalZipFileNames, dataStore, processing, changedTargetsInfo);
+							finalZipFileNames, dataStore, processing, changedTargetsInfo, damageArea);
 				}
 				
 				finalZipFileNames.add(createReportFile(processing, formula, target, materials, scenarios,
@@ -624,7 +627,7 @@ public class DestinationDownload extends RiskCalculatorBase {
 	 */
 	private void addTargets(SimpleFeatureCollection features, String storeName,
 			String connectionParams, int target, String distances,
-			List<String> finalZipFileNames, JDBCDataStore dataStore, int processing, String changedTargets) throws IOException,
+			List<String> finalZipFileNames, JDBCDataStore dataStore, int processing, String changedTargets, String damageArea) throws IOException,
 			FileNotFoundException, com.vividsolutions.jts.io.ParseException, SQLException, ParseException {
 		
 		final Map<String, TargetInfo> simulationTargets = new HashMap<String, TargetInfo>();
@@ -644,7 +647,12 @@ public class DestinationDownload extends RiskCalculatorBase {
 			targetList = target +"";
 		}
 		
-		Geometry buffer = getMaxDistanceBuffer(features, distances);
+		Geometry buffer = null;
+		if(processing == 4) {
+			buffer = wktReader.read(damageArea);
+		} else {
+			buffer = getMaxDistanceBuffer(features, distances);
+		}
 		
 		
 		for(final String targetId : targetList.split(",")) {
@@ -869,7 +877,7 @@ public class DestinationDownload extends RiskCalculatorBase {
 			String materials, String scenarios, String entities,
 			String severeness, String fpfield, String changedTargets,
 			String cff, String psc, String padr, String pis, String distances,
-			String damageArea) throws IOException,
+			String damageArea, String crs) throws IOException,
 			SQLException, FileNotFoundException {
 		
 		String riskShapeFileName = createUniqueFileName() + ".zip";
@@ -877,7 +885,7 @@ public class DestinationDownload extends RiskCalculatorBase {
 				storeName, batch, precision, connectionParams, processing,
 				formula, target, materials, scenarios, entities, severeness,
 				fpfield, changedTargets, cff, psc, padr, pis, distances,
-				damageArea, true);			
+				damageArea, true, crs);			
 		
 		return writeToShapeFile(riskShapeFileName, fc);
 	}
@@ -1005,7 +1013,7 @@ public class DestinationDownload extends RiskCalculatorBase {
 			String storeName, String distances,
 			String distanceNames,
 			int processing,
-			String damageArea) throws IOException,
+			String damageArea, String crs) throws IOException,
 			SQLException, FileNotFoundException, SchemaException {
 		
 		String damageAreaShapeFileName = createUniqueFileName() + ".zip";
@@ -1014,7 +1022,7 @@ public class DestinationDownload extends RiskCalculatorBase {
 			SimpleFeatureType type = DataUtilities.createType("damagearea", 
 					"id:int," +
 					"descrizione:String," +							
-					"geometria:Polygon:srid=32632");
+					"geometria:Polygon:srid="+crs);
 			SimpleFeature feature = DataUtilities.createFeature(type, "1=1|Area di danno|"+damageArea );
 			fc = DataUtilities.collection(feature);
 		} else {
