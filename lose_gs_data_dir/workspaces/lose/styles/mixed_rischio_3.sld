@@ -120,6 +120,13 @@
                   <ogc:Literal></ogc:Literal>
                 </ogc:Function>
               </ogc:Function>
+			  <ogc:Function name="parameter">
+                <ogc:Literal>crs</ogc:Literal>
+                <ogc:Function name="env">
+                  <ogc:Literal>crs</ogc:Literal>
+                  <ogc:Literal>3003</ogc:Literal>
+                </ogc:Function>
+              </ogc:Function>
             </ogc:Function>
           </Transformation>
    <Rule>
