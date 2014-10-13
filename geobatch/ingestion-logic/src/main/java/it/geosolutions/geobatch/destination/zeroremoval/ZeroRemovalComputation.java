@@ -205,7 +205,7 @@ public class ZeroRemovalComputation extends InputObject {
 			if (this.existsZeroInElab(aggregationLevel, "nr_incidenti_elab")) {
 				LOGGER.debug("Start second iteration");
 				this.iterativeProcess("nr_incidenti_elab", "nr_incidenti_elab",
-						false, aggregationLevel, startErrors, errors, trace,
+						false, aggregationLevel, errors, errors, trace,
 						process, closePhase);
 			}
 
@@ -290,7 +290,6 @@ public class ZeroRemovalComputation extends InputObject {
                             }
         
                             // Update features
-                            int count = 0;
                             FeatureStore<SimpleFeatureType, SimpleFeature> writer = geoObject.getWriter();
                             writer.setTransaction(transaction);
                             for (SimpleFeature inputFeature : decIncManager.getElabIncident().keySet()) {
@@ -298,11 +297,7 @@ public class ZeroRemovalComputation extends InputObject {
                                 // decIncManager.getElabIncident().get(inputFeature));
                                 // LOGGER.debug("Update feature N. incidenti elaborati = " + decIncManager.getElabIncident().get(inputFeature));
                                 updateIncidentalita(outputField, writer, geoObject, inputFeature,
-                                        decIncManager.getElabIncident().get(inputFeature));
-                                if (count % 50 == 0) {
-                                    transaction.commit();
-                                }
-                                count++;
+                                        decIncManager.getElabIncident().get(inputFeature));                                
                             }
                             transaction.commit();
                         }
@@ -312,12 +307,16 @@ public class ZeroRemovalComputation extends InputObject {
                         transaction.rollback();
                         errors++;
                         if (metadataHandler != null) {
-                            metadataHandler.logError(trace, errors, "Error importing data",
-                                    getError(e), 0);
+                            metadataHandler.logError(trace, errors, "Error removing zeros in level " + aggregationLevel,
+                                    getError(e), aggregationValue.intValue());
                         }
                     }
                 }
-                importFinished(aggregationCount, errors - startErrors, "Accident data updated in " + geoName);
+                if(streetAggregation) {
+                	importFinished(aggregationCount, total, errors - startErrors, "Accident data updated in " + geoName);
+                } else {
+                	importFinished(aggregationCount, total, errors - startErrors, "Global Accident data updated in " + geoName);
+                }
                 return errors;
             } catch (Exception e) {
                 LOGGER.error(e.getMessage(), e);

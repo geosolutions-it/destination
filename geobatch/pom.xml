@@ -60,6 +60,7 @@
         <jai_imageio.version>1.1</jai_imageio.version>
         <imageio-ext.version>1.1.7</imageio-ext.version>
         <imageio-ext.group>it.geosolutions.imageio-ext</imageio-ext.group>
+		<jaiext.version>1.0-SNAPSHOT</jaiext.version>
 <!--
         <allow.test.skip>true</allow.test.skip>
         <allow.test.failure.ignore>false</allow.test.failure.ignore>
@@ -419,7 +420,12 @@
                 <artifactId>jai_imageio</artifactId>
                 <version>${jai_imageio.version}</version>
             </dependency>
-
+			<!-- JAI - ext -->
+			<dependency>
+			  <groupId>it.geosolutions.jaiext.scheduler</groupId>
+			  <artifactId>jt-scheduler</artifactId>
+			  <version>${jaiext.version}</version>
+			</dependency>
             <!-- imageio-ext -->
             <dependency>
                 <groupId>${imageio-ext.group}</groupId>
