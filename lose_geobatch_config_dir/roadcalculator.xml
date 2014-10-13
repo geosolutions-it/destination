@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+
+    <id>roadcalculator</id>
+
+    <name>Arc ingestion (from unsegmented road graph)</name>
+    <description>Arc ingestion and post processing</description>
+
+    <autorun>true</autorun>
+
+    <EventGeneratorConfiguration>
+        <serviceID>fsEventGeneratorService</serviceID>
+        <wildCard>*.xml</wildCard>
+        <watchDirectory>roadcalculator/in</watchDirectory>
+        <osType>OS_UNDEFINED</osType>
+        <eventType>FILE_ADDED</eventType>
+    </EventGeneratorConfiguration>
+
+    <EventConsumerConfiguration>
+
+        <listenerId>ConsumerLogger0</listenerId>
+        <listenerId>Cumulator</listenerId>
+<!--
+        <ZeroRemovalConfiguration>
+            <id>zeroremoval_1</id>
+            <name>Zero removal level 1</name>
+            <description>Zeroes removal aggregation level 1</description>
+            <aggregationLevel>1</aggregationLevel>
+            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>Cumulator</listenerId>
+        </ZeroRemovalConfiguration>
+
+        <ZeroRemovalConfiguration>
+            <id>zeroremoval_2</id>
+            <name>Zero removal level 2</name>
+            <description>Zeroes removal aggregation level 2</description>
+            <aggregationLevel>2</aggregationLevel>
+            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>Cumulator</listenerId>
+        </ZeroRemovalConfiguration>
+
+        <ZeroRemovalConfiguration>
+            <id>zeroremoval_3</id>
+            <name>Zero removal level 3</name>
+            <description>Zeroes removal aggregation level 3</description>
+            <aggregationLevel>3</aggregationLevel>
+            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>Cumulator</listenerId>
+        </ZeroRemovalConfiguration>
+-->
+        <VulnerabilityConfiguration>
+            <id>vulnerability_1</id>
+            <name>Vulnerability level 1</name>
+            <description>Vulnerability computation, aggregation level 1</description>
+            <aggregationLevel>1</aggregationLevel>
+            <writeMode>PURGE_INSERT</writeMode>
+            <!-- Listeners -->
+            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>Cumulator</listenerId>
+        </VulnerabilityConfiguration>
+
+        <VulnerabilityConfiguration>
+            <id>vulnerability_2</id>
+            <name>Vulnerability level 2</name>
+            <description>Vulnerability computation, aggregation level 2</description>
+            <aggregationLevel>2</aggregationLevel>
+            <writeMode>PURGE_INSERT</writeMode>
+            <!-- Listeners -->
+            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>Cumulator</listenerId>
+        </VulnerabilityConfiguration>
+
+        <VulnerabilityConfiguration>
+            <id>vulnerability_3</id>
+            <name>Vulnerability level 3</name>
+            <description>Vulnerability computation, aggregation level 3</description>
+<!--            <failIgnored>false</failIgnored>-->
+            <aggregationLevel>3</aggregationLevel>
+            <writeMode>PURGE_INSERT</writeMode>
+            <!--<closePhase>B</closePhase>-->
+            <!-- Listeners -->
+            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>Cumulator</listenerId>
+        </VulnerabilityConfiguration>
+
+        <StreetUserConfiguration>
+            <id>streetuser_1</id>
+            <name>Street users computation level 1</name>
+            <description>Street users computation level 1</description>
+            <aggregationLevel>1</aggregationLevel>
+            <!-- Listeners -->
+            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>Cumulator</listenerId>
+        </StreetUserConfiguration>
+        
+        <StreetUserConfiguration>
+            <id>streetuser_2</id>
+            <name>Street users computation level 2</name>
+            <description>Street users computation level 2</description>
+            <aggregationLevel>2</aggregationLevel>
+            <!-- Listeners -->
+            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>Cumulator</listenerId>
+        </StreetUserConfiguration>
+
+        <StreetUserConfiguration>
+            <id>streetuser_3</id>
+            <name>Street users computation level 3</name>
+            <description>Street users computation level 3</description>
+            <aggregationLevel>3</aggregationLevel>
+            <!-- Listeners -->
+            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>Cumulator</listenerId>
+        </StreetUserConfiguration>
+        
+        <RiskConfiguration>
+            <id>risk_1</id>
+            <name>Risk level 1</name>
+            <description>Risk computation aggregation level 1</description>
+
+            <precision>3</precision>
+            <aggregationLevel>1</aggregationLevel>
+            <processing>1</processing>
+            <formula>26</formula>
+            <target>100</target>
+            <materials>1,2,3,4,5,6,7,8,9,10,11,12</materials>
+            <scenarios>1,2,3,4,5,6,7,8,9,10,11,12,13,14</scenarios>
+            <entities>0,1</entities>
+            <severeness>1,2,3,4,5</severeness>
+            <fpfield>fp_scen_centrale</fpfield>
+            <writeMode>PURGE_INSERT</writeMode>
+            <!-- Listeners -->
+            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>Cumulator</listenerId>
+        </RiskConfiguration>
+
+        <RiskConfiguration>
+            <id>risk_2</id>
+            <name>Risk level 2</name>
+            <description>Risk computation aggregation level 2</description>
+
+            <precision>3</precision>
+            <aggregationLevel>2</aggregationLevel>
+            <processing>1</processing>
+            <formula>26</formula>
+            <target>100</target>
+            <materials>1,2,3,4,5,6,7,8,9,10,11,12</materials>
+            <scenarios>1,2,3,4,5,6,7,8,9,10,11,12,13,14</scenarios>
+            <entities>0,1</entities>
+            <severeness>1,2,3,4,5</severeness>
+            <fpfield>fp_scen_centrale</fpfield>
+            <writeMode>PURGE_INSERT</writeMode>
+            <!-- Listeners -->
+            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>Cumulator</listenerId>
+        </RiskConfiguration>
+
+        <RiskConfiguration>
+            <id>risk_3</id>
+            <name>Risk level 3</name>
+            <description>Risk computation aggregation level 3</description>
+
+            <precision>3</precision>
+            <aggregationLevel>3</aggregationLevel>
+            <processing>1</processing>
+            <formula>29</formula>
+            <target>100</target>
+            <materials>1,2,3,4,5,6,7,8,9,10,11,12</materials>
+            <scenarios>1,2,3,4,5,6,7,8,9,10,11,12,13,14</scenarios>
+            <entities>0,1</entities>
+            <severeness>1,2,3,4,5</severeness>
+            <fpfield>fp_scen_centrale</fpfield>
+            <writeMode>PURGE_INSERT</writeMode>
+            <closePhase>B</closePhase>
+            <dropInput>true</dropInput>
+            <!-- Listeners -->
+            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>Cumulator</listenerId>
+        </RiskConfiguration>
+        
+        <ChangeValueConfiguration>
+			<id>changevalue</id>
+			<description>ChangeValue action</description>
+			<name>ChangeValue</name>
+			<filter>name='valid'</filter>
+			<attribute>attribute_text</attribute>
+			<value>false</value>
+			<outputFeature>
+				<typeName>gs_attribute</typeName>
+				<dataStore>					
+					<entry>
+					  <string>dbtype</string>
+					  <string>postgis</string>
+					</entry>
+					<entry>
+					  <string>host</string>
+					  <string>127.0.0.1</string>
+					</entry>
+					<entry>
+					  <string>port</string>
+					  <string>5432</string>
+					</entry>
+					<entry>
+					  <string>database</string>
+					  <string>geostore</string>
+					</entry>
+					<entry>
+					  <string>user</string>
+					  <string>geostore</string>
+					</entry>
+					<entry>
+					  <string>passwd</string>
+					  <string>geostore</string>
+					</entry>
+					<entry>
+					  <string>schema</string>
+					  <string>geostore</string>
+					</entry>
+					<entry>
+					  <string>Expose primary keys</string>
+					  <boolean>true</boolean>
+					</entry>
+				</dataStore>				
+			</outputFeature>
+			<listenerConfigurations/>
+		</ChangeValueConfiguration>
+
+    </EventConsumerConfiguration>
+
+    
+
+    <ListenerConfigurations>
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ConsumerLogger0</id>
+            <loggerName>it.geosolutions.ConsLogger</loggerName>
+            <appendToListenerForwarder>true</appendToListenerForwarder>
+        </LoggingProgressListener>
+        <CumulatingProgressListener>
+            <serviceID>cumulatingListenerService</serviceID>
+            <id>Cumulator</id>
+            <appendToListenerForwarder>true</appendToListenerForwarder>
+        </CumulatingProgressListener>
+    </ListenerConfigurations>
+</FlowConfiguration>
