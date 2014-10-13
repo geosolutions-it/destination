@@ -59,7 +59,7 @@
     </developers>
 
     <properties>
-        <gs.version>2.2-SNAPSHOT</gs.version>
+        <gs.version>2.2-ENTERPRISE-SNAPSHOT-DESTINATION-20140328</gs.version>
     </properties>
   <!-- =========================================================== -->
   <!--     Dependency Mangement                                    -->
@@ -148,7 +148,7 @@
     <repository>
       <id>opengeo</id>
       <name>OpenGeo Maven Repository</name>
-      <url>http://repo.opengeo.org</url>
+      <url>http://repo.boundlessgeo.com</url>
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
