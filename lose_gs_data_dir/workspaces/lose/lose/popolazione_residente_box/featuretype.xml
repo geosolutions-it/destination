@@ -63,7 +63,7 @@
         <sql>SELECT v_geo_popolazione_residente_pl.*&#xd;
 FROM&#xd;
    v_geo_popolazione_residente_pl&#xd;
-    where v_geo_popolazione_residente_pl.geometria &amp;&amp; st_makeenvelope(%bounds%, 3003)</sql>
+    where st_intersects(geometria,st_makeenvelope(%bounds%, 3003))</sql>
         <keyColumn>fk_bersaglio_umano_pl</keyColumn>
         <geometry>
           <name>geometria</name>

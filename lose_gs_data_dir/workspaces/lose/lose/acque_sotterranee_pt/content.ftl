@@ -1,5 +1,5 @@
 <div id="main" class="links">
-    <a href="http://destinationpa.csi.it/siig/" target="_blank"><img src="http://destinationpa.csi.it/siig/theme/app/img/BannerDestination_ftl.jpg" width="230" height="83" Hspace="10" Vspace="5"/></a>
+    <a href="http://lose.geo-solutions.it/lose/" target="_blank"><img src="http://lose.geo-solutions.it/lose/theme/app/img/BannerLose_ftl.jpg" width="230" height="83" Hspace="10" Vspace="5"/></a>
 </div>
 
 
