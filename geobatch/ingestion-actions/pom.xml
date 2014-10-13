@@ -102,6 +102,11 @@
             <artifactId>jsch</artifactId>
             <version>0.1.50</version>
         </dependency>
+		
+		<dependency>
+		  <groupId>it.geosolutions.jaiext.scheduler</groupId>
+		  <artifactId>jt-scheduler</artifactId>
+		</dependency>
 
         <!--dependency>
             <groupId>org.slf4j</groupId>
