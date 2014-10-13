@@ -353,6 +353,25 @@ public class BufferUtils {
     }
     
     /**
+     * Creates a buffer by iterations of "step" distances.
+     * It grows geometry by step distance, until a distance buffer is reached.
+     * This optimize buffer creation speed.
+     * 
+     * @param geometry geometry to be buffered
+     * @param distance final buffer size
+     * @param step iteration size (50 seems a good choice)
+     * @return
+     */
+    public static Geometry iterativeBuffer(Geometry geometry, Double distance, int step, int quadrantSegment) {
+        while(distance > 0) {
+            geometry = geometry.buffer(Math.min(distance, step), quadrantSegment);
+            distance = distance - step;
+        }
+        
+        return geometry;
+    }
+    
+    /**
      * Creates a set of buffers, aggregating the input features geometries and
      * generating a buffer for any given distance value.
      * 
