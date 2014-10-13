@@ -735,7 +735,7 @@ public abstract class InputObject {
          * @param total
          * @param loopCounter
          * @param message
-         */
+        
         protected void importFinishedModified(int total,int loopCounter, int errors, String message) {          
         listenerForwarder.setProgress((float)total);
         listenerForwarder.setTask(message);
@@ -745,7 +745,7 @@ public abstract class InputObject {
                                 LOGGER.info("Skipped: " + errors);
                         }
                 }               
-        }
+        } */
 	
 	/**
 	 * 

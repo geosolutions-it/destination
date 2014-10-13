@@ -27,6 +27,7 @@ import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -148,7 +149,11 @@ public class OriginalArcsIngestionProcess extends InputObject {
 	private int getMaxIncidentalitaYear() throws IOException {
 		Function max = filterFactory.function("Collection_Max", filterFactory.property("anno"));			
 		
-		return ((Number)max.evaluate( dataStore.getFeatureSource(INCIDENTALITA_FEATURE).getFeatures())).intValue();		
+		Number maxValue = (Number)max.evaluate( dataStore.getFeatureSource(INCIDENTALITA_FEATURE).getFeatures());
+		if(maxValue != null) {
+			return maxValue.intValue();
+		}
+		return Calendar.getInstance().get(Calendar.YEAR);
 	}
 
 	@Override
