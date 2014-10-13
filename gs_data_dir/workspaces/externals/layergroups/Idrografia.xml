@@ -8,21 +8,7 @@
     <layer>
       <id>LayerInfoImpl--e78c94c:13cb5732574:-3908</id>
     </layer>
-    <layer>
-      <id>LayerInfoImpl--e78c94c:13cb5732574:-3905</id>
-    </layer>
-    <layer>
-      <id>LayerInfoImpl--e78c94c:13cb5732574:-3903</id>
-    </layer>
-    <layer>
-      <id>LayerInfoImpl--e78c94c:13cb5732574:-3901</id>
-    </layer>
-    <layer>
-      <id>LayerInfoImpl--e78c94c:13cb5732574:-38ff</id>
-    </layer>
-    <layer>
-      <id>LayerInfoImpl--e78c94c:13cb5732574:-38fd</id>
-    </layer>
+   
     <layer>
       <id>LayerInfoImpl--e78c94c:13cb5732574:-38fa</id>
     </layer>
@@ -44,12 +30,12 @@
     <layer>
       <id>LayerInfoImpl--e78c94c:13cb5732574:-38ed</id>
     </layer>
+   <layer>
+      <id>LayerInfoImpl-246f3ffa:148e626c714:-7fff</id>
+    </layer>
   </layers>
   <styles>
-    <style/>
-    <style/>
-    <style/>
-    <style/>
+    
     <style/>
     <style/>
     <style/>
@@ -62,9 +48,9 @@
   </styles>
   <bounds>
     <minx>313327.0</minx>
-    <maxx>691715.2133</maxx>
+    <maxx>800000</maxx>
     <miny>4879680.0</miny>
-    <maxy>5165390.7499</maxy>
+    <maxy>6000000</maxy>
     <crs class="projected">EPSG:32632</crs>
   </bounds>
   <metadata>

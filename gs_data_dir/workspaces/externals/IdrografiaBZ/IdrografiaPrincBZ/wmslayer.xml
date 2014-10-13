@@ -1,16 +1,22 @@
 <wmsLayer>
-  <id>WMSLayerInfoImpl-6e8402e1:1415400ecea:-7fff</id>
-  <name>TessutoUrbanizzatoBZ</name>
-  <nativeName>PAB_WMS02_TessutoUrbanizzato:Localita</nativeName>
+  <id>WMSLayerInfoImpl-246f3ffa:148e626c714:-8000</id>
+  <name>IdrografiaPrincBZ</name>
+  <nativeName>EL_IDR_TRA_PRINCIPALE</nativeName>
   <namespace>
     <id>NamespaceInfoImpl-2b4b0732:1471f573b45:75ee</id>
   </namespace>
-  <title>TessutoUrbanizzatoBZ</title>
-  <description></description>
+  <title>Elemento idrico principale</title>
+  <description>Elemento idrico principale.&#xd;
+Rappresenta la mezzeria del corso d&apos;acqua.&#xd;
+NOTE: In un contesto solo bidimensionale il tipo spaziale di questo attributo è CmpL2D e corrisponde alla sua proiezione planare</description>
+  <abstract>Elemento idrico principale.&#xd;
+Rappresenta la mezzeria del corso d&apos;acqua.&#xd;
+NOTE: In un contesto solo bidimensionale il tipo spaziale di questo attributo è CmpL2D e corrisponde alla sua proiezione planare</abstract>
   <keywords>
-    <string>loc_nm_pos</string>
+    <string>EL_IDR_TRA</string>
     <string>features</string>
-    <string>Località</string>
+    <string>Elemento idrico principale</string>
+    <string>PTA</string>
   </keywords>
   <nativeCRS>GEOGCS[&quot;WGS 84&quot;, &#xd;
   DATUM[&quot;World Geodetic System 1984&quot;, &#xd;
@@ -23,17 +29,17 @@
   AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]]</nativeCRS>
   <srs>EPSG:4326</srs>
   <nativeBoundingBox>
-    <minx>10.44772561979295</minx>
-    <maxx>12.392987029418292</maxx>
-    <miny>46.20895302100344</miny>
-    <maxy>47.08546244565531</maxy>
+    <minx>10.360756617521957</minx>
+    <maxx>12.51884928980671</maxx>
+    <miny>45.55811464528274</miny>
+    <maxy>47.71620731756749</maxy>
     <crs>EPSG:4326</crs>
   </nativeBoundingBox>
   <latLonBoundingBox>
-    <minx>10.44772561979295</minx>
-    <maxx>12.392987029418292</maxx>
-    <miny>46.20895302100344</miny>
-    <maxy>47.08546244565531</maxy>
+    <minx>10.360756617521957</minx>
+    <maxx>12.51884928980671</maxx>
+    <miny>45.55811464528274</miny>
+    <maxy>47.71620731756749</maxy>
     <crs>GEOGCS[&quot;WGS84(DD)&quot;, &#xd;
   DATUM[&quot;WGS84&quot;, &#xd;
     SPHEROID[&quot;WGS84&quot;, 6378137.0, 298.257223563]], &#xd;
@@ -44,10 +50,7 @@
   </latLonBoundingBox>
   <projectionPolicy>FORCE_DECLARED</projectionPolicy>
   <enabled>true</enabled>
-  <metadata>
-    <entry key="cachingEnabled">false</entry>
-  </metadata>
   <store class="wmsStore">
-    <id>WMSStoreInfoImpl--e78c94c:13cb5732574:-502a</id>
+    <id>WMSStoreInfoImpl-5c8290fe:148e618c1fb:-33d9</id>
   </store>
 </wmsLayer>

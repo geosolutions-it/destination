@@ -13,6 +13,6 @@
   <__default>false</__default>
   <capabilitiesURL>http://www.gruppoiit.lispa.it/ArcGISM/services/pta/LOM_WMS02_TessutoUrbanizzato/MapServer/WMSServer?request=getCapabilities</capabilitiesURL>
   <maxConnections>6</maxConnections>
-  <readTimeout>5</readTimeout>
+  <readTimeout>10</readTimeout>
   <connectTimeout>5</connectTimeout>
 </wmsStore>

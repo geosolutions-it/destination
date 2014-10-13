@@ -1,7 +1,6 @@
 <wmsStore>
-  <id>WMSStoreInfoImpl--3508b0d7:13caa127a3e:-8000</id>
-  <name>LimitiAmministrativiTIC</name>
-  <description>LimitiAmministrativiTIC</description>
+  <id>WMSStoreInfoImpl-5c8290fe:148e618c1fb:-33d9</id>
+  <name>IdrografiaBZ</name>
   <type>WMS</type>
   <enabled>true</enabled>
   <workspace>
@@ -11,7 +10,7 @@
     <entry key="useConnectionPooling">true</entry>
   </metadata>
   <__default>false</__default>
-  <capabilitiesURL>http://pta.dti.supsi.ch:8080/geoserver/TI_AmbitiAmministrativi/wms?service=WMS&amp;request=GetCapabilities</capabilitiesURL>
+  <capabilitiesURL>http://sdi.provincia.bz.it/geoserver/PAB_WMS04_Idrografia/wms?service=WMS&amp;version=1.3.0&amp;request=GetCapabilities</capabilitiesURL>
   <maxConnections>6</maxConnections>
   <readTimeout>10</readTimeout>
   <connectTimeout>5</connectTimeout>

@@ -5,12 +5,13 @@
     <id>WorkspaceInfoImpl-2b4b0732:1471f573b45:75ed</id>
   </workspace>
   <layers>
-    <layer>
-      <id>LayerInfoImpl--e78c94c:13cb5732574:-5031</id>
+	<layer>
+	  <id>LayerInfoImpl--e78c94c:13cb5732574:-5031</id>
+	</layer>
+	<layer>
+      <id>LayerInfoImpl-6e8402e1:1415400ecea:-7ffe</id>
     </layer>
-    <layer>
-      <id>LayerInfoImpl--e78c94c:13cb5732574:-502e</id>
-    </layer>
+
     <layer>
       <id>LayerInfoImpl--e78c94c:13cb5732574:-502b</id>
     </layer>
@@ -22,9 +23,9 @@
   </styles>
   <bounds>
     <minx>313327.0</minx>
-    <maxx>4988085.929428586</maxx>
-    <miny>1443410.9559716904</miny>
-    <maxy>5164155.8695</maxy>
+    <maxx>800000</maxx>
+    <miny>4000000</miny>
+    <maxy>6000000</maxy>
     <crs class="projected">EPSG:32632</crs>
   </bounds>
   <metadata>
