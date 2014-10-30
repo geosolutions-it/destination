@@ -61,7 +61,7 @@
         <sql>SELECT v_geo_zone_urbanizzate_pl.*&#xd;
 FROM&#xd;
    v_geo_zone_urbanizzate_pl&#xd;
-    where geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)</sql>
+    where st_intersects(geometria,st_makeenvelope(%bounds%, 32632))</sql>
         <keyColumn>fk_bers_non_umano_pl</keyColumn>
         <geometry>
           <name>geometria</name>
