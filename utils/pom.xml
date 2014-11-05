@@ -56,8 +56,8 @@
     </developers>
 
     <properties>
-        <gs.version>2.2-SNAPSHOT</gs.version>
-        <geotools.version>8-SNAPSHOT</geotools.version>
+        <gs.version>2.2-ENTERPRISE-SNAPSHOT-DESTINATION-20140328</gs.version>
+        <geotools.version>8-ENTERPRISE-SNAPSHOT-DESTINATION-20140328</geotools.version>
         <junit.version>4.10</junit.version>
     </properties>
     
