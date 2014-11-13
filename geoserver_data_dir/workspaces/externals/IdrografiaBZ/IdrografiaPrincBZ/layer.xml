@@ -1,0 +1,16 @@
+<layer>
+  <name>IdrografiaPrincBZ</name>
+  <id>LayerInfoImpl-246f3ffa:148e626c714:-7fff</id>
+  <type>WMS</type>
+  <defaultStyle>
+    <id>StyleInfoImpl-4d1a2940:14700cd9b7b:-7ffd</id>
+  </defaultStyle>
+  <resource class="wmsLayer">
+    <id>WMSLayerInfoImpl-246f3ffa:148e626c714:-8000</id>
+  </resource>
+  <enabled>true</enabled>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+</layer>

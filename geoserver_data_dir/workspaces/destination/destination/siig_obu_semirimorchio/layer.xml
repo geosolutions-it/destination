@@ -1,0 +1,13 @@
+<layer>
+  <name>siig_obu_semirimorchio</name>
+  <id>LayerInfoImpl--54e01f0f:143e87fe91c:bc3</id>
+  <type>VECTOR</type>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl--54e01f0f:143e87fe91c:bc2</id>
+  </resource>
+  <enabled>true</enabled>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+</layer>
