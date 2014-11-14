@@ -3,8 +3,8 @@
 
     <id>targetrunner</id>
 
-    <name>Target ingestion</name>
-    <description>Target ingestion and post processing</description>
+    <name>Ingestione Bersagli</name>
+    <description>Ingestione e postprocessing dei bersagli</description>
 
     <autorun>true</autorun>
 
@@ -23,13 +23,15 @@
 
         <Ds2dsConfiguration>
             <id>import_shape</id>
-            <name>SHP ingestion</name>
+            <name>Importazione Shapefile su DB</name>
             <description>Ingesting shapefile into the DB</description>
 
             <listenerConfigurations/>
             <failIgnored>false</failIgnored>
             <purgeData>true</purgeData>
-
+			<skippedTypes>
+				<string>xml</string>
+			</skippedTypes>
             <outputFeature>
                 <dataStore>
                    <entry>
@@ -46,7 +48,7 @@
                    </entry>
                    <entry>
                      <string>database</string>
-                     <string>lose_staging</string>
+                     <string>lose_ingestion</string>
                    </entry>
                    
                    <entry>
@@ -66,29 +68,28 @@
             <projectOnMappings>false</projectOnMappings>
             <attributeMappings/>
             <!-- Listeners -->
-            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>ConsumerLogger1</listenerId>
             <listenerId>Cumulator</listenerId>
         </Ds2dsConfiguration>
 
 
         <TargetIngestionConfiguration>
             <id>target_processing</id>
-            <name>Target processing</name>
-            <description>Target postprocessing</description>
+            <name>Elaborazione dati vettoriali</name>
+            <description>Targets Postprocessing</description>
+			
+			<listenerConfigurations/>
             <dropInput>true</dropInput>
             <!-- Listeners -->
-            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>ConsumerLogger2</listenerId>
             <listenerId>Cumulator</listenerId>
         </TargetIngestionConfiguration>
 		
 		<ScriptingConfiguration>
 			<id>scripting</id>
 			<description>Groovy to generate XML input for task executor action in rasterize process</description>
-			<name>GroovyRasterizeAction</name>
+			<name>Configurazione dati raster</name>
 			
-			<listenerId>ScriptActionLogger0</listenerId>
-			<listenerId>ScriptActionStatus0</listenerId>
-
             <language>groovy</language>
 
             <scriptFile>gdalTaskInputXmlCreator.groovy</scriptFile>
@@ -102,19 +103,19 @@
 			</properties>
 			-->
             <!-- Listeners -->
-            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>ConsumerLogger3</listenerId>
             <listenerId>Cumulator</listenerId>
 			
 		</ScriptingConfiguration>
 
 		<RasterizeConfiguration>
             <id>raster_processing</id>
-            <name>Raster processing</name>
+            <name>Creazione dati raster</name>
             <description>Raster postprocessing</description>
             <closePhase>B</closePhase>
 			<!--<baseOutputPath>C:/temp/</baseOutputPath>-->
             <!-- Listeners -->
-            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>ConsumerLogger4</listenerId>
             <listenerId>Cumulator</listenerId>
         </RasterizeConfiguration>
 
@@ -126,12 +127,31 @@
             <serviceID>loggingListenerService</serviceID>
             <id>ConsumerLogger0</id>
             <loggerName>it.geosolutions.ConsLogger</loggerName>
-            <appendToListenerForwarder>true</appendToListenerForwarder>
+        </LoggingProgressListener>
+		<LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ConsumerLogger1</id>
+            <loggerName>it.geosolutions.ConsLogger</loggerName>
+        </LoggingProgressListener>
+		<LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ConsumerLogger2</id>
+            <loggerName>it.geosolutions.ConsLogger</loggerName>
+        </LoggingProgressListener>
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ConsumerLogger3</id>
+            <loggerName>it.geosolutions.ConsLogger</loggerName>
+        </LoggingProgressListener>
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ConsumerLogger4</id>
+            <loggerName>it.geosolutions.ConsLogger</loggerName>
         </LoggingProgressListener>
         <CumulatingProgressListener>
             <serviceID>cumulatingListenerService</serviceID>
             <id>Cumulator</id>
-            <appendToListenerForwarder>true</appendToListenerForwarder>
+			<appendToListenerForwarder>true</appendToListenerForwarder>
         </CumulatingProgressListener>
     </ListenerConfigurations>
 

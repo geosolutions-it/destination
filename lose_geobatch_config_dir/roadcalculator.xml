@@ -3,8 +3,8 @@
 
     <id>roadcalculator</id>
 
-    <name>Arc ingestion (from unsegmented road graph)</name>
-    <description>Arc ingestion and post processing</description>
+    <name>Post Processing</name>
+    <description>Roads PostProcessing</description>
 
     <autorun>true</autorun>
 
@@ -118,7 +118,7 @@
             <name>Risk level 1</name>
             <description>Risk computation aggregation level 1</description>
 
-            <precision>3</precision>
+            <precision>15</precision>
             <aggregationLevel>1</aggregationLevel>
             <processing>1</processing>
             <formula>26</formula>
@@ -139,7 +139,7 @@
             <name>Risk level 2</name>
             <description>Risk computation aggregation level 2</description>
 
-            <precision>3</precision>
+            <precision>15</precision>
             <aggregationLevel>2</aggregationLevel>
             <processing>1</processing>
             <formula>26</formula>
@@ -160,7 +160,7 @@
             <name>Risk level 3</name>
             <description>Risk computation aggregation level 3</description>
 
-            <precision>3</precision>
+            <precision>15</precision>
             <aggregationLevel>3</aggregationLevel>
             <processing>1</processing>
             <formula>29</formula>

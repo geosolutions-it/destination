@@ -3,7 +3,7 @@
 
     <id>pterrunner</id>
 
-    <name>Pter ingestion</name>
+    <name>Ingestione Pter</name>
     <description>Pter ingestion</description>
 
     <autorun>true</autorun>
@@ -46,7 +46,7 @@
                    </entry>
                    <entry>
                      <string>database</string>
-                     <string>lose</string>
+                     <string>lose_ingestion</string>
                    </entry>
                    <entry>
                      <string>schema</string>
