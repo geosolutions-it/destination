@@ -19,7 +19,7 @@ package it.geosolutions.geobatch.destination.ingestion;
 import it.geosolutions.geobatch.destination.common.InputObject;
 import it.geosolutions.geobatch.destination.common.OutputObject;
 import it.geosolutions.geobatch.destination.common.utils.DbUtils;
-import it.geosolutions.geobatch.flow.event.ProgressListener;
+import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -44,7 +44,6 @@ import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
-import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.Hints;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -52,7 +51,6 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.expression.Function;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.slf4j.Logger;
@@ -118,7 +116,7 @@ public class OriginalArcsIngestionProcess extends InputObject {
 	 * @throws IOException 
 	 */
 	public OriginalArcsIngestionProcess(String inputTypeName,
-			ProgressListener listener,
+			ProgressListenerForwarder listener,
 			MetadataIngestionHandler metadataHandler, DataStore dataStore, int lastYear, int years) throws IOException {
 		super(inputTypeName, listener, metadataHandler, dataStore);
 		if(lastYear > 0) {
@@ -327,7 +325,11 @@ public class OriginalArcsIngestionProcess extends InputObject {
 				if(dropInput) {
 					dropInputFeature(dataStore);
 				}
-				
+				if(errors == 0) {
+					listenerForwarder.progressing(100, "Import Completed");
+				} else {
+					listenerForwarder.progressing(100, "Import Completed with " + errors + " errors");
+				}
 				if(process != -1) {
 					// close current process phase
 					metadataHandler.closeProcessPhase(process, "A");

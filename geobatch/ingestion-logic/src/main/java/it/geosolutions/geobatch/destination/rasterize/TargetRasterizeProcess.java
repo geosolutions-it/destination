@@ -183,9 +183,10 @@ public class TargetRasterizeProcess extends InputObject{
 			//No human target
 			if(targetType>=10){
 				LOGGER.debug("NO HUMAN TARGET");
-				
+				listenerForwarder.progressing(0, "Creating Raster");
 				//EXECUTE rasterize		
 				events = rasterizeBNU(action,events);
+				listenerForwarder.progressing(50, "Creating Overviews");
 	
 				//Execute overview on output TIF
 				events = overview(action,events);
@@ -195,21 +196,25 @@ public class TargetRasterizeProcess extends InputObject{
 			if(targetType>0 && targetType<10){
 				LOGGER.debug("HUMAN TARGET");
 	
+				listenerForwarder.progressing(0, "Creating Temporary Shapefile");
 				//Create temp SHP
 				events = createTempBU(action,events);
 	
+				listenerForwarder.progressing(20, "Adding Normalized Field");
 				//Alter temp SHP: create NORM field
 				events = alterTempBU(action,events);
 	
+				listenerForwarder.progressing(40, "Filling Normalized Field");
 				//Fill NORM field of temp SHP
 				events = fillTempBU(action,events);
 	
+				listenerForwarder.progressing(60, "Creating Raster");
 				//Execute rasterize on temporary SHP
 				events = rasterizeBU(action,events);
-	
+				listenerForwarder.progressing(80, "Creating Overviews");
 				//Execute overview on output TIF
 				events = overview(action,events);
-				
+				listenerForwarder.progressing(99, "Removing Temporary Shapefile");
 				//Clear normalized SHP
 				clearNormalized(baseTifOutputDir);
 	
@@ -230,12 +235,19 @@ public class TargetRasterizeProcess extends InputObject{
         	metadataHandler
 				.logError(trace, errors, "Error occurred on rasterize", getError(e), 0);                        
             LOGGER.error("Error occurred on rasterize: " + e.getMessage(), e);
+        } finally {
+        	if(errors == 0) {
+				listenerForwarder.progressing(100, "Raster Creation Completed");
+			} else {
+				listenerForwarder.progressing(100, "Raster Creation Failed");
+			}
         }
 		
 		if(process != -1 && processPhase != null) {
 			// close current process phase
 			metadataHandler.closeProcessPhase(process, processPhase);
 		}
+		
 
 	}
 

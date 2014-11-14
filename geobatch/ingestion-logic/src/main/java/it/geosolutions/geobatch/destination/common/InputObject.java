@@ -21,6 +21,8 @@ import it.geosolutions.geobatch.destination.common.utils.FeatureLoaderUtils;
 import it.geosolutions.geobatch.destination.common.utils.SequenceManager;
 import it.geosolutions.geobatch.destination.ingestion.MetadataIngestionHandler;
 import it.geosolutions.geobatch.destination.ingestion.TargetIngestionProcess;
+import it.geosolutions.geobatch.flow.event.ProgressListener;
+import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -62,8 +64,6 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import com.thoughtworks.xstream.XStream;
 
-import it.geosolutions.geobatch.flow.event.ProgressListener;
-
 /**
  * Base object for the ingestion processes model.
  * 
@@ -95,7 +95,7 @@ public abstract class InputObject {
 	//
 	protected String inputTypeName = "";
 	protected String originalInputTypeName = "";
-	protected ProgressListener listenerForwarder=null;
+	protected ProgressListenerForwarder listenerForwarder=null;
 	
 	private boolean valid = false;
 	
@@ -114,7 +114,7 @@ public abstract class InputObject {
 	 * @param inputTypeName
 	 */
 	public InputObject(String inputTypeName,
-			ProgressListener listener,
+			ProgressListenerForwarder listener,
 			MetadataIngestionHandler metadataHandler,
 			DataStore dataStore) {
 		super();
@@ -690,8 +690,7 @@ public abstract class InputObject {
 	 */
 	protected void updateImportProgress(int count, int total, int batch, int errors, String message) {
 		if (count % batch == 0) {
-			listenerForwarder.setProgress((float) count);
-			listenerForwarder.setTask(message);
+			listenerForwarder.progressing(((float)count / (float)total) * 100.0f, message);
 			if(LOGGER.isInfoEnabled()) {
 				LOGGER.info(message + ": "+(count - errors) + "/" + total);
 			}

@@ -18,13 +18,12 @@ package it.geosolutions.geobatch.destination.ingestion;
 
 import it.geosolutions.geobatch.destination.common.InputObject;
 import it.geosolutions.geobatch.destination.common.OutputObject;
-import it.geosolutions.geobatch.destination.common.utils.FeatureLoaderUtils;
+import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -39,7 +38,6 @@ import org.geotools.data.Transaction;
 import org.geotools.factory.Hints;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.geotools.jdbc.JDBCDataStore;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -49,7 +47,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Geometry;
-import it.geosolutions.geobatch.flow.event.ProgressListener;
 
 /**
  * @author "Mauro Bartolomeoli - mauro.bartolomeoli@geo-solutions.it"
@@ -123,7 +120,7 @@ public class ArcsIngestionProcess extends InputObject {
 	 * @param inputTypeName
 	 */
 	public ArcsIngestionProcess(String inputTypeName,
-			ProgressListener listenerForwarder,
+			ProgressListenerForwarder listenerForwarder,
 			MetadataIngestionHandler metadataHandler, DataStore dataStore) {
 		super(inputTypeName, listenerForwarder, metadataHandler, dataStore);		
 	}
@@ -297,7 +294,11 @@ public class ArcsIngestionProcess extends InputObject {
 				if(dropInput) {
 					dropInputFeature(dataStore);
 				}
-				
+				if(errors == 0) {
+					listenerForwarder.progressing(100, "Import Completed");
+				} else {
+					listenerForwarder.progressing(100, "Import Completed with " + errors + " errors");
+				}
 				if(process != -1 && processPhase != null) {
 					// close current process phase
 					metadataHandler.closeProcessPhase(process, processPhase);

@@ -25,6 +25,7 @@ import it.geosolutions.geobatch.destination.common.InputObject;
 import it.geosolutions.geobatch.destination.ingestion.MetadataIngestionHandler;
 import it.geosolutions.geobatch.destination.ingestion.TargetIngestionProcess;
 import it.geosolutions.geobatch.flow.event.ProgressListener;
+import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -99,7 +100,7 @@ public class RasterMigration extends InputObject {
 
     public RasterMigration(String typeName, String inputDirectory, String finalDirectory,
     		MetadataIngestionHandler metadataHandler, DataStore dataStore,
-            ProgressListener listener) {
+    		ProgressListenerForwarder listener) {
     	super(typeName, listener, metadataHandler, dataStore);
         this.inputDirectory = inputDirectory;
         this.outputDirectory = finalDirectory;

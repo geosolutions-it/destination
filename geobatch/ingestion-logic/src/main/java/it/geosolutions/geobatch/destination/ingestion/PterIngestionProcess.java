@@ -16,6 +16,10 @@
  */
 package it.geosolutions.geobatch.destination.ingestion;
 
+import it.geosolutions.geobatch.destination.common.InputObject;
+import it.geosolutions.geobatch.destination.common.OutputObject;
+import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
+
 import java.io.IOException;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -34,10 +38,6 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import it.geosolutions.geobatch.destination.common.InputObject;
-import it.geosolutions.geobatch.destination.common.OutputObject;
-import it.geosolutions.geobatch.flow.event.ProgressListener;
-
 /**
  * @author "Mauro Bartolomeoli - mauro.bartolomeoli@geo-solutions.it"
  *
@@ -50,7 +50,7 @@ public class PterIngestionProcess extends InputObject {
 	 * @param dataStore
 	 */
 	public PterIngestionProcess(String inputTypeName,
-			ProgressListener listener,
+			ProgressListenerForwarder listener,
 			MetadataIngestionHandler metadataHandler, DataStore dataStore) {
 		super(inputTypeName, listener, metadataHandler, dataStore);
 	}
