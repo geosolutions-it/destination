@@ -18,23 +18,31 @@ package it.geosolutions.geobatch.destination.action;
 
 import it.geosolutions.geobatch.destination.ingestion.ArcsIngestionProcess;
 import it.geosolutions.geobatch.destination.ingestion.MetadataIngestionHandler;
-import it.geosolutions.geobatch.destination.ingestion.OriginalArcsIngestionProcess;
-import it.geosolutions.geobatch.destination.ingestion.TargetIngestionProcess;
 import it.geosolutions.geobatch.destination.streetuser.StreetUserComputation;
 import it.geosolutions.geobatch.destination.vulnerability.RiskComputation;
+import it.geosolutions.geobatch.destination.vulnerability.TargetManager.TargetInfo;
 import it.geosolutions.geobatch.destination.vulnerability.VulnerabilityComputation;
+import it.geosolutions.geobatch.destination.vulnerability.VulnerabilityEnvironment;
+import it.geosolutions.geobatch.destination.vulnerability.VulnerabilityUtils;
 import it.geosolutions.geobatch.destination.zeroremoval.ZeroRemovalComputation;
 import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
+import it.geosolutions.geobatch.settings.jai.JAISettings;
+import it.geosolutions.jaiext.scheduler.JAIExtTileScheduler;
 
-import java.io.IOException;
+import java.awt.image.RenderedImage;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.media.jai.JAI;
+import javax.media.jai.PlanarImage;
+import javax.media.jai.TileScheduler;
 
 import org.geotools.data.DataStoreFinder;
+import org.geotools.filter.function.RangedClassifier;
 import org.geotools.jdbc.JDBCDataStore;
+import org.geotools.resources.image.ImageUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +54,18 @@ public class RoadRunner{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RoadRunner.class);
     
-    
+    static {
+    	JAISettings jai=new JAISettings();
+    	// Setting up TileScheduler
+        TileScheduler jaiScheduler = new JAIExtTileScheduler(); 
+        
+        jaiScheduler.setParallelism(jai.getTileThreads());
+        jaiScheduler.setPrefetchParallelism(jai.getTileThreads());
+        jaiScheduler.setPriority(jai.getTilePriority());
+        jaiScheduler.setPrefetchPriority(jai.getTilePriority());
+
+        JAI.getDefaultInstance().setTileScheduler(jaiScheduler);
+    }
 
     public static void main(String [] args) {
         Map<String, Serializable> datastoreParams = new HashMap<String, Serializable>();
@@ -57,59 +76,112 @@ public class RoadRunner{
         datastoreParams.put("host", "192.168.1.31");
         datastoreParams.put("Expose primary keys", "true");
         datastoreParams.put("user", "siig_p");
-        datastoreParams.put("database", "destination_staging");
+        datastoreParams.put("database", "lose_ingestion");
         
         JDBCDataStore dataStore = null;        
         MetadataIngestionHandler metadataHandler = null;
-        try {
+        ProgressListenerForwarder listenerForwarder = new ProgressListenerForwarder(null);
+		try {
         	
         	//String inputFeature = "RL_C_Grafo_20131126";
         	//String inputFeature = "RP_C_Grafo_20131212";
         	//String inputFeature = "TI_C_Grafo_20140124";
         	//String inputFeature = "BZ_C_Grafo_20131125";
         	
-        	String inputFeature = "AO_C_Grafo_20140108";
+        	String inputFeature = "LU_C_Grafo_20140929_ORIG";
         	
         	dataStore = (JDBCDataStore)DataStoreFinder.getDataStore(datastoreParams);	        
 	        metadataHandler = new MetadataIngestionHandler(dataStore);
 	        /*OriginalArcsIngestionProcess arcIngestion = new OriginalArcsIngestionProcess(inputFeature,
-	                new ProgressListenerForwarder(null), metadataHandler, dataStore, -1, -1);
+	                new ProgressListenerForwarder(null), metadataHandler, dataStore, 2012, 5);
 	        arcIngestion.importArcs(null, false);*/
 	        ArcsIngestionProcess arcIngestion = new ArcsIngestionProcess(inputFeature,
-	                new ProgressListenerForwarder(null), metadataHandler, dataStore);
+	                listenerForwarder, metadataHandler, dataStore);
 	        
 	        /*arcIngestion.updateArcs(null, 2, false, false, false, null);
 	        arcIngestion.updateArcs(null, 3, false, false, false, null);
 	        arcIngestion.updateArcs(null, 3, true, false, false, null);*/
 	        
 	        
-	        /*arcIngestion.importArcs(null, 1, false, false, true, null);	        
-	        arcIngestion.importArcs(null, 2, false, false, false, null);	        
-	        arcIngestion.importArcs(null, 3, false, false, false, null);
-	        arcIngestion.importArcs(null, 3, true, false, false, "A");*/
+	        //arcIngestion.importArcs(null, 1, false, false, false, null);	        
+	        //arcIngestion.importArcs(null, 2, false, false, false, null);	        
+	        //arcIngestion.importArcs(null, 3, false, false, false, null);
+	        //arcIngestion.importArcs(null, 3, true, false, false, "A");
 
             // Spalmatore
 			ZeroRemovalComputation zeroComputation = new ZeroRemovalComputation(
-					inputFeature, new ProgressListenerForwarder(null),
+					inputFeature, listenerForwarder,
 					metadataHandler, dataStore);
 	        
 	        
-	        //zeroComputation.removeZeros(null, 1, null);
-	        //zeroComputation.removeZeros(null, 2, null);
-	        //zeroComputation.removeZeros(null, 3, null);
+	        /*zeroComputation.removeZeros(null, 1, null);
+	        zeroComputation.removeZeros(null, 2, null);
+	        zeroComputation.removeZeros(null, 3, null);*/
 	        
 	        JAI.getDefaultInstance().getTileCache().setMemoryCapacity(1024*1024*512);
 	        
 	        VulnerabilityComputation vulnerability = new VulnerabilityComputation(inputFeature, 
-	        		new ProgressListenerForwarder(null), metadataHandler, dataStore);
+	        		listenerForwarder, metadataHandler, dataStore);
 	        
-	        /*vulnerability.computeVulnerability(null, 1, "PURGE_INSERT", null);
-	        vulnerability.computeVulnerability(null, 2, "PURGE_INSERT", null);
-	        vulnerability.computeVulnerability(null, 3, "PURGE_INSERT", null);*/
+	        // Initial operations on the input Rasters
+            //
+            // 1. Merging of the rasters into 2 images, human and notHuman
+            //
+            // 2. Saving of the indexes that link each image band to the related target
+
+            Map<Integer, TargetInfo> bandPerTargetH = new TreeMap<Integer, TargetInfo>();
+            Map<Integer, TargetInfo> bandPerTargetNH = new TreeMap<Integer, TargetInfo>();
+
+            RenderedImage[] images = vulnerability.rasterCalculation(bandPerTargetH,
+                    bandPerTargetNH);
+            
+            // Setting of the JAI memory capacity to 512 Mbyte
+            JAI.getDefaultInstance().getTileCache().setMemoryCapacity(512 * 1024 * 1024);
+            
+            // Aggregation level 1 or 2
+           
+            // Selection of the X and Y block number used for creating Nx*Ny parallel threads each one calculates
+            // vulnerability on its block
+            int numXBlocks = 2;
+            int numYBlocks = 2;
+            
+            // Operation called from the Vulnerability Environment object
+            new VulnerabilityEnvironment(listenerForwarder).computeLevel12(null,
+                    numXBlocks, numYBlocks, inputFeature, dataStore,
+                    metadataHandler, images, bandPerTargetNH, bandPerTargetH,
+                    "PURGE_INSERT", 1, false,
+                    null, null, null, null,
+                    null,null);
+            
+            /*new VulnerabilityEnvironment(listenerForwarder).computeLevel12(null,
+                    numXBlocks, numYBlocks, inputFeature, dataStore,
+                    metadataHandler, images, bandPerTargetNH, bandPerTargetH,
+                    "PURGE_INSERT", 2, false,
+                    null, null, null, null,
+                    null,null);*/
+            // Aggregation level 3
+            
+            // Selection of the thread number, used for dividing the input cells into N group, each one for one thread
+            /*int threadMaxNumber = 4;
+            // Group division of the input cells
+            RangedClassifier groups = VulnerabilityUtils.computeIntervals(vulnerability,
+                    threadMaxNumber, null, false);
+            // Operation called from the Vulnerability Environment object
+            new VulnerabilityEnvironment(listenerForwarder).computeLevel3(null,
+                    threadMaxNumber, groups, inputFeature, dataStore,
+                    metadataHandler, images, bandPerTargetNH, bandPerTargetH,
+                    "PURGE_INSERT", false,null);
+            
+
+            // Image Disposal
+            ImageUtilities.disposePlanarImageChain(PlanarImage.wrapRenderedImage(images[0]));
+            // Image Disposal
+            ImageUtilities.disposePlanarImageChain(PlanarImage.wrapRenderedImage(images[1]));
+*/
 			
 	        RiskComputation riskComputation = new RiskComputation(
 	        		inputFeature,
-					new ProgressListenerForwarder(null),
+					listenerForwarder,
 					metadataHandler, dataStore);
 	    	
 	        
@@ -119,15 +191,15 @@ public class RoadRunner{
 	        
 	        
 	        StreetUserComputation streetUserComputation = new StreetUserComputation(inputFeature,
-					new ProgressListenerForwarder(null),
+					listenerForwarder,
 					metadataHandler,
 					dataStore);
 	        //streetUserComputation.setStartOriginId(832268);
-	        streetUserComputation.setRemoveFeatures(false);
-	        streetUserComputation.setSorted(true);
+	        //streetUserComputation.setRemoveFeatures(false);
+	        //streetUserComputation.setSorted(true);
 	        //streetUserComputation.execute(1, false, null);
-	        streetUserComputation.execute(2, false, null);
-	        streetUserComputation.execute(3, false, null);
+	        //streetUserComputation.execute(2, false, null);
+	        //streetUserComputation.execute(3, false, null);
         } catch(Exception e) {
         	LOGGER.error(e.getMessage());
         } finally {

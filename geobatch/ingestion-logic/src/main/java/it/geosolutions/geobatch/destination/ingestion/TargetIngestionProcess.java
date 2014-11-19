@@ -300,11 +300,7 @@ public class TargetIngestionProcess extends InputObject {
 				if(dropInput) {
 					dropInputFeature(dataStore);
 				}
-				if(errors == 0) {
-					listenerForwarder.progressing(100, "Import Completed");
-				} else {
-					listenerForwarder.progressing(100, "Import Completed with " + errors + " errors");
-				}
+				finalReport(errors);
 				if(process != -1) {
 					// close current process phase
 					metadataHandler.closeProcessPhase(process, "A");
@@ -314,6 +310,10 @@ public class TargetIngestionProcess extends InputObject {
 		}
 			
 	}
+
+
+
+	
 	
 	/**
 	 * Add a new record or update the existing one for non-geo table 

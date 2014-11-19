@@ -191,7 +191,7 @@ public class PterIngestionProcess extends InputObject {
 				if(dropInput) {
 					dropInputFeature(dataStore);
 				}
-				
+				finalReport(errors);
 				if(process != -1) {
 					// close current process phase
 					metadataHandler.closeProcessPhase(process, "A");

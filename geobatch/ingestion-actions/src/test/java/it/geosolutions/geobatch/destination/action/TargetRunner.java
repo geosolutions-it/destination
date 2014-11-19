@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.geotools.data.DataStoreFinder;
 import org.geotools.jdbc.JDBCDataStore;
+import org.geotools.referencing.CRS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,23 +39,6 @@ public class TargetRunner{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TargetRunner.class);
     
-    private class TargetThread implements Runnable {
-
-        TargetIngestionProcess targetIngestion;        
-        
-        public TargetThread(TargetIngestionProcess targetIngestion) {
-            this.targetIngestion = targetIngestion;            
-        }
-
-        @Override
-        public void run() {
-            try {
-                targetIngestion.importTarget(null, false);
-            } catch (IOException e) {
-                LOGGER.error(e.getMessage(), e);
-            }
-        }
-    }
 
     public static void main(String [] args) {
         Map<String, Serializable> datastoreParams = new HashMap<String, Serializable>();
@@ -65,50 +49,33 @@ public class TargetRunner{
         datastoreParams.put("host", "192.168.1.31");
         datastoreParams.put("Expose primary keys", "true");
         datastoreParams.put("user", "siig_p");
-        datastoreParams.put("database", "destination_staging");
+        datastoreParams.put("database", "lose_staging");
         
-        JDBCDataStore dataStore1 = null;
-        JDBCDataStore dataStore2 = null;
-        MetadataIngestionHandler metadataHandler1 = null;
-        MetadataIngestionHandler metadataHandler2 = null;
+        JDBCDataStore dataStore = null;        
+        MetadataIngestionHandler metadataHandler = null;
+        
         try {
-        	dataStore1 = (JDBCDataStore)DataStoreFinder.getDataStore(datastoreParams);
-	        //dataStore2 = (JDBCDataStore)DataStoreFinder.getDataStore(datastoreParams);
-	        metadataHandler1 = new MetadataIngestionHandler(dataStore1);
-	        //metadataHandler2 = new MetadataIngestionHandler(dataStore2);
+        	dataStore = (JDBCDataStore)DataStoreFinder.getDataStore(datastoreParams);
+	        metadataHandler = new MetadataIngestionHandler(dataStore);
 	        
-	        TargetIngestionProcess targetIngestion1 = new TargetIngestionProcess("RP_BU-PTUR_C_20131024_02",
-	                new ProgressListenerForwarder(null), metadataHandler1, dataStore1);
-	        /*TargetIngestionProcess targetIngestion2 = new TargetIngestionProcess("RL_BU-ASAN_C_20130624_02",
-	                new ProgressListenerForwarder(null), metadataHandler2, dataStore2);*/
-	        TargetRunner vtest = new TargetRunner();
+	        TargetIngestionProcess targetIngestion = new TargetIngestionProcess("LU_BNU-ASUP_C_20140710_02",
+	                new ProgressListenerForwarder(null), metadataHandler, dataStore);        
 	        
-	        TargetThread vt1 = vtest.new TargetThread(targetIngestion1);
-	        Thread t1 = new Thread(vt1);
-	        t1.start();
 	        
-	        /*TargetThread vt2 = vtest.new TargetThread(targetIngestion2);
-	        Thread t2 = new Thread(vt2);
-	        t2.start();*/
+	        targetIngestion.importTarget(CRS.decode("EPSG:3003"), false);
 	        
-	        t1.join();
-	        //t2.join();
+	       
         } catch(Exception e) {
         	LOGGER.error(e.getMessage());
         } finally {
-        	if(metadataHandler1 != null) {
-        		metadataHandler1.dispose();
+        	if(metadataHandler != null) {
+        		metadataHandler.dispose();
         	}
-        	if(metadataHandler2 != null) {
-        		metadataHandler1.dispose();
+        	        	
+        	if(dataStore != null) {
+        		dataStore.dispose();
         	}
         	
-        	if(dataStore1 != null) {
-        		dataStore1.dispose();
-        	}
-        	if(dataStore2 != null) {
-        		dataStore2.dispose();
-        	}
         }
     }
 }

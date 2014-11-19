@@ -294,11 +294,7 @@ public class ArcsIngestionProcess extends InputObject {
 				if(dropInput) {
 					dropInputFeature(dataStore);
 				}
-				if(errors == 0) {
-					listenerForwarder.progressing(100, "Import Completed");
-				} else {
-					listenerForwarder.progressing(100, "Import Completed with " + errors + " errors");
-				}
+				finalReport(errors);
 				if(process != -1 && processPhase != null) {
 					// close current process phase
 					metadataHandler.closeProcessPhase(process, processPhase);

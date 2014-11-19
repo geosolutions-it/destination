@@ -708,6 +708,21 @@ public abstract class InputObject {
         importFinished(inputCount, total, errors, message);	
 	}
 	
+	protected void finalReport(int errors) {
+		finalReport("Import completed", errors);
+	}
+	
+	protected void finalReport(String message, int errors) {
+		if(errors == 0) {
+			listenerForwarder.progressing(100, message);
+		} else {
+			listenerForwarder.progressing(100, message + " with " + errors + " errors");
+		}
+		if(LOGGER.isInfoEnabled()) {
+			LOGGER.info(message + " with " + errors + " errors");
+		}
+	}
+	
 	/**
 	 * Updates the import progress ( progress / total )
 	 * for the listeners.
@@ -715,9 +730,8 @@ public abstract class InputObject {
 	 * @param total
 	 * @param message
 	 */
-	protected void importFinished(int count, int total, int errors, String message) {		
-        listenerForwarder.setProgress((float)total);
-        listenerForwarder.setTask(message);
+	protected void importFinished(int count, int total, int errors, String message) {
+		listenerForwarder.progressing(((float)count / (float)total) * 100.0f, message);
 		if(LOGGER.isInfoEnabled()) {
 			LOGGER.info(message + ": "+(count - errors)+ "/" + total);
 			if(errors > 0) {

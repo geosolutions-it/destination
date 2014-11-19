@@ -21,13 +21,12 @@ import org.xml.sax.InputSource;
 
 public class RasterRunner {
 	public static void main(String[] args) {
-		/*ClassLoader classLoader = RasterRunner.class.getClassLoader();
+		
 
-		String shpName = "RP_BU-PRES_C_20131024_02";
-		String outputFilePath = "D:\\Develop\\destination\\rasters_out\\RP\\popolazione_residente.tif";
-		File configDir = new File("D:\\Develop\\destination\\geobatch_config_dir\\temp\\targetrunner\\");
-		File outputDir = new File("D:\\Develop\\destination\\rasters_out");
-		File xmlFile = new File("D:\\rasterizeBU.xml");
+		String shpName = "RP_BNU-ASUP_C_20130424_03";
+		File configDir = new File("J:\\Develop\\destination\\dati_temp");
+		File outputDir = new File("J:\\Develop\\destination\\rasters_temp");
+		File xmlFile = new File("J:\\rasterizeBNU.xml");
 
 		//Create rasterizeBU.xml file content
 		String xmlSource = "" +
@@ -35,7 +34,8 @@ public class RasterRunner {
 				"	<shapefilename>"+shpName+"</shapefilename>" +
 				"	<shapefilepath>"+configDir.getAbsolutePath()+"\\"+shpName+"\\</shapefilepath>" +
 				"	<baseOutputPath>"+outputDir.getAbsolutePath()+"\\</baseOutputPath>" +
-				"	<attributeToNormalize>RESIDENTI</attributeToNormalize>" +
+				"	<targetValue>1</targetValue>" +
+				"	<attributeToNormalize>(N_ADDETTI+N_UTENTI)</attributeToNormalize>" +
 				"</GdalRasterize>";
 
 		try {
@@ -46,10 +46,10 @@ public class RasterRunner {
 			targetRasterizeProcess.execute(configDir,new File(System.getProperty("java.io.tmpdir")),outputDir,xmlFile, null);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}*/
+		}
 		
-		RasterMigration migration = new RasterMigration("ALL", "D:\\Develop\\destination\\rasters_out",
-				"D:\\Develop\\destination\\rasters_prod", null, null, new ProgressListenerForwarder(null));
+		RasterMigration migration = new RasterMigration("ALL", "J:\\Develop\\destination\\rasters_out",
+				"J:\\Develop\\destination\\lose_gs_data_dir\\coverages\\lose", null, null, new ProgressListenerForwarder(null));
         try {
 			migration.execute("C");
 		} catch (IOException e) {

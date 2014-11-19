@@ -335,7 +335,7 @@ public class ZeroRemovalComputation extends InputObject {
                 }
                 closeInputReader();    
                 transaction.close();
-                
+                finalReport("Zero removal completed", errors - startErrors);
             }
         }
 
