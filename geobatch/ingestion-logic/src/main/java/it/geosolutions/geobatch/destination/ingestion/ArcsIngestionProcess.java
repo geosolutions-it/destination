@@ -196,6 +196,7 @@ public class ArcsIngestionProcess extends InputObject {
 								
 				// create or retrieve metadata for ingestion
 				if(newProcess) {
+					removeOldImports();
 					// new process
 					process = createProcess();
 					// write log for the imported file

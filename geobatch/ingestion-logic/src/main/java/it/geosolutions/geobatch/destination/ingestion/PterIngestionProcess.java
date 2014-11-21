@@ -114,6 +114,7 @@ public class PterIngestionProcess extends InputObject {
 			
 			
 			try {	
+				removeOldImports();
 				process = createProcess();
 				// write log for the imported file
 				trace = logFile(process, NO_TARGET,

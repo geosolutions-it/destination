@@ -174,7 +174,7 @@ public class TargetIngestionProcess extends InputObject {
 			int errors = 0;
 			try {												
 				
-				
+				removeOldImports();
 				process = createProcess();
 				// write log for the imported file
 				trace = logFile(process, targetType,

@@ -266,7 +266,7 @@ public class OriginalArcsIngestionProcess extends InputObject {
 			
 			try {												
 								
-				
+				removeOldImports();
 				// new process
 				process = createProcess();
 				// write log for the imported file

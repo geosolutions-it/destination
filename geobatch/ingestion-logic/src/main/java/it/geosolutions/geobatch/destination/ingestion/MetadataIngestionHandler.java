@@ -22,15 +22,16 @@ import it.geosolutions.geobatch.destination.common.utils.SequenceManager;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultTransaction;
-import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
 import org.geotools.jdbc.JDBCDataStore;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 
 /**
  * Handles the ingestion metadata structures on database.
@@ -334,6 +335,62 @@ public class MetadataIngestionHandler {
 			traceSequenceManager.disposeManager();
 			traceSequenceManager = null;
 		}
+	}
+
+	public void removeImports(String inputTypeName) throws IOException {
+		Transaction transaction = null;	
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		Set<Integer> idTracciamento = new HashSet<Integer>();
+		Set<Integer> idProcesso = new HashSet<Integer>();
+		try {
+			transaction = new DefaultTransaction();
+			conn = dataStore.getConnection(transaction);				
+		
+			String sql = "SELECT id_tracciamento,fk_processo FROM siig_t_tracciamento where nome_file='"
+					+ inputTypeName + "'";
+			
+									
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(sql);
+			while(rs.next()) {
+				idTracciamento.add(rs.getInt(1));
+				idProcesso.add(rs.getInt(2));
+			}
+			rs.close();
+			stmt.close();
+			for(int id : idTracciamento) {
+				DbUtils.executeSql(conn, transaction, "delete from siig_t_log where id_tracciamento="+id, false);
+				DbUtils.executeSql(conn, transaction, "delete from siig_t_tracciamento where id_tracciamento="+id, false);
+			}
+			for(int id : idProcesso) {
+				DbUtils.executeSql(conn, transaction, "delete from siig_t_processo where id_processo="+id, false);
+			}
+			transaction.commit();
+		} catch(SQLException e) {
+			transaction.rollback();
+			throw new IOException(e);
+		} finally {
+			try {
+				if(rs != null) {
+					rs.close();
+				}
+				if(stmt != null) {
+					stmt.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+				if(transaction != null) {
+					transaction.close();
+				}
+			} catch (SQLException e) {
+				throw new IOException(e);
+			}
+			
+		}
+		
 	}
 	
 	

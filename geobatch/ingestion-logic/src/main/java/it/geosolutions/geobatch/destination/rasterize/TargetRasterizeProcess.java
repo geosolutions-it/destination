@@ -174,7 +174,7 @@ public class TargetRasterizeProcess extends InputObject{
 			trace = importData.getMaxTrace();
 			errors = importData.getMaxError();			
 		}
-
+		int startErrors = errors;
 		if (metadataHandler != null && process == -1) {
 			LOGGER.error("Cannot find process for input file");
 			throw new IOException("Cannot find process for input file");
@@ -236,7 +236,7 @@ public class TargetRasterizeProcess extends InputObject{
 				.logError(trace, errors, "Error occurred on rasterize", getError(e), 0);                        
             LOGGER.error("Error occurred on rasterize: " + e.getMessage(), e);
         } finally {
-        	if(errors == 0) {
+        	if((errors - startErrors) == 0) {
 				listenerForwarder.progressing(100, "Raster Creation Completed");
 			} else {
 				listenerForwarder.progressing(100, "Raster Creation Failed");

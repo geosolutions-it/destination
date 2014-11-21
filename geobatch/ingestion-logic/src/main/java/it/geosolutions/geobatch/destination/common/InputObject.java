@@ -277,6 +277,12 @@ public abstract class InputObject {
 		}*/
 	}
 	
+	protected void removeOldImports() throws IOException {
+		if(metadataHandler != null) {
+			metadataHandler.removeImports(originalInputTypeName);
+		}
+	}
+	
 	/**
 	 * Creates a new Ingestion process in the logging tables, on the given database
 	 * connection.
@@ -287,8 +293,8 @@ public abstract class InputObject {
 	 */
 	protected int createProcess() throws IOException {
 		if(metadataHandler != null){
-		return metadataHandler.createProcess();
-	}
+			return metadataHandler.createProcess();
+		}
 		return 0;
 	}
 	
