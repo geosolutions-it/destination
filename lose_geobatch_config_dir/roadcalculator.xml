@@ -28,7 +28,6 @@
 
             <listenerConfigurations/>
             <failIgnored>false</failIgnored>
-            <purgeData>true</purgeData>
 			
             <outputFeature>
                 <dataStore>
@@ -62,7 +61,6 @@
                    </entry>
 				   
                 </dataStore>
-				<typeName>LU_C_Grafo_20140929_ORIG</typeName>
 				<crs>EPSG:3003</crs>
             </outputFeature>
             <projectOnMappings>false</projectOnMappings>
@@ -72,7 +70,7 @@
             <listenerId>Cumulator</listenerId>
         </Ds2dsConfiguration>
 		
-        <!--ZeroRemovalConfiguration>
+        <ZeroRemovalConfiguration>
             <id>zeroremoval_1</id>
             <name>Zero removal level 1</name>
             <description>Zeroes removal aggregation level 1</description>
@@ -97,9 +95,9 @@
             <aggregationLevel>3</aggregationLevel>
             <listenerId>ConsumerLogger4</listenerId>
             <listenerId>Cumulator</listenerId>
-        </ZeroRemovalConfiguration-->
+        </ZeroRemovalConfiguration>
 
-        <VulnerabilityConfiguration>
+        <!--VulnerabilityConfiguration>
             <id>vulnerability_1</id>
             <name>Vulnerability level 1</name>
             <description>Vulnerability computation, aggregation level 1</description>
@@ -109,7 +107,7 @@
             <listenerId>Cumulator</listenerId>
         </VulnerabilityConfiguration>
 
-        <!--VulnerabilityConfiguration>
+        <VulnerabilityConfiguration>
             <id>vulnerability_2</id>
             <name>Vulnerability level 2</name>
             <description>Vulnerability computation, aggregation level 2</description>
