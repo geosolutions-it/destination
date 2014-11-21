@@ -1,0 +1,13 @@
+<layer>
+  <name>siig_t_log</name>
+  <id>LayerInfoImpl-6e02a220:149d1b58334:-7fed</id>
+  <type>VECTOR</type>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl-6e02a220:149d1b58334:-7fee</id>
+  </resource>
+  <enabled>true</enabled>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+</layer>
