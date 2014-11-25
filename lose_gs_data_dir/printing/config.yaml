@@ -65,7 +65,7 @@ layouts:
         #legend panel            
         - !columns               
           config:
-            borderWidth: 1
+            borderWidth: 0
             cells:
               - borderWidth: 2
                 borderWidthLeft: 1
@@ -365,7 +365,7 @@ layouts:
         #legend panel            
         - !columns
           config:
-            borderWidth: 1
+            borderWidth: 0
             cells:
               - borderWidth: 2
                 borderWidthLeft: 1
@@ -373,10 +373,10 @@ layouts:
                 padding: 4
                 backgroundColor: white
                 vertAlign: bottom
-          widths: [220]
+          widths: [320]
           absoluteX: 30
           absoluteY: 800
-          width: 220
+          width: 320
           items:
             - !legends
               failOnBrokenUrl: false
@@ -518,7 +518,7 @@ layouts:
         #legend panel            
         - !columns               
           config:
-            borderWidth: 1
+            borderWidth: 0
             cells:
               - borderWidth: 2
                 borderWidthLeft: 1
@@ -818,7 +818,7 @@ layouts:
         #legend panel            
         - !columns
           config:
-            borderWidth: 1
+            borderWidth: 0
             cells:
               - borderWidth: 2
                 borderWidthLeft: 1
