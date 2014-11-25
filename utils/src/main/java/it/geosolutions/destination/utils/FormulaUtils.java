@@ -16,6 +16,7 @@
  */
 package it.geosolutions.destination.utils;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -591,7 +592,6 @@ public class FormulaUtils {
      * @return
      */
     public static Double fixDecimals(double number, int numDecimals) {
-        double pow = Math.pow(10, numDecimals);
-        return Math.round(number * (long) pow) / pow;
+    	return new BigDecimal(number).round(new java.math.MathContext(numDecimals)).doubleValue();
     }
 }
