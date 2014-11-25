@@ -41,7 +41,7 @@
                     <Localized lang="de">Reversiblie Verletzungen</Localized>
                     </Title>
                     <Abstract>Buffer per Rischio Incidentale</Abstract>
-                    <MinScaleDenominator>17070</MinScaleDenominator>
+                    <MinScaleDenominator>34130</MinScaleDenominator>
                     <MaxScaleDenominator>50000</MaxScaleDenominator>
                     <PolygonSymbolizer>
                         <Geometry>
@@ -67,7 +67,7 @@
                     <Localized lang="de">Irreversiblie Verletzungen</Localized>
                     </Title>
                     <Abstract>Buffer per Rischio Incidentale</Abstract>
-                    <MinScaleDenominator>17070</MinScaleDenominator>
+                    <MinScaleDenominator>34130</MinScaleDenominator>
                     <MaxScaleDenominator>50000</MaxScaleDenominator>
                     <PolygonSymbolizer>
                         <Geometry>
@@ -94,7 +94,7 @@
                     <Localized lang="de">Beginn Letalität</Localized>
                     </Title>
                     <Abstract>Buffer per Rischio Incidentale</Abstract>
-                    <MinScaleDenominator>17070</MinScaleDenominator>
+                    <MinScaleDenominator>34130</MinScaleDenominator>
                     <MaxScaleDenominator>50000</MaxScaleDenominator>
                     <PolygonSymbolizer>
                         <Geometry>
@@ -121,7 +121,7 @@
                     <Localized lang="de">Hohe Letalität</Localized>
                     </Title>
                     <Abstract>Buffer per Rischio Incidentale</Abstract>
-                    <MinScaleDenominator>17070</MinScaleDenominator>
+                    <MinScaleDenominator>34130</MinScaleDenominator>
                     <MaxScaleDenominator>50000</MaxScaleDenominator>
                     <PolygonSymbolizer>
                         <Geometry>
