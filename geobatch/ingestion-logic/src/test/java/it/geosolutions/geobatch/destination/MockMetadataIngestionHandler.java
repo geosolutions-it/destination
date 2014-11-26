@@ -74,6 +74,11 @@ public class MockMetadataIngestionHandler extends MetadataIngestionHandler {
 	public void dispose() {
 		
 	}
+
+	@Override
+	public void removeImports(String inputTypeName) throws IOException {
+		
+	}
 	
 	
 

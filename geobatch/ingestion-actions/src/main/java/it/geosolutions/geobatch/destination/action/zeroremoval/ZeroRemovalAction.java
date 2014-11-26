@@ -56,6 +56,7 @@ public class ZeroRemovalAction extends DestinationBaseAction<ZeroRemovalConfigur
             computation.removeZeros(
                     null,
                     cfg.getAggregationLevel(),
+                    cfg.isNewProcess(),
                     cfg.getClosePhase());
         } catch (IOException ex) {
             // TODO: what shall we do here??

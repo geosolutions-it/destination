@@ -29,6 +29,7 @@ import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 public class ZeroRemovalConfiguration extends ActionConfiguration {
 
     private int aggregationLevel;
+    private boolean newProcess = false;
     private String closePhase;
 
 	public ZeroRemovalConfiguration(String id, String name, String description) {
@@ -50,8 +51,18 @@ public class ZeroRemovalConfiguration extends ActionConfiguration {
     public void setClosePhase(String closePhase) {
         this.closePhase = closePhase;
     }
+    
+    
 
-    @Override
+    public boolean isNewProcess() {
+		return newProcess;
+	}
+
+	public void setNewProcess(boolean newProcess) {
+		this.newProcess = newProcess;
+	}
+
+	@Override
     public ZeroRemovalConfiguration clone() {
         final ZeroRemovalConfiguration configuration = (ZeroRemovalConfiguration) super.clone();
         

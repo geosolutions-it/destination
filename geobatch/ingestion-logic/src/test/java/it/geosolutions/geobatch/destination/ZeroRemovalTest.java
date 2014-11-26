@@ -45,7 +45,7 @@ public class ZeroRemovalTest extends DestinationMemoryTest{
 	@Test
 	public void test() throws IOException {
 		ZeroRemovalComputation zeroRemoval = createProcess("RP_C_ZURB_20130613");
-		zeroRemoval.removeZeros(null, 1, null);	
+		zeroRemoval.removeZeros(null, 1, false, null);	
 		checkFeature("siig_geo_ln_arco_1", 12);
 		checkAllData();
 	}

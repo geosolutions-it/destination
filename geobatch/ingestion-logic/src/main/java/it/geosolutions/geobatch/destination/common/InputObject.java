@@ -495,7 +495,7 @@ public abstract class InputObject {
 	}
 	
 
-	       /**
+	    /**
          * Reads the next available input feature in a sorted order.
          * 
          * @return
@@ -546,6 +546,21 @@ public abstract class InputObject {
 			return result;
 		}
 		return null;
+	}
+	
+	protected boolean hasMoreInput(boolean sorted) throws IOException {
+		if(inputIterator == null) {
+			if(sorted) {
+				SortBy order = new SortByImpl(filterFactory.property("id_geo_arco"), SortOrder.ASCENDING);
+                inputIterator = inputReader.getFeatures(inputQuery).sort(order).features();
+			} else {
+				inputIterator = inputReader.getFeatures(inputQuery).features();
+			}
+		}
+		if(inputIterator != null) {
+			return inputIterator.hasNext();
+		}
+		return false;
 	}
 	
 	/**

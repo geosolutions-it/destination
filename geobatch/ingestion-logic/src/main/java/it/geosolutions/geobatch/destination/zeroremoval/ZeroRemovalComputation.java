@@ -83,7 +83,7 @@ public class ZeroRemovalComputation extends InputObject {
 	private final static Logger LOGGER = LoggerFactory.getLogger(ZeroRemovalComputation.class);
 
 	private static Pattern TYPE_NAME_PARTS = Pattern
-			.compile("^([A-Z]{2})_([A-Z]{1})_([A-Za-z]+)_([0-9]{8})(_ORIG)?$");
+			.compile("^([A-Z]{2})_([A-Z]{1})_([A-Za-z]+)_([0-9]{8})(_.*?)?$");
 
 	public static String GEO_TYPE_NAME = "siig_geo_ln_arco_X";
 	//private static final String NR_INCIDENTI = "nr_incidenti";
@@ -95,6 +95,7 @@ public class ZeroRemovalComputation extends InputObject {
 	private DecimalFormat df = new DecimalFormat("0.00");
     String codicePartner;
     int partner;
+    String date;
 	
 	/**
 	 * A value that multiply all weightedAverage in order to avoid negative results
@@ -140,7 +141,7 @@ public class ZeroRemovalComputation extends InputObject {
 			codicePartner = m.group(1);
 			// partner numerical id (from siig_t_partner)
 			partner = Integer.parseInt(partners.get(codicePartner).toString());			
-			
+			date = m.group(4);
 			return true;
 		}
 		return false;
@@ -167,7 +168,7 @@ public class ZeroRemovalComputation extends InputObject {
 	 * @param partnerId
 	 * @throws IOException
 	 */
-	public void removeZeros(CoordinateReferenceSystem crs, int aggregationLevel, String closePhase)
+	public void removeZeros(CoordinateReferenceSystem crs, int aggregationLevel, boolean newProcess, String closePhase)
 					throws IOException {
 		reset();
 
@@ -180,13 +181,24 @@ public class ZeroRemovalComputation extends InputObject {
 
 			int errors = 0;
 			int startErrors = 0;
-			// existing process
-			MetadataIngestionHandler.Process importData = getProcessData();
-			if (importData != null) {
-				process = importData.getId();
-				trace = importData.getMaxTrace();
-				errors = importData.getMaxError();
-				startErrors = errors;
+			
+			// create or retrieve metadata for ingestion
+			if(newProcess) {
+				removeOldImports();
+				// new process
+				process = createProcess();
+				// write log for the imported file
+				trace = logFile(process, NO_TARGET,
+						partner, codicePartner, date, false);
+			} else {
+				// existing process
+				MetadataIngestionHandler.Process importData = getProcessData();
+				if (importData != null) {
+					process = importData.getId();
+					trace = importData.getMaxTrace();
+					errors = importData.getMaxError();
+					startErrors = errors;
+				}
 			}
 
 			if (metadataHandler != null && process == -1) {
