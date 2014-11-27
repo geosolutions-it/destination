@@ -3,8 +3,8 @@
 
     <id>roadcalculator</id>
 
-    <name>Elaborazione zeri e vulnerabilita</name>
-    <description>Elaborazione zeri e vulnerabilita</description>
+    <name>Elaborazioni</name>
+    <description>Zeri, vulnerabilita, precalcolo</description>
 
     <autorun>true</autorun>
 
@@ -72,16 +72,17 @@
 		
         <ZeroRemovalConfiguration>
             <id>zeroremoval_1</id>
-            <name>Zero removal level 1</name>
+            <name>Rimozione zeri livello 1</name>
             <description>Zeroes removal aggregation level 1</description>
             <aggregationLevel>1</aggregationLevel>
+            <newProcess>true</newProcess>
             <listenerId>ConsumerLogger2</listenerId>
             <listenerId>Cumulator</listenerId>
         </ZeroRemovalConfiguration>
 
         <ZeroRemovalConfiguration>
             <id>zeroremoval_2</id>
-            <name>Zero removal level 2</name>
+            <name>Rimozione zeri livello 2</name>
             <description>Zeroes removal aggregation level 2</description>
             <aggregationLevel>2</aggregationLevel>
             <listenerId>ConsumerLogger3</listenerId>
@@ -90,16 +91,16 @@
 
         <ZeroRemovalConfiguration>
             <id>zeroremoval_3</id>
-            <name>Zero removal level 3</name>
+            <name>Rimozione zeri livello 3</name>
             <description>Zeroes removal aggregation level 3</description>
             <aggregationLevel>3</aggregationLevel>
             <listenerId>ConsumerLogger4</listenerId>
             <listenerId>Cumulator</listenerId>
         </ZeroRemovalConfiguration>
 
-        <!--VulnerabilityConfiguration>
+        <VulnerabilityConfiguration>
             <id>vulnerability_1</id>
-            <name>Vulnerability level 1</name>
+            <name>Calcolo vulnerabilita livello 1</name>
             <description>Vulnerability computation, aggregation level 1</description>
             <aggregationLevel>1</aggregationLevel>
             <writeMode>PURGE_INSERT</writeMode>
@@ -109,55 +110,55 @@
 
         <VulnerabilityConfiguration>
             <id>vulnerability_2</id>
-            <name>Vulnerability level 2</name>
+            <name>Calcolo vulnerabilita livello 2</name>
             <description>Vulnerability computation, aggregation level 2</description>
             <aggregationLevel>2</aggregationLevel>
             <writeMode>PURGE_INSERT</writeMode>
-            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>ConsumerLogger6</listenerId>
             <listenerId>Cumulator</listenerId>
         </VulnerabilityConfiguration>
 
         <VulnerabilityConfiguration>
             <id>vulnerability_3</id>
-            <name>Vulnerability level 3</name>
+            <name>Calcolo vulnerabilita livello 3</name>
             <description>Vulnerability computation, aggregation level 3</description>
             <aggregationLevel>3</aggregationLevel>
             <writeMode>PURGE_INSERT</writeMode>
-            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>ConsumerLogger7</listenerId>
             <listenerId>Cumulator</listenerId>
         </VulnerabilityConfiguration>
 
         <StreetUserConfiguration>
             <id>streetuser_1</id>
-            <name>Street users computation level 1</name>
+            <name>Utenti della strada livello 1</name>
             <description>Street users computation level 1</description>
             <aggregationLevel>1</aggregationLevel>
-            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>ConsumerLogger8</listenerId>
             <listenerId>Cumulator</listenerId>
         </StreetUserConfiguration>
         
         <StreetUserConfiguration>
             <id>streetuser_2</id>
-            <name>Street users computation level 2</name>
+            <name>Utenti della strada livello 2</name>
             <description>Street users computation level 2</description>
             <aggregationLevel>2</aggregationLevel>
-            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>ConsumerLogger9</listenerId>
             <listenerId>Cumulator</listenerId>
         </StreetUserConfiguration>
 
         <StreetUserConfiguration>
             <id>streetuser_3</id>
-            <name>Street users computation level 3</name>
+            <name>Utenti della strada livello 3</name>
             <description>Street users computation level 3</description>
             <aggregationLevel>3</aggregationLevel>
-            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>ConsumerLogger10</listenerId>
             <listenerId>Cumulator</listenerId>
         </StreetUserConfiguration>
         
         <RiskConfiguration>
             <id>risk_1</id>
             <name>Risk level 1</name>
-            <description>Risk computation aggregation level 1</description>
+            <description>Precalcolo rischio livello 1</description>
 
             <precision>15</precision>
             <aggregationLevel>1</aggregationLevel>
@@ -170,14 +171,14 @@
             <severeness>1,2,3,4,5</severeness>
             <fpfield>fp_scen_centrale</fpfield>
             <writeMode>PURGE_INSERT</writeMode>
-            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>ConsumerLogger11</listenerId>
             <listenerId>Cumulator</listenerId>
         </RiskConfiguration>
 
         <RiskConfiguration>
             <id>risk_2</id>
             <name>Risk level 2</name>
-            <description>Risk computation aggregation level 2</description>
+            <description>Precalcolo rischio livello 2</description>
 
             <precision>15</precision>
             <aggregationLevel>2</aggregationLevel>
@@ -190,15 +191,14 @@
             <severeness>1,2,3,4,5</severeness>
             <fpfield>fp_scen_centrale</fpfield>
             <writeMode>PURGE_INSERT</writeMode>
-            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>ConsumerLogger12</listenerId>
             <listenerId>Cumulator</listenerId>
         </RiskConfiguration>
 
         <RiskConfiguration>
             <id>risk_3</id>
             <name>Risk level 3</name>
-            <description>Risk computation aggregation level 3</description>
-
+            <description>Precalcolo rischio livello 3</description>
             <precision>15</precision>
             <aggregationLevel>3</aggregationLevel>
             <processing>1</processing>
@@ -212,14 +212,14 @@
             <writeMode>PURGE_INSERT</writeMode>
             <closePhase>B</closePhase>
             <dropInput>true</dropInput>
-            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>ConsumerLogger13</listenerId>
             <listenerId>Cumulator</listenerId>
         </RiskConfiguration>
         
         <ChangeValueConfiguration>
 			<id>changevalue</id>
 			<description>ChangeValue action</description>
-			<name>ChangeValue</name>
+			<name>Aggiornamento elaborazioni salvate</name>
 			<filter>name='valid'</filter>
 			<attribute>attribute_text</attribute>
 			<value>false</value>
@@ -261,7 +261,9 @@
 				</dataStore>				
 			</outputFeature>
 			<listenerConfigurations/>
-		</ChangeValueConfiguration-->
+			<listenerId>ConsumerLogger14</listenerId>
+            <listenerId>Cumulator</listenerId>
+		</ChangeValueConfiguration>
 
     </EventConsumerConfiguration>
 
@@ -296,6 +298,51 @@
         <LoggingProgressListener>
             <serviceID>loggingListenerService</serviceID>
             <id>ConsumerLogger5</id>
+            <loggerName>it.geosolutions.ConsLogger</loggerName>
+        </LoggingProgressListener>
+		<LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ConsumerLogger6</id>
+            <loggerName>it.geosolutions.ConsLogger</loggerName>
+        </LoggingProgressListener>
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ConsumerLogger7</id>
+            <loggerName>it.geosolutions.ConsLogger</loggerName>
+        </LoggingProgressListener>
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ConsumerLogger8</id>
+            <loggerName>it.geosolutions.ConsLogger</loggerName>
+        </LoggingProgressListener>
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ConsumerLogger9</id>
+            <loggerName>it.geosolutions.ConsLogger</loggerName>
+        </LoggingProgressListener>
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ConsumerLogger10</id>
+            <loggerName>it.geosolutions.ConsLogger</loggerName>
+        </LoggingProgressListener>
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ConsumerLogger11</id>
+            <loggerName>it.geosolutions.ConsLogger</loggerName>
+        </LoggingProgressListener>
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ConsumerLogger12</id>
+            <loggerName>it.geosolutions.ConsLogger</loggerName>
+        </LoggingProgressListener>
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ConsumerLogger13</id>
+            <loggerName>it.geosolutions.ConsLogger</loggerName>
+        </LoggingProgressListener>
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ConsumerLogger14</id>
             <loggerName>it.geosolutions.ConsLogger</loggerName>
         </LoggingProgressListener>
         <CumulatingProgressListener>
