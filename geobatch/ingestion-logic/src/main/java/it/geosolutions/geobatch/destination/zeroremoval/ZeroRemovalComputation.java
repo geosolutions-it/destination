@@ -117,7 +117,7 @@ public class ZeroRemovalComputation extends InputObject {
 	
 	@Override
 	protected String getInputTypeName(String inputTypeName) {
-		return inputTypeName.replace("_ORIG", "");
+		return inputTypeName.replace("_ORIG", "").replace("_CALCS", "");
 	}
 
 	/**
@@ -254,11 +254,13 @@ public class ZeroRemovalComputation extends InputObject {
     
                 // setup input reader
                 createInputReader(dataStore, transaction, geoName);
+                
     
                 OutputObject geoObject = new OutputObject(dataStore, transaction, geoName, GEOID);
     
                 setInputFilter(filterFactory.equals(filterFactory.property(PARTNER_FIELD),
                         filterFactory.literal(partner)));
+                int arcsTotal = getImportCount();
                 
                 // get unique aggregation values in order to identify the roads
                 Set<BigDecimal> aggregationValues = null;
@@ -328,6 +330,9 @@ public class ZeroRemovalComputation extends InputObject {
                 	importFinished(aggregationCount, total, errors - startErrors, "Accident data updated in " + geoName);
                 } else {
                 	importFinished(aggregationCount, total, errors - startErrors, "Global Accident data updated in " + geoName);
+                }
+                if(aggregationLevel == 1) {
+                	metadataHandler.updateLogFile(trace, arcsTotal, 0, true);
                 }
                 return errors;
             } catch (Exception e) {

@@ -42,6 +42,7 @@ public class RiskConfiguration extends ActionConfiguration {
     private String writeMode;
     private String closePhase;
     private boolean dropInput;
+    private boolean newImport = false;
     
 	public RiskConfiguration(String id, String name, String description) {
 		super(id, name, description);
@@ -145,7 +146,15 @@ public class RiskConfiguration extends ActionConfiguration {
 
     
     
-    /**
+    public boolean isNewImport() {
+		return newImport;
+	}
+
+	public void setNewImport(boolean newImport) {
+		this.newImport = newImport;
+	}
+
+	/**
 	 * @return the dropInput
 	 */
 	public boolean isDropInput() {

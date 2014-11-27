@@ -33,11 +33,11 @@ public class StreetUserAction extends DestinationBaseAction<StreetUserConfigurat
 					metadataHandler,
 					dataStore);
 			computation.setSorted(true);
-			computation.execute(cfg.getAggregationLevel(), cfg.isDropInput(), cfg.getClosePhase());
+			computation.execute(cfg.getAggregationLevel(), cfg.isDropInput(), cfg.getClosePhase(), cfg.isNewImport());
 		} catch (IOException ex) {
             // TODO: what shall we do here??
             // log and rethrow for the moment, but a rollback should be implementened somewhere
-            LOGGER.error("Error in importing targets", ex);
+            LOGGER.error("Error in calculating street users", ex);
             throw new ActionException(this, "Error in importing targets", ex);
         }
 	}

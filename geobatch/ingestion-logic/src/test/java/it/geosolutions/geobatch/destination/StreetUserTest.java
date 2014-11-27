@@ -46,21 +46,21 @@ public class StreetUserTest extends DestinationMemoryTest{
 	@Ignore
 	public void testLevel1() throws IOException {
 		StreetUserComputation streetUserComputation = createProcess(sampleInput);	
-		streetUserComputation.executeArc(1);
+		streetUserComputation.executeArc(1, false, null, false);
 		checkFeature("siig_r_scen_vuln_1", 8);
 	}
 
 	@Ignore
 	public void testLevel2() throws IOException {
 		StreetUserComputation streetUserComputation = createProcess(sampleInput);	
-		streetUserComputation.executeArc(2);
+		streetUserComputation.executeArc(2, false, null, false);
 		checkFeature("siig_r_scen_vuln_2", 8);
 	}
 
 	@Ignore
 	public void testGridLevel3() throws IOException {
 		StreetUserComputation streetUserComputation = createProcess(sampleInput);	
-		//streetUserComputation.executeCell(3);
+		streetUserComputation.executeCell(3, false, null, false);
 		checkFeature("siig_r_scen_vuln_3", 8);
 	}
 

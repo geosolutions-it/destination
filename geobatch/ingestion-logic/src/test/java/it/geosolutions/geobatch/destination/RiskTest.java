@@ -39,7 +39,7 @@ public class RiskTest extends DestinationMemoryTest{
 	@Test
 	public void test() throws Exception {
 		RiskComputation riskComputation = createProcess("RP_C_Grafo_20130917");		
-		riskComputation.prefetchRiskAtLevel(3, 1, 1, 26, 100, "1,2,3,4,5,6,7,8,9,10", "1,2,3,4,5,6,7,8,9,10,11", "0,1", "1,2,3,4,5", "fp_scen_centrale", "UPDATE", null, false);
+		riskComputation.prefetchRiskAtLevel(3, 1, 1, 26, 100, "1,2,3,4,5,6,7,8,9,10", "1,2,3,4,5,6,7,8,9,10,11", "0,1", "1,2,3,4,5", "fp_scen_centrale", "UPDATE", null, false, false);
 		checkFeature("siig_t_elab_standard_1", 12);
 	}
 

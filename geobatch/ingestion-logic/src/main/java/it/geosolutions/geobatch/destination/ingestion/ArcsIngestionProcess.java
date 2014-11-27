@@ -1268,6 +1268,17 @@ public class ArcsIngestionProcess extends InputObject {
 				.collection(geoFeature));
 	}
 	
-	 
+	/**
+	 * Drops the input feature.
+	 * 
+	 * @param datastoreParams
+	 * @throws IOException
+	 */
+	@Override
+	protected void dropInputFeature(DataStore dataStore) throws IOException {
+		dropFeature(dataStore, inputTypeName+"_ORIG");
+		super.dropInputFeature(dataStore);
+		
+	}
 	
 }

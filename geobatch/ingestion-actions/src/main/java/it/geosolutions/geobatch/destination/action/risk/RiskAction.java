@@ -66,7 +66,8 @@ public class RiskAction extends DestinationBaseAction<RiskConfiguration> {
                     cfg.getFpfield(),
                     cfg.getWriteMode(),
                     cfg.getClosePhase(),
-                    cfg.isDropInput());
+                    cfg.isDropInput(),
+                    cfg.isNewImport());
 
         } catch (IOException ex) {
             // TODO: what shall we do here??

@@ -47,6 +47,7 @@ public class StreetUserComputation extends InputObject {
 	private Double HOUR_IN_DAY = 24d;
 	private String codicePartner;
 	private int partner;
+	private String date;
 	private boolean removeFeatures = true;
 	private boolean sorted = false;
 
@@ -61,7 +62,7 @@ public class StreetUserComputation extends InputObject {
 	//private static SimpleFeatureType siig_r_scen_vuln_X = null;
 
 	private static Pattern TYPE_NAME_PARTS = Pattern
-			.compile("^([A-Z]{2})_([A-Z]{1})_([A-Za-z]+)_([0-9]{8})(_ORIG)?$");
+			.compile("^([A-Z]{2})_([A-Z]{1})_([A-Za-z]+)_([0-9]{8})(_.*?)?$");
 
 	public StreetUserComputation(String inputTypeName, ProgressListenerForwarder listenerForwarder, MetadataIngestionHandler metadataHandler, DataStore dataStore) {
 		super(inputTypeName, listenerForwarder, metadataHandler, dataStore);
@@ -89,7 +90,7 @@ public class StreetUserComputation extends InputObject {
 
 	@Override
 	protected String getInputTypeName(String inputTypeName) {
-		return inputTypeName.replace("_ORIG", "");
+		return inputTypeName.replace("_ORIG", "").replace("_CALCS", "");
 	}
 
 	public int getPartner() {
@@ -103,7 +104,8 @@ public class StreetUserComputation extends InputObject {
 			// partner alphanumerical abbreviation (from siig_t_partner)
 			codicePartner = m.group(1);
 			// partner numerical id (from siig_t_partner)
-			partner = Integer.parseInt(partners.get(codicePartner).toString());					
+			partner = Integer.parseInt(partners.get(codicePartner).toString());
+			date = m.group(4);
 			return true;
 		}
 		return false;
@@ -163,27 +165,18 @@ public class StreetUserComputation extends InputObject {
 
 	}
 
-	public void execute(Integer aggregationLevel, boolean dropInput, String closePhase) throws IOException {
-		try {
-			if(aggregationLevel == 1 || aggregationLevel == 2){
-				executeArc(aggregationLevel);
-			}
-			if(aggregationLevel == 3){
-				executeCell(aggregationLevel);
-			}
-		} finally {
-			if(dropInput) {
-				dropInputFeature(dataStore);
-			}
-			/*
-			 *TODO: implement process and closing if(process != -1 && processPhase != null) {
-				// close current process phase
-				metadataHandler.closeProcessPhase(process, processPhase);
-			}*/
+	public void execute(Integer aggregationLevel, boolean dropInput, String closePhase, boolean newProcess) throws IOException {
+		
+		if(aggregationLevel == 1 || aggregationLevel == 2){
+			executeArc(aggregationLevel, dropInput, closePhase, newProcess);
 		}
+		if(aggregationLevel == 3){
+			executeCell(aggregationLevel, dropInput, closePhase, newProcess);
+		}
+		
 	}
 
-	public void executeCell(Integer aggregationLevel){
+	public void executeCell(Integer aggregationLevel, boolean dropInput, String closePhase, boolean newProcess) throws IOException {
 		LOGGER.info("Start execution for CELL with partner="+partner+" and aggregationLevel="+aggregationLevel);
 
 		Transaction transaction = new DefaultTransaction("handle");
@@ -192,14 +185,29 @@ public class StreetUserComputation extends InputObject {
 		int trace = -1;
 		
 		int errors = 0;
+		int startErrors = 0;
 		
 		try{
 			siig_r_scen_vuln_X_type = "siig_r_scen_vuln_"+aggregationLevel;
 
-			MetadataIngestionHandler.Process importData = getProcessData();
-			process = importData.getId();
-			trace = importData.getMaxTrace();
-			errors = importData.getMaxError();
+			// create or retrieve metadata for ingestion
+			if(newProcess) {
+				removeOldImports();
+				// new process
+				process = createProcess();
+				// write log for the imported file
+				trace = logFile(process, NO_TARGET,
+						partner, codicePartner, date, false);
+			} else {
+				// existing process
+				MetadataIngestionHandler.Process importData = getProcessData();
+				if (importData != null) {
+					process = importData.getId();
+					trace = importData.getMaxTrace();
+					errors = importData.getMaxError();
+					startErrors = errors;
+				}
+			}
 			
 			if(removeFeatures) {
 				clearOutputFeature(aggregationLevel);
@@ -289,7 +297,7 @@ public class StreetUserComputation extends InputObject {
 					} catch(Exception e) {
 						errors++;
 						metadataHandler.logError(trace, errors,
-								"Error writing output feature", getError(e),
+								"Error calculating street users data for cell: " + idGeoCell, getError(e),
 								idGeoCell);
 					} finally {
 						if(inputIteratorArc != null) {
@@ -309,20 +317,19 @@ public class StreetUserComputation extends InputObject {
 						rowTransaction.commit();
 
 						inputCount++;
-						updateImportProgress(inputCount, total, 1, errors, "Importing data in " + siig_r_scen_vuln_X_type);
+						updateImportProgress(inputCount, total, 1, errors - startErrors, "Calculating streets user data in " + siig_r_scen_vuln_X_type);
 					} catch(Exception e) {
 						errors++;
 						rowTransaction.rollback();
 						metadataHandler.logError(trace, errors,
-								"Error writing output feature", getError(e),
+								"Error writing street users data for cell: " + idGeoCell, getError(e),
 								idGeoCell);
 					} finally {				
 						rowTransaction.close();							
 					}
 					
 				}
-				importFinished(total, errors, "Data imported in " + siig_r_scen_vuln_X_type);
-				metadataHandler.updateLogFile(trace, total, errors, true);
+				importFinished(total, errors - startErrors, "Data imported in " + siig_r_scen_vuln_X_type);
 				transaction.commit();
 			} finally {
 				
@@ -340,11 +347,14 @@ public class StreetUserComputation extends InputObject {
 			}
 		}
 		finally {
-			try {
-				transaction.close();
-			} catch (IOException e) {
-				LOGGER.error(e.getMessage(),e);
-			}
+			if (process != -1 && closePhase != null) {
+                // close current process phase
+                if (metadataHandler != null) {
+                    metadataHandler.closeProcessPhase(process, closePhase);
+                }
+            } 
+            transaction.close();
+            finalReport("Streets users computation completed", errors - startErrors);
 		}
 	}
 
@@ -364,23 +374,39 @@ public class StreetUserComputation extends InputObject {
         return bufferMap;
 	}
 	
-	public void executeArc(Integer aggregationLevel){
+	public void executeArc(Integer aggregationLevel, boolean dropInput, String closePhase, boolean newProcess) throws IOException{
 
 		LOGGER.info("Start execution with partner="+partner+" and aggregationLevel="+aggregationLevel);
 		Transaction transaction = new DefaultTransaction("handle");		
 		
 		int process = -1;
 		int trace = -1;
-		
+
 		int errors = 0;
+		int startErrors = 0;
 		
 		try{
+			
+			// create or retrieve metadata for ingestion
+			if(newProcess) {
+				removeOldImports();
+				// new process
+				process = createProcess();
+				// write log for the imported file
+				trace = logFile(process, NO_TARGET,
+						partner, codicePartner, date, false);
+			} else {
+				// existing process
+				MetadataIngestionHandler.Process importData = getProcessData();
+				if (importData != null) {
+					process = importData.getId();
+					trace = importData.getMaxTrace();
+					errors = importData.getMaxError();
+					startErrors = errors;
+				}
+			}
+			
 			siig_r_scen_vuln_X_type = "siig_r_scen_vuln_"+aggregationLevel;
-
-			MetadataIngestionHandler.Process importData = getProcessData();
-			process = importData.getId();
-			trace = importData.getMaxTrace();
-			errors = importData.getMaxError();
 						
 			if(removeFeatures) {
 				clearOutputFeature(aggregationLevel);
@@ -458,17 +484,16 @@ public class StreetUserComputation extends InputObject {
 							errors++;
 							rowTransaction.rollback();
 							metadataHandler.logError(trace, errors,
-									"Error writing output feature", getError(e),
+									"Error writing output streets user data for arc " + idGeoArco, getError(e),
 									idGeoArco);
 						} finally {				
 							rowTransaction.close();							
 						}
 					}
 					inputCount++;
-					updateImportProgress(inputCount, total, 1, errors, "Importing data in " + siig_r_scen_vuln_X_type);
+					updateImportProgress(inputCount, total, 1, errors - startErrors, "Calculating streets user data in " + siig_r_scen_vuln_X_type);
 				}
-				importFinished(total, errors, "Data imported in " + siig_r_scen_vuln_X_type);
-				metadataHandler.updateLogFile(trace, total, errors, true);
+				importFinished(total, errors - startErrors, "Streets user data calculated in " + siig_r_scen_vuln_X_type);
 				transaction.commit(); 
 			} finally {
 				if(inputIterator != null) {
@@ -476,19 +501,23 @@ public class StreetUserComputation extends InputObject {
 				}
 			}
 		}catch (Exception ex){
-			LOGGER.error(ex.getMessage(),ex);
-			try {
-				transaction.rollback();
-			} catch (IOException e) {
-				LOGGER.error(e.getMessage(),e);
-			}
+			LOGGER.error(ex.getMessage(), ex);
+            transaction.rollback();
+            errors++;
+            if (metadataHandler != null) {
+                metadataHandler.logError(trace, errors, "Error calculating streets user data", getError(ex), 0);
+            }
+            throw new IOException(ex);
 		}
 		finally {
-			try {
-				transaction.close();
-			} catch (IOException e) {
-				LOGGER.error(e.getMessage(),e);
-			}
+			if (process != -1 && closePhase != null) {
+                // close current process phase
+                if (metadataHandler != null) {
+                    metadataHandler.closeProcessPhase(process, closePhase);
+                }
+            } 
+            transaction.close();
+            finalReport("Streets users computation completed", errors - startErrors);
 		}
 	}
 

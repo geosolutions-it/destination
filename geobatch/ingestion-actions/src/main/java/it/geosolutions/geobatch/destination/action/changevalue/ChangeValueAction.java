@@ -66,16 +66,18 @@ public class ChangeValueAction extends BaseAction<EventObject> {
 					ChangeValueProcess changeValueProcess = new ChangeValueProcess(ds, transaction, featureConfiguration.getTypeName());
 					changeValueProcess.execute(configuration.getFilter(),configuration.getAttribute(),configuration.getValue());
 					transaction.commit();
-
+					listenerForwarder.progressing(100, "Completed");
 					// pass the feature config to the next action
 					ret.add(event);
 				} catch (Exception ex) {
 					LOGGER.error(ex.getMessage(),ex);
 					transaction.rollback();
+					listenerForwarder.progressing(100, "Completed with errors");
 					throw ex;
 				} finally {
 					ds.dispose();
 				}
+				
 			}
 			listenerForwarder.completed();
 	        return ret;
