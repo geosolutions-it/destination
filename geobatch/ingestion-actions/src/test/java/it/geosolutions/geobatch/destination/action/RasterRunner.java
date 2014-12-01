@@ -49,9 +49,9 @@ public class RasterRunner {
 		}
 		
 		RasterMigration migration = new RasterMigration("ALL", "J:\\Develop\\destination\\rasters_out",
-				"J:\\Develop\\destination\\lose_gs_data_dir\\coverages\\lose", null, null, new ProgressListenerForwarder(null));
+				"J:\\Develop\\destination\\rasters_prod_lose", null, null, new ProgressListenerForwarder(null));
         try {
-			migration.execute("C");
+			migration.execute("C", false);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

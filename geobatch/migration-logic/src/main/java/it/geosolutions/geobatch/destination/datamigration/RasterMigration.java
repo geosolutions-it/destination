@@ -58,6 +58,7 @@ public class RasterMigration extends InputObject {
             .compile("^([A-Z]{2})[_-]([A-Z]{2,3})[_-]([A-Z]+)([_-][C|I])?[_-]([0-9]{8})[_-]([0-9]{2})$");
 
     private static Pattern TYPE_PARTNER_TARGETS = Pattern.compile("[A-Z]{2}");
+	private static Pattern TYPE_NAME_PARTS_ALL = Pattern.compile("^([A-Z]{2})_([0-9]{8})(_.*?)?$");
 
     private boolean singleFile = false;
 
@@ -66,11 +67,15 @@ public class RasterMigration extends InputObject {
     private boolean allFiles = false;
 
     private String codicePartner;
+    
+    private Integer partner;
 
     private String codiceTarget;
 
     private Integer targetType;
 
+    private String date;
+    
     private ProgressListener listener;
 
     private String outputDirectory;
@@ -112,9 +117,11 @@ public class RasterMigration extends InputObject {
         // regexp used for parsing the input file name
         Matcher m = TYPE_NAME_PARTS_TARGETS.matcher(typeName);
         Matcher p = TYPE_PARTNER_TARGETS.matcher(typeName);
+        Matcher a = TYPE_NAME_PARTS_ALL.matcher(typeName);
         if (m.matches()) {
             // partner alphanumerical abbreviation (from siig_t_partner)
             codicePartner = m.group(1);
+            partner = Integer.parseInt(partners.get(codicePartner).toString());
             Object partnerObj = partners.get(codicePartner);
             // Check if the Partner is correct
             if (partnerObj != null) {
@@ -130,8 +137,18 @@ public class RasterMigration extends InputObject {
                     partnerFiles = true;
                 }
             }
+            date = m.group(5);
         } else if (p.matches()) {
             codicePartner = p.group();
+            Object partnerObj = partners.get(codicePartner);
+            if (partnerObj != null) {
+                // All the partner files can be elaborated
+                partnerFiles = true;
+            }
+        } else if (a.matches()) {
+        	codicePartner = a.group(1);
+			// partner numerical id (from siig_t_partner)
+			date = a.group(2);
             Object partnerObj = partners.get(codicePartner);
             if (partnerObj != null) {
                 // All the partner files can be elaborated
@@ -150,7 +167,7 @@ public class RasterMigration extends InputObject {
      * 
      * @throws IOException
      */
-    public void execute(String closePhase) throws IOException {
+    public void execute(String closePhase, boolean newProcess) throws IOException {
         if (!(singleFile || partnerFiles || allFiles)) {
             if (listenerPresent) {
                 listener.setTask("Unable to process the input string");
@@ -158,18 +175,31 @@ public class RasterMigration extends InputObject {
             return;
         }
         
-        int process = -1;
-        int trace = -1;
-        int errors = 0;
         
+        int process = -1;
+		int trace = -1;
 
-        if(singleFile) {
-	        // existing process
+		int errors = 0;
+		int startErrors = 0;
+		
+		// create or retrieve metadata for ingestion
+		if(newProcess) {
+			removeOldImports();
+			// new process
+			process = createProcess();
+			// write log for the imported file
+			trace = logFile(process, NO_TARGET,
+					partner, codicePartner, date, false);
+		} else {
+			// existing process
 			MetadataIngestionHandler.Process importData = getProcessData();
-			process = importData.getId();
-			trace = importData.getMaxTrace();
-			errors = importData.getMaxError();
-        }
+			if (importData != null) {
+				process = importData.getId();
+				trace = importData.getMaxTrace();
+				errors = importData.getMaxError();
+				startErrors = errors;
+			}
+		}
         try {
 	        // Directory where the input files are stored
 	        File inputDir = new File(inputDirectory);
@@ -190,6 +220,7 @@ public class RasterMigration extends InputObject {
 	                // Copy of all the files
 	                copyAllFiles(inputDir, outputDir);
 	            }
+	            
 	        } else {
 	            throw new IllegalArgumentException("File path is not correct");
 	        }
@@ -204,7 +235,7 @@ public class RasterMigration extends InputObject {
 				// close current process phase
 				metadataHandler.closeProcessPhase(process, closePhase);
 			}
-	        
+	        finalReport("Rasters migration completed", errors - startErrors);
 	    }
     }
 
@@ -244,9 +275,12 @@ public class RasterMigration extends InputObject {
                 // Selection of all the files inside the directory
                 File[] partnerFiles = partnerDir.listFiles(noDirectories);
                 // Cycle on the input files
+                int count = 0;
                 for (File file : partnerFiles) {
+                	updateImportProgress(count, partnerFiles.length, 1, 0, "Migrating raster " + file.getName());
                     // Copy of the single file
                     copySingleFile(FilenameUtils.getBaseName(file.getName()), partnerName);
+                    count++;
                 }
             }
         } else {

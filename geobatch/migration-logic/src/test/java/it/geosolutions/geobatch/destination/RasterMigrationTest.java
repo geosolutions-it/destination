@@ -24,6 +24,7 @@ package it.geosolutions.geobatch.destination;
 import static org.junit.Assert.assertTrue;
 import it.geosolutions.geobatch.destination.commons.DestinationMemoryTest;
 import it.geosolutions.geobatch.destination.datamigration.RasterMigration;
+import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
 
 import java.io.File;
 import java.io.IOException;
@@ -82,9 +83,9 @@ public class RasterMigrationTest extends DestinationMemoryTest {
     @Test
     public void testCopySingleFile() throws IOException {
         // Initialization of the migration object
-        RasterMigration rasterMig = new RasterMigration(SINGLE_FILE, INPUT_DIR, OUTPUT_DIR, metadataHandler, dataStore, null);
+        RasterMigration rasterMig = new RasterMigration(SINGLE_FILE, INPUT_DIR, OUTPUT_DIR, metadataHandler, dataStore, new ProgressListenerForwarder(null));
         // Copying file
-        rasterMig.execute(null);
+        rasterMig.execute(null, false);
         // Path of the new file
         String filePath = OUTPUT_DIR + PATHSEPARATOR + "aree_boscate" + PATHSEPARATOR
                 + "aree_boscate_ao" + TIF_EXTENSION;
@@ -103,9 +104,9 @@ public class RasterMigrationTest extends DestinationMemoryTest {
         // First partner string initialization
         String partnerName = PARTNER_FILES[0];
         // Initialization of the migration object
-        RasterMigration rasterMig = new RasterMigration(partnerName, INPUT_DIR, OUTPUT_DIR, metadataHandler, dataStore, null);
+        RasterMigration rasterMig = new RasterMigration(partnerName, INPUT_DIR, OUTPUT_DIR, metadataHandler, dataStore, new ProgressListenerForwarder(null));
         // Copying file
-        rasterMig.execute(null);
+        rasterMig.execute(null, false);
         // Path of the new files
         String filePathBase = INPUT_DIR + PATHSEPARATOR + partnerName;
         File inputDirPartner = new File(filePathBase);
@@ -130,9 +131,9 @@ public class RasterMigrationTest extends DestinationMemoryTest {
     @Test
     public void testCopyAllFiles() throws IOException {
         // Initialization of the migration object
-        RasterMigration rasterMig = new RasterMigration(ALL_FILES, INPUT_DIR, OUTPUT_DIR, metadataHandler, dataStore,  null);
+        RasterMigration rasterMig = new RasterMigration(ALL_FILES, INPUT_DIR, OUTPUT_DIR, metadataHandler, dataStore,  new ProgressListenerForwarder(null));
         // Copying file
-        rasterMig.execute(null);
+        rasterMig.execute(null, false);
         // Path of the new files
         String filePathBase = INPUT_DIR + PATHSEPARATOR + PARTNER_FILES[0];
         File inputDirPartner = new File(filePathBase);

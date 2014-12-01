@@ -118,9 +118,9 @@ public class RasterMigrationAction extends BaseAction<EventObject> {
 				MetadataIngestionHandler metadataHandler = new MetadataIngestionHandler(
 						dataStore);
 				RasterMigration migration = new RasterMigration(fileName, inputDirectory,
-	                    finalDirectory, metadataHandler, dataStore, new ProgressListenerForwarder(null));
+	                    finalDirectory, metadataHandler, dataStore, listenerForwarder);
 	            
-	            migration.execute(configuration.getClosePhase());
+	            migration.execute(configuration.getClosePhase(), configuration.isNewImport());
 				
 				
 			} finally {

@@ -21,6 +21,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EventObject;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -56,16 +57,19 @@ public class ProductionUpdater extends InputObject{
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(ProductionUpdater.class);
 
-	private static Pattern TYPE_NAME_PARTS_ARCS = Pattern.compile("^([A-Z]{2})_([A-Z]{1})_([A-Za-z]+)_([0-9]{8})(_ORIG)?$");
+	private static Pattern TYPE_NAME_PARTS_ARCS = Pattern.compile("^([A-Z]{2})_([A-Z]{1})_([A-Za-z]+)_([0-9]{8})(_.*?)?$");
 	private static Pattern TYPE_NAME_PARTS_TARGETS  = Pattern.compile("^([A-Z]{2})[_-]([A-Z]{2,3})[_-]([A-Z]+)([_-][C|I])?[_-]([0-9]{8})[_-]([0-9]{2})$");
+	private static Pattern TYPE_NAME_PARTS_ALL = Pattern.compile("^([A-Z]{2})_([0-9]{8})(_.*?)?$");
 	private static Properties targetTypes = new Properties();
 
 	private Ds2dsConfiguration ds2dsConfiguration;
 	private String codicePartner;
 	private Integer partner;
 	private Integer targetType;
+	private String date;
 	private boolean filterByTarget = true;
 	private boolean removeFeatures = true;
+	private boolean migrateAll;
 
 	static {	
 		// load mappings from resources
@@ -98,18 +102,19 @@ public class ProductionUpdater extends InputObject{
 			ProgressListenerForwarder listenerForwarder,
 			MetadataIngestionHandler metadataHandler, DataStore dataStore) {
 		super(inputTypeName, listenerForwarder, metadataHandler, dataStore);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	protected boolean parseTypeName(String typeName) {
 		Matcher m = TYPE_NAME_PARTS_ARCS.matcher(typeName);
+		migrateAll = false;
 		if(m.matches()) {
 			// partner alphanumerical abbreviation (from siig_t_partner)
 			codicePartner = m.group(1);
 			// partner numerical id (from siig_t_partner)
 			partner = Integer.parseInt(partners.get(codicePartner).toString());			
 			//targetType = Integer.parseInt(targetTypes.get(m.group(3)).toString());
+			date = m.group(4);
 			return true;
 		}
 		m = TYPE_NAME_PARTS_TARGETS.matcher(typeName);
@@ -120,15 +125,25 @@ public class ProductionUpdater extends InputObject{
 			partner = Integer.parseInt(partners.get(codicePartner).toString());
 			// target detailed type id (from siig_t_bersaglio)
 			targetType = Integer.parseInt(targetTypes.get(m.group(3)).toString());
+			date = m.group(5);
+			return true;
+		}
+		m = TYPE_NAME_PARTS_ALL.matcher(typeName);
+		if(m.matches()) {
+			// partner alphanumerical abbreviation (from siig_t_partner)
+			codicePartner = m.group(1);
+			// partner numerical id (from siig_t_partner)
+			partner = Integer.parseInt(partners.get(codicePartner).toString());
+			date = m.group(2);
+			migrateAll = true;
 			return true;
 		}
 		return false;
 	}
 
-	private List<String> receivedEvents = new ArrayList<String>();
+	//private List<String> receivedEvents = new ArrayList<String>();
 
-	private IProgressListener listener = new IProgressListener() {
-
+			/*
 		@Override
 		public void terminated() {
 			receivedEvents.add("terminated");				
@@ -188,7 +203,7 @@ public class ProductionUpdater extends InputObject{
 		public void completed() {
 			receivedEvents.add("completed");			
 		}
-	};
+	};*/
 
 	private Queue<EventObject> getEvents() throws URISyntaxException {
 		Queue<EventObject> events = new LinkedList<EventObject>();
@@ -197,7 +212,7 @@ public class ProductionUpdater extends InputObject{
 		return events;
 	}
 
-	public void execute(String closePhase) throws Exception {
+	public void execute(String closePhase, boolean newProcess) throws Exception {
 		UpdaterFeatures updaterFeatures  = UpdaterFeatures.fromXML(this.getClass().getClassLoader().getResourceAsStream("datamigration.xml"));
 		UpdaterFeatures targetFeature = new UpdaterFeatures();
 		UpdaterFeatures arcFeature = new UpdaterFeatures();
@@ -210,21 +225,51 @@ public class ProductionUpdater extends InputObject{
 		}
 		
 		int process = -1;
-        int trace = -1;
-        int errors = 0;
-                
-        // existing process
-		MetadataIngestionHandler.Process importData = getProcessData();
-		process = importData.getId();
-		trace = importData.getMaxTrace();
-		errors = importData.getMaxError();
+		int trace = -1;
+
+		int errors = 0;
+		int startErrors = 0;
+		
+		// create or retrieve metadata for ingestion
+		if(newProcess) {
+			removeOldImports();
+			// new process
+			process = createProcess();
+			// write log for the imported file
+			trace = logFile(process, NO_TARGET,
+					partner, codicePartner, date, false);
+		} else {
+			// existing process
+			MetadataIngestionHandler.Process importData = getProcessData();
+			if (importData != null) {
+				process = importData.getId();
+				trace = importData.getMaxTrace();
+				errors = importData.getMaxError();
+				startErrors = errors;
+			}
+		}
 		
 		try {
-			if(targetType!=null){
-				executeTarget(targetFeature);
-			}else{
-				executeArc(arcFeature);
+			MultiProgressListenerForwarder listener = null;
+			if(migrateAll) {
+				listener = new MultiProgressListenerForwarder(
+						listenerForwarder.getOwner(), listenerForwarder,
+						updaterFeatures.getFeatures().size());
+				executeTarget(targetFeature, listener);
+				executeArc(arcFeature, listener);
 			}
+			else if(targetType!=null){
+				listener = new MultiProgressListenerForwarder(
+						listenerForwarder.getOwner(), listenerForwarder,
+						targetFeature.getFeatures().size());
+				executeTarget(targetFeature, listener);
+			}else{
+				listener = new MultiProgressListenerForwarder(
+						listenerForwarder.getOwner(), listenerForwarder,
+						arcFeature.getFeatures().size());
+				executeArc(arcFeature, listener);
+			}
+			metadataHandler.updateLogFile(trace, listener.getTotalRecords(), startErrors, true);
 		} catch(Exception e){
         	errors++;
         	metadataHandler
@@ -236,12 +281,12 @@ public class ProductionUpdater extends InputObject{
 				// close current process phase
 				metadataHandler.closeProcessPhase(process, closePhase);
 			}
-	        
+	        finalReport("Data migration completed", errors - startErrors);
 	    }
 
 	}
 
-	public void executeTarget(UpdaterFeatures targetFeature) throws Exception {
+	public void executeTarget(UpdaterFeatures targetFeature, MultiProgressListenerForwarder listener) throws Exception {
 		LOGGER.info("Execute TARGET migration");
 		Map<String, Serializable> destinationDataStoreConfig = this.ds2dsConfiguration.getOutputFeature().getDataStore();
 		DataStore destinationDataStore = DataStoreFinder.getDataStore(destinationDataStoreConfig);
@@ -299,31 +344,44 @@ public class ProductionUpdater extends InputObject{
 					//connection.close();
 
 					if(fkFound){
-
+						listenerForwarder.setTask("Removing data from " + pkTableName);
 						//Retrieve IDs of primary feature to delete related to those extracted by EcqlFilter on related feature
 						FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
+						
+						//Delete features by IDs
 
+						SimpleFeatureStore store = (SimpleFeatureStore) destinationDataStore.getFeatureSource(pkTableName);
+						store.setTransaction(Transaction.AUTO_COMMIT);		
+						
 						Query query = new Query(fkTableName,filter);
 						FeatureReader<SimpleFeatureType, SimpleFeature> reader = destinationDataStore.getFeatureReader(query, Transaction.AUTO_COMMIT);
-						Set<FeatureId> featureIds = new HashSet<FeatureId>();
+						Set<FeatureId> ids = new HashSet<FeatureId>();
+						int count = 0;
 						while (reader.hasNext()) {
 							SimpleFeature feature = reader.next();
 							if(feature.getAttribute(fkColumnName) != null){
-								featureIds.add(ff.featureId(pkTableName + "." + feature.getAttribute(fkColumnName).toString()));
+								ids.add(ff.featureId(pkTableName + "." + feature.getAttribute(fkColumnName).toString()));
+								
+							}
+							count++;
+							if(count % 100 == 0) {
+								store.removeFeatures(ff.id(ids));
+								ids.clear();
 							}
 						}
+						if(ids.size() > 0) {
+							store.removeFeatures(ff.id(ids));
+						}
 						reader.close();
-						Id fids = ff.id(featureIds);
 
-						//Delete features by IDs
-						SimpleFeatureStore store = (SimpleFeatureStore) destinationDataStore.getFeatureSource(pkTableName);
-						store.setTransaction(Transaction.AUTO_COMMIT);					
-						store.removeFeatures(fids);
+									
+						
 					}
 				}
 
 				//Delete parent records
 				else{
+					listenerForwarder.setTask("Removing data from " + fn);
 					SimpleFeatureStore store = (SimpleFeatureStore) destinationDataStore.getFeatureSource(fn);
 					store.setTransaction(Transaction.AUTO_COMMIT);					
 					store.removeFeatures(filter);
@@ -339,7 +397,7 @@ public class ProductionUpdater extends InputObject{
 			String fn = f.getFeatureName();
 			String pr = f.getFeatureParentRelation();
 			if(pr != null){
-				runDs2Ds(fn);
+				runDs2Ds(fn, listener);
 			}			
 		}
 
@@ -347,13 +405,13 @@ public class ProductionUpdater extends InputObject{
 			String fn = f.getFeatureName();
 			String pr = f.getFeatureParentRelation();
 			if(pr == null){					
-				runDs2Ds(fn);
+				runDs2Ds(fn, listener);
 			}			
 		}
 
 	}
 
-	public void executeArc(UpdaterFeatures arcFeature) throws Exception {
+	public void executeArc(UpdaterFeatures arcFeature, MultiProgressListenerForwarder listener) throws Exception {
 		LOGGER.info("Execute ARC migration");
 		Map<String, Serializable> destinationDataStoreConfig = this.ds2dsConfiguration.getOutputFeature().getDataStore();
 		DataStore destinationDataStore = DataStoreFinder.getDataStore(destinationDataStoreConfig);
@@ -392,6 +450,7 @@ public class ProductionUpdater extends InputObject{
 									String pkTableName = foreignKeys.getString("PKTABLE_NAME");
 									String pkColumnName = foreignKeys.getString("PKCOLUMN_NAME");
 									if(pkTableName.equals(fn)){
+										listenerForwarder.setTask("Removing data from " + fkTableName);
 										//Delete on related table										
 										Filter relatedFilter = CQL.toFilter(fkColumnName+"="+feature.getAttribute(pkColumnName).toString());
 										//Delete features by IDs
@@ -403,7 +462,8 @@ public class ProductionUpdater extends InputObject{
 							}
 							//
 						}
-						reader.close();						
+						reader.close();		
+						listenerForwarder.setTask("Removing data from " + fn);
 						SimpleFeatureStore store = (SimpleFeatureStore) destinationDataStore.getFeatureSource(fn);
 						store.setTransaction(transaction);					
 						store.removeFeatures(filter);
@@ -426,31 +486,42 @@ public class ProductionUpdater extends InputObject{
 			String fn = f.getFeatureName();
 			String pr = f.getFeatureParentRelation();
 			if(pr == null){
-				runDs2Ds(fn);
+				runDs2Ds(fn, listener);
 			}
 		}
 		for(UpdaterFeature f : arcFeature.getFeatures()){
 			String fn = f.getFeatureName();
 			String pr = f.getFeatureParentRelation();
 			if(pr != null){
-				runDs2Ds(fn);
+				runDs2Ds(fn, listener);
 			}
 		}
 
 	}
 
 
-	private void runDs2Ds(String featureName) throws Exception{
+	private void runDs2Ds(String featureName, final MultiProgressListenerForwarder listener) throws Exception{
 		LOGGER.info("Execute Ds2Ds on " + featureName + " feature");
 		this.ds2dsConfiguration.getSourceFeature().setTypeName(featureName);
 		//Force purge to false
 		this.ds2dsConfiguration.setPurgeData(false);
 		this.ds2dsConfiguration.setFailIgnored(true);
-		Ds2dsAction action = new Ds2dsAction(this.ds2dsConfiguration);		
+		Ds2dsAction action = new Ds2dsAction(this.ds2dsConfiguration) {
+			protected void updateImportProgress(int progress, int total, String message) {
+		        float f = total == 0 ? 0 : (float) progress*100 / total;
+		        listenerForwarder.progressing(f, message);
+		        listener.addTotalRecords(total);
+		        if (LOGGER.isInfoEnabled()) {
+		            LOGGER.info("Importing data: " + progress + "/" + total);
+		        }
+		    }
+		};		
 		action.setTempDir(new File(System.getProperty("java.io.tmpdir")));
 		action.setFailIgnored(true);
+		listener.setCurrentName(featureName);
 		action.addListener(listener);
 		action.execute(getEvents());
+		listener.incrementCurrent();
 	}
 
 	public void setDs2DsConfiguration(Ds2dsConfiguration productionUpdaterConfiguration) {

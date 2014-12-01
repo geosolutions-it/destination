@@ -57,7 +57,7 @@ public class MigrationTest  extends DestinationMemoryTest{
 		this.productionUpdaterConfiguration.getSourceFeature().setTypeName("RP_BNU-AAGR_C_20130904_02");
 		ProductionUpdater productionUpdater = createProcess(productionUpdaterConfiguration.getSourceFeature().getTypeName());		
 		productionUpdater.setDs2DsConfiguration(productionUpdaterConfiguration);
-		productionUpdater.execute(null);
+		productionUpdater.execute(null, false);
 		
 		checkFeature("siig_geo_bers_non_umano_ln", 1, this.outputDatastore);
 		checkFeature("siig_geo_bers_non_umano_pl", 1, this.outputDatastore);
@@ -70,7 +70,7 @@ public class MigrationTest  extends DestinationMemoryTest{
 		this.productionUpdaterConfiguration.getSourceFeature().setTypeName("RP_BU-ACOMM_C_20130906_02");
 		ProductionUpdater productionUpdater = createProcess(productionUpdaterConfiguration.getSourceFeature().getTypeName());		
 		productionUpdater.setDs2DsConfiguration(productionUpdaterConfiguration);
-		productionUpdater.execute(null);
+		productionUpdater.execute(null, false);
 		
 		checkFeature("siig_geo_bersaglio_umano_pl", 1, this.outputDatastore);
 		checkFeature("siig_geo_bersaglio_umano_pt", 1, this.outputDatastore);
@@ -82,7 +82,7 @@ public class MigrationTest  extends DestinationMemoryTest{
 		this.productionUpdaterConfiguration.getSourceFeature().setTypeName("RP_C_Grafo_20130917");
 		ProductionUpdater productionUpdater = createProcess(productionUpdaterConfiguration.getSourceFeature().getTypeName());		
 		productionUpdater.setDs2DsConfiguration(productionUpdaterConfiguration);
-		productionUpdater.execute(null);
+		productionUpdater.execute(null, false);
 		
 		checkFeature("siig_r_arco_1_dissesto", 1, this.outputDatastore);
 		checkFeature("siig_r_arco_1_scen_tipobers", 1, this.outputDatastore);
@@ -108,7 +108,7 @@ public class MigrationTest  extends DestinationMemoryTest{
 		this.productionUpdaterConfiguration.getSourceFeature().setTypeName("RP_C_Grafo_20130917");
 		ProductionUpdater productionUpdater = createProcess(productionUpdaterConfiguration.getSourceFeature().getTypeName());		
 		productionUpdater.setDs2DsConfiguration(productionUpdaterConfiguration);
-		productionUpdater.execute(null);
+		productionUpdater.execute(null, false);
 		
 		checkFeature("siig_t_vulnerabilita_1", 1, this.outputDatastore);
 		checkFeature("siig_t_vulnerabilita_2", 1, this.outputDatastore);
@@ -120,7 +120,7 @@ public class MigrationTest  extends DestinationMemoryTest{
 		this.productionUpdaterConfiguration.getSourceFeature().setTypeName("RP_C_Grafo_20130917");
 		ProductionUpdater productionUpdater = createProcess(productionUpdaterConfiguration.getSourceFeature().getTypeName());		
 		productionUpdater.setDs2DsConfiguration(productionUpdaterConfiguration);
-		productionUpdater.execute(null);
+		productionUpdater.execute(null, false);
 		
 		checkFeature("siig_t_elab_standard_1", 1, this.outputDatastore);
 		checkFeature("siig_t_elab_standard_2", 1, this.outputDatastore);

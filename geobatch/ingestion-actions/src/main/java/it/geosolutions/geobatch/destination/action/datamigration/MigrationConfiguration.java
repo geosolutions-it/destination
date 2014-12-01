@@ -29,6 +29,8 @@ import it.geosolutions.geobatch.actions.ds2ds.Ds2dsConfiguration;
 public class MigrationConfiguration extends Ds2dsConfiguration {
 
 	private String closePhase = null;
+	private boolean newImport = false;
+	private boolean filterByTarget = true;
 	
 	public MigrationConfiguration(String id, String name, String description) {
 		super(id, name, description);
@@ -48,4 +50,21 @@ public class MigrationConfiguration extends Ds2dsConfiguration {
 		this.closePhase = closePhase;
 	}
 
+	public boolean isNewImport() {
+		return newImport;
+	}
+
+	public void setNewImport(boolean newImport) {
+		this.newImport = newImport;
+	}
+
+	public boolean isFilterByTarget() {
+		return filterByTarget;
+	}
+
+	public void setFilterByTarget(boolean filterByTarget) {
+		this.filterByTarget = filterByTarget;
+	}
+
+	
 }

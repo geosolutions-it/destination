@@ -27,7 +27,6 @@ import it.geosolutions.geobatch.actions.ds2ds.dao.FeatureConfiguration;
 import it.geosolutions.geobatch.actions.ds2ds.util.FeatureConfigurationUtil;
 import it.geosolutions.geobatch.annotations.Action;
 import it.geosolutions.geobatch.annotations.CheckConfiguration;
-import it.geosolutions.geobatch.destination.action.DestinationBaseAction;
 import it.geosolutions.geobatch.destination.datamigration.ProductionUpdater;
 import it.geosolutions.geobatch.destination.ingestion.MetadataIngestionHandler;
 import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
@@ -43,8 +42,6 @@ import java.util.Queue;
 import org.apache.commons.io.FilenameUtils;
 import org.geotools.data.DataStore;
 import org.geotools.jdbc.JDBCDataStore;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Action(configurationClass = MigrationConfiguration.class)
 public class MigrationAction extends BaseAction<EventObject> {
@@ -115,10 +112,10 @@ public class MigrationAction extends BaseAction<EventObject> {
 			MetadataIngestionHandler metadataHandler = new MetadataIngestionHandler(
 					dataStore);
 			ProductionUpdater updater = new ProductionUpdater(typeName, 
-					new ProgressListenerForwarder(null), metadataHandler, dataStore);
+					listenerForwarder, metadataHandler, dataStore);
 			updater.setDs2DsConfiguration(cfg);    
-		
-			updater.execute(cfg.getClosePhase());
+			updater.setFilterByTarget(cfg.isFilterByTarget());
+			updater.execute(cfg.getClosePhase(), cfg.isNewImport());
 		} catch (Exception ex) {
 			LOGGER.error("Error in importing arcs", ex);
 			throw new ActionException(this, "Error in importing arcs", ex);

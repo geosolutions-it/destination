@@ -27,6 +27,7 @@ import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 public class RasterMigrationConfiguration extends ActionConfiguration {
 
 	private String closePhase = null;
+	private boolean newImport = false;
 	private FeatureConfiguration sourceFeature;
 	
     public RasterMigrationConfiguration(String id, String name, String description) {
@@ -59,6 +60,14 @@ public class RasterMigrationConfiguration extends ActionConfiguration {
 	 */
 	public void setSourceFeature(FeatureConfiguration sourceFeature) {
 		this.sourceFeature = sourceFeature;
+	}
+
+	public boolean isNewImport() {
+		return newImport;
+	}
+
+	public void setNewImport(boolean newImport) {
+		this.newImport = newImport;
 	}
     
     
