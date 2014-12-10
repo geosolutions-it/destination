@@ -131,7 +131,7 @@
             <failIgnored>false</failIgnored>
             <aggregationLevel>3</aggregationLevel>
             <onGrid>true</onGrid>
-            <dropInput>false</dropInput>
+            <dropInput>true</dropInput>
             <closePhase>A</closePhase>
             <!-- Listeners -->
             <listenerId>ConsumerLogger6</listenerId>
