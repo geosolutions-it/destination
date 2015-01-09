@@ -162,7 +162,55 @@
 	        <listenerId>Cumulator</listenerId>
         </RasterMigrationConfiguration>
 		
-	</EventConsumerConfiguration>
+        <ChangeValueConfiguration>
+			<id>changevalue</id>
+			<description>ChangeValue action</description>
+			<name>Aggiornamento elaborazioni salvate</name>
+			<filter>name='valid'</filter>
+			<attribute>attribute_text</attribute>
+			<value>false</value>
+			<outputFeature>
+				<typeName>gs_attribute</typeName>
+				<dataStore>					
+					<entry>
+					  <string>dbtype</string>
+					  <string>postgis</string>
+					</entry>
+					<entry>
+					  <string>host</string>
+					  <string>127.0.0.1</string>
+					</entry>
+					<entry>
+					  <string>port</string>
+					  <string>5432</string>
+					</entry>
+					<entry>
+					  <string>database</string>
+					  <string>geostore</string>
+					</entry>
+					<entry>
+					  <string>user</string>
+					  <string>geostore</string>
+					</entry>
+					<entry>
+					  <string>passwd</string>
+					  <string>geostore</string>
+					</entry>
+					<entry>
+					  <string>schema</string>
+					  <string>geostore</string>
+					</entry>
+					<entry>
+					  <string>Expose primary keys</string>
+					  <boolean>true</boolean>
+					</entry>
+				</dataStore>				
+			</outputFeature>
+			<listenerConfigurations/>
+			<listenerId>ConsumerLogger3</listenerId>
+            <listenerId>Cumulator</listenerId>
+		</ChangeValueConfiguration>
+    </EventConsumerConfiguration>
 
 
     <ListenerConfigurations>
@@ -179,6 +227,11 @@
         <LoggingProgressListener>
             <serviceID>loggingListenerService</serviceID>
             <id>ConsumerLogger2</id>
+            <loggerName>it.geosolutions.ConsLogger</loggerName>
+        </LoggingProgressListener>
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ConsumerLogger3</id>
             <loggerName>it.geosolutions.ConsLogger</loggerName>
         </LoggingProgressListener>
         <CumulatingProgressListener>
