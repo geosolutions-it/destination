@@ -75,6 +75,7 @@ public class ChangeValueAction extends BaseAction<EventObject> {
 					listenerForwarder.progressing(100, "Completed with errors");
 					throw ex;
 				} finally {
+					transaction.close();
 					ds.dispose();
 				}
 				
