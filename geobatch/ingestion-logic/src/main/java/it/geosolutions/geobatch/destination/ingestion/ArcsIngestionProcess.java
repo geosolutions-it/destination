@@ -1254,6 +1254,12 @@ public class ArcsIngestionProcess extends InputObject {
 				geoFeatureBuilder.add(partner+"");
 			} else if(attr.getLocalName().equals("geometria")) {
 				geoFeatureBuilder.add(inputFeature.getDefaultGeometry());
+			} else if(attr.getLocalName().equals("lunghezza")) {
+				Number lunghezza = (Number)getMapping(inputFeature,attributeMappings, attr.getLocalName());
+				if(lunghezza == null || lunghezza.intValue() <= 0) {
+					lunghezza = 1;
+				}
+				geoFeatureBuilder.add(lunghezza);
 			} else if(attributeMappings.containsKey(attr.getLocalName())) {
 				geoFeatureBuilder.add(getMapping(inputFeature,attributeMappings, attr.getLocalName()));
 			} else {
