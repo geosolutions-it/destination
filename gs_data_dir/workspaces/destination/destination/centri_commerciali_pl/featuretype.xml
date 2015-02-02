@@ -10,25 +10,25 @@
     <string>centri_commerciali</string>
     <string>features</string>
   </keywords>
-  <nativeCRS class="projected">PROJCS[&quot;WGS 84 / UTM zone 32N&quot;, &#xd;
-  GEOGCS[&quot;WGS 84&quot;, &#xd;
-    DATUM[&quot;World Geodetic System 1984&quot;, &#xd;
-      SPHEROID[&quot;WGS 84&quot;, 6378137.0, 298.257223563, AUTHORITY[&quot;EPSG&quot;,&quot;7030&quot;]], &#xd;
-      AUTHORITY[&quot;EPSG&quot;,&quot;6326&quot;]], &#xd;
-    PRIMEM[&quot;Greenwich&quot;, 0.0, AUTHORITY[&quot;EPSG&quot;,&quot;8901&quot;]], &#xd;
-    UNIT[&quot;degree&quot;, 0.017453292519943295], &#xd;
-    AXIS[&quot;Geodetic longitude&quot;, EAST], &#xd;
-    AXIS[&quot;Geodetic latitude&quot;, NORTH], &#xd;
-    AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]], &#xd;
-  PROJECTION[&quot;Transverse_Mercator&quot;, AUTHORITY[&quot;EPSG&quot;,&quot;9807&quot;]], &#xd;
-  PARAMETER[&quot;central_meridian&quot;, 9.0], &#xd;
-  PARAMETER[&quot;latitude_of_origin&quot;, 0.0], &#xd;
-  PARAMETER[&quot;scale_factor&quot;, 0.9996], &#xd;
-  PARAMETER[&quot;false_easting&quot;, 500000.0], &#xd;
-  PARAMETER[&quot;false_northing&quot;, 0.0], &#xd;
-  UNIT[&quot;m&quot;, 1.0], &#xd;
-  AXIS[&quot;Easting&quot;, EAST], &#xd;
-  AXIS[&quot;Northing&quot;, NORTH], &#xd;
+  <nativeCRS class="projected">PROJCS[&quot;WGS 84 / UTM zone 32N&quot;, 
+  GEOGCS[&quot;WGS 84&quot;, 
+    DATUM[&quot;World Geodetic System 1984&quot;, 
+      SPHEROID[&quot;WGS 84&quot;, 6378137.0, 298.257223563, AUTHORITY[&quot;EPSG&quot;,&quot;7030&quot;]], 
+      AUTHORITY[&quot;EPSG&quot;,&quot;6326&quot;]], 
+    PRIMEM[&quot;Greenwich&quot;, 0.0, AUTHORITY[&quot;EPSG&quot;,&quot;8901&quot;]], 
+    UNIT[&quot;degree&quot;, 0.017453292519943295], 
+    AXIS[&quot;Geodetic longitude&quot;, EAST], 
+    AXIS[&quot;Geodetic latitude&quot;, NORTH], 
+    AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]], 
+  PROJECTION[&quot;Transverse_Mercator&quot;, AUTHORITY[&quot;EPSG&quot;,&quot;9807&quot;]], 
+  PARAMETER[&quot;central_meridian&quot;, 9.0], 
+  PARAMETER[&quot;latitude_of_origin&quot;, 0.0], 
+  PARAMETER[&quot;scale_factor&quot;, 0.9996], 
+  PARAMETER[&quot;false_easting&quot;, 500000.0], 
+  PARAMETER[&quot;false_northing&quot;, 0.0], 
+  UNIT[&quot;m&quot;, 1.0], 
+  AXIS[&quot;Easting&quot;, EAST], 
+  AXIS[&quot;Northing&quot;, NORTH], 
   AUTHORITY[&quot;EPSG&quot;,&quot;32632&quot;]]</nativeCRS>
   <srs>EPSG:32632</srs>
   <nativeBoundingBox>
@@ -43,12 +43,12 @@
     <maxx>4.51125611529294</maxx>
     <miny>-9.0193758094E-6</miny>
     <maxy>0.0</maxy>
-    <crs>GEOGCS[&quot;WGS84(DD)&quot;, &#xd;
-  DATUM[&quot;WGS84&quot;, &#xd;
-    SPHEROID[&quot;WGS84&quot;, 6378137.0, 298.257223563]], &#xd;
-  PRIMEM[&quot;Greenwich&quot;, 0.0], &#xd;
-  UNIT[&quot;degree&quot;, 0.017453292519943295], &#xd;
-  AXIS[&quot;Geodetic longitude&quot;, EAST], &#xd;
+    <crs>GEOGCS[&quot;WGS84(DD)&quot;, 
+  DATUM[&quot;WGS84&quot;, 
+    SPHEROID[&quot;WGS84&quot;, 6378137.0, 298.257223563]], 
+  PRIMEM[&quot;Greenwich&quot;, 0.0], 
+  UNIT[&quot;degree&quot;, 0.017453292519943295], 
+  AXIS[&quot;Geodetic longitude&quot;, EAST], 
   AXIS[&quot;Geodetic latitude&quot;, NORTH]]</crs>
   </latLonBoundingBox>
   <projectionPolicy>FORCE_DECLARED</projectionPolicy>
@@ -59,7 +59,7 @@
     <entry key="JDBC_VIRTUAL_TABLE">
       <virtualTable>
         <name>centri_commerciali_pl</name>
-        <sql>SELECT v_geo_commercio_pl.*&#xd;
+        <sql>SELECT partner_it,partner_en,partner_fr,partner_de,id_tematico,fk_bersaglio_umano_pl as fk_geo,denominazione_it,denominazione_en,denominazione_fr,denominazione_de,insegna_it,insegna_en,insegna_fr,insegna_de,sup_vendita,fonte_utenti_it,fonte_utenti_en,fonte_utenti_fr,fonte_utenti_de,utenti,fonte_addetti_commercio_it,fonte_addetti_commercio_en,fonte_addetti_commercio_fr,fonte_addetti_commercio_de,addetti,geometria&#xd;
 FROM&#xd;
    v_geo_commercio_pl&#xd;
     where v_geo_commercio_pl.fk_bersaglio_umano_pl in (&#xd;
@@ -70,12 +70,11 @@ FROM&#xd;
     where siig_geo_ln_arco_1.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)&#xd;
     )&#xd;
 UNION&#xd;
-SELECT v_geo_commercio_pl.*&#xd;
+SELECT partner_it,partner_en,partner_fr,partner_de,id_tematico,fk_bersaglio_umano_pl as fk_geo,denominazione_it,denominazione_en,denominazione_fr,denominazione_de,insegna_it,insegna_en,insegna_fr,insegna_de,sup_vendita,fonte_utenti_it,fonte_utenti_en,fonte_utenti_fr,fonte_utenti_de,utenti,fonte_addetti_commercio_it,fonte_addetti_commercio_en,fonte_addetti_commercio_fr,fonte_addetti_commercio_de,addetti,geometria&#xd;
 FROM&#xd;
    v_geo_commercio_pl&#xd;
     where &#xd;
 st_intersects(geometria,ST_GeomFromText(&apos;%wkt%&apos;,32632))</sql>
-        <keyColumn>fk_bersaglio_umano_pl</keyColumn>
         <geometry>
           <name>geometria</name>
           <type>MultiPolygon</type>
