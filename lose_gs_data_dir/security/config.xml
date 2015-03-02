@@ -1,7 +1,8 @@
 <security>
-  <roleServiceName>default</roleServiceName>
+  <roleServiceName>geostore_roles</roleServiceName>
   <authProviderNames>
     <string>default</string>
+    <string>geostore</string>
   </authProviderNames>
   <anonymousAuth>true</anonymousAuth>
   <configPasswordEncrypterName>pbePasswordEncoder</configPasswordEncrypterName>
@@ -40,6 +41,7 @@
       <filter>contextNoAsc</filter>
       <filter>basic</filter>
       <filter>shibboleth</filter>
+      <filter>authkey</filter>
       <filter>anonymous</filter>
       <filter>exception</filter>
       <filter>interceptor</filter>
