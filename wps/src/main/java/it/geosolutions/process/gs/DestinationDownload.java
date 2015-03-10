@@ -48,6 +48,7 @@ import java.util.zip.ZipOutputStream;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.config.GeoServerDataDirectory;
 import org.geoserver.wfs.response.ShapeZipOutputFormat;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.DataUtilities;
@@ -78,7 +79,6 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.FilterFactory2;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKTReader;
@@ -293,12 +293,12 @@ public class DestinationDownload extends RiskCalculatorBase {
 	/**
 	 * @param catalog
 	 */
-	public DestinationDownload(Catalog catalog) {
+	public DestinationDownload(Catalog catalog, GeoServerDataDirectory dataDirectory) {
 		super(catalog);
 		riskCalculator = new RiskCalculator(catalog);
 		simpleRiskCalculator = new RiskCalculatorSimple(catalog);
 		multipleBuffer = new MultipleBuffer();
-		downloadFolder = GeoserverDataDirectory.getGeoserverDataDirectory()
+		downloadFolder = dataDirectory.root()
 				.getAbsolutePath()
 				+ File.separator
 				+ "www"
@@ -666,21 +666,23 @@ public class DestinationDownload extends RiskCalculatorBase {
 				final SimpleFeatureBuilder builder = new SimpleFeatureBuilder(targetCollection.getSchema());
 				targetCollection = new DecoratingSimpleFeatureCollection(targetCollection) {
 					
+				    /*
+				    
 					@Override
 				    public void close(Iterator<SimpleFeature> close) {
 				        ((ChangedTargetsIterator)close).close();				     
-				    }
+				    }*/
 				
 					@Override
 					public SimpleFeatureIterator features() {						
 						return new ChangedTargetsFeatureIterator(originalCollection.features(), simulationTargets, newTargets, targetId, builder);
 					}
-
+					/*
 					@Override
 					public Iterator iterator() {							
 						return new ChangedTargetsIterator(features());
 					}
-					
+					*/
 					
 					
 				};

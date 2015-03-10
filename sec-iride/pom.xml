@@ -7,17 +7,11 @@
   <groupId>org.geoserver.security</groupId>
   <artifactId>sec-iride</artifactId>
   <packaging>jar</packaging>
-  <version>2.2-ENTERPRISE-SNAPSHOT-DESTINATION-20140328</version>
+  <version>2.6-SNAPSHOT</version>
   <name>GeoServer CSI-Piemonte Iride2 Security Module</name>
   <properties>
-    <cxf-version>2.3.2</cxf-version>
-	<gs.version>2.2-ENTERPRISE-SNAPSHOT-DESTINATION-20140328</gs.version>
-	<gt.version>8-ENTERPRISE-SNAPSHOT-DESTINATION-20140328</gt.version>
-	<gwc.version>1.3-RC5</gwc.version>
-	<spring.version>3.1.4.RELEASE</spring.version>
-	<spring.security.version>3.1.0.RELEASE</spring.security.version> 
-	<poi.version>3.8</poi.version>
-	<wicket.version>1.4.12</wicket.version>
+	<gs.version>2.6.2</gs.version>
+	<gt.version>12.2</gt.version>
 	<java.awt.headless>true</java.awt.headless>
 	<jvm.opts></jvm.opts>
 	<jalopy.phase>disabled</jalopy.phase>
@@ -36,18 +30,18 @@
   <dependencies>
     <dependency>
       <groupId>org.geoserver</groupId>
-      <artifactId>main</artifactId>
-      <version>${project.version}</version>
+      <artifactId>gs-main</artifactId>
+      <version>${gs.version}</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver.web</groupId>
-      <artifactId>web-security</artifactId>
-      <version>${project.version}</version>
+      <artifactId>gs-web-sec-core</artifactId>
+      <version>${gs.version}</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
-      <artifactId>main</artifactId>
-      <version>${project.version}</version>
+      <artifactId>gs-main</artifactId>
+      <version>${gs.version}</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -243,7 +237,7 @@
   
   <repositories>
   
-  <repository>
+  <!--repository>
    <id>ibiblio</id>
    <name>Maven Repository</name>
    <url>http://mirrors.ibiblio.org/pub/mirrors/maven/</url>
@@ -268,7 +262,7 @@
    <snapshots>
      <enabled>false</enabled>
    </snapshots>
-  </repository>   
+  </repository-->   
   
   <repository>
    <id>geosolutions</id>
@@ -279,14 +273,14 @@
    </snapshots>
   </repository>  
   
-  <repository>
+  <!--repository>
    <id>opengeo</id>
    <name>OpenGeo Maven Repository</name>
    <url>http://repo.opengeo.org/</url>
    <snapshots>
      <enabled>true</enabled>
    </snapshots>
-  </repository>
+  </repository-->
   
   <repository>
     <id>osgeo</id>
@@ -297,7 +291,7 @@
     </snapshots>
   </repository>
 
-  <repository>
+  <!--repository>
     <id>Ibiblio</id>
     <name>Ibiblio mirror</name>
     <url>http://mirrors.ibiblio.org/pub/mirrors/maven</url>
@@ -322,7 +316,7 @@
     <snapshots>
       <enabled>false</enabled>
     </snapshots>
-  </repository>  
+  </repository-->  
     
   <repository>
     <id>maven-restlet</id>
@@ -333,14 +327,14 @@
     </snapshots>
   </repository>
 
-  <repository>
+  <!--repository>
    <id>fuse</id>
    <name>Fuse repository</name>
    <url>http://repo.fusesource.com/nexus/content/groups/public/</url>
    <snapshots>
      <enabled>false</enabled>
    </snapshots>
-  </repository> 
+  </repository--> 
   <repository>
    <id>mapfish</id>
    <name>MapFish dev repository</name>
@@ -349,7 +343,14 @@
      <enabled>false</enabled>
    </snapshots>
   </repository> 
-
+    <repository>
+      <id>boundless</id>
+      <name>BoundlessGeo Maven Repository</name>
+      <url>http://repo.boundlessgeo.com/main</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
 
  </repositories>
 </project>

@@ -17,7 +17,7 @@
     <!-- =========================================================== -->
     <groupId>it.geosolutions.destination.geobatch</groupId>
     <artifactId>gb-destination</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
     <packaging>pom</packaging>
   
     <name>GeoBatch DESTINATION root</name>
@@ -45,8 +45,8 @@
 
     <properties>
 	<gb.version>1.4-SNAPSHOT</gb.version>
-        <gt.version>10-SNAPSHOT</gt.version>
-        <destination.version>1.0-SNAPSHOT</destination.version>
+        <gt.version>12.2</gt.version>
+        <destination.version>1.1-SNAPSHOT</destination.version>
         <jetty.version>6.1.8</jetty.version>
         <javaassist.version>3.13.0-GA</javaassist.version>
         <junit.version>4.10</junit.version>
@@ -99,14 +99,6 @@
                 <scope>test</scope>
             </dependency>
             
-            <!--dependency>
-                <groupId>it.geosolutions.destination.geobatch</groupId>
-                <artifactId>gb-destination-ingestion</artifactId>
-                <version>${destination.version}</version>
-                <classifier>tests</classifier>
-                <scope>test</scope>
-            </dependency-->
-
             <dependency>
                 <groupId>it.geosolutions.destination.geobatch</groupId>
                 <artifactId>gb-destination-ingestion-actions</artifactId>
@@ -122,7 +114,7 @@
             <dependency>
                 <groupId>it.geosolutions.destination</groupId>
                 <artifactId>destination-utils</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>1.1-SNAPSHOT</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.geotools</groupId>
@@ -326,8 +318,7 @@
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-transform</artifactId>
-                <!-- <version>${gt.version}</version> -->
-                <version>10-SNAPSHOT</version>
+                <version>${gt.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
@@ -400,7 +391,6 @@
             
             <!-- JAI Tools -->
             <dependency>
-                <!--<groupId>com.googlecode.jaitools</groupId> -->
                 <groupId>org.jaitools</groupId>
                 <artifactId>jt-zonalstats</artifactId>
                 <version>${jt.version}</version>
@@ -447,7 +437,6 @@
                 <artifactId>imageio-ext-streams</artifactId>
                 <version>${imageio-ext.version}</version>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 
@@ -528,9 +517,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.6</source>
+                    <source>1.7</source>
                     <!-- The -source argument for the Java compiler. -->
-                    <target>1.6</target>
+                    <target>1.7</target>
                     <!-- The -target argument for the Java compiler. -->
                     <debug>true</debug>
                     <!-- Whether to include debugging information.   -->
@@ -614,49 +603,37 @@
             <name>GeoSolutions Repository</name>
             <url>http://maven.geo-solutions.it</url>
         </repository>
+        
         <repository>
-            <id>java.net</id>
-            <name>java.net Repository</name>
-            <url>http://download.java.net/maven/2/</url>
-        </repository>
-        <repository>
+           <id>boundless</id>
+           <name>Boundless Maven Repository</name>
+           <url>http://repo.boundlessgeo.com/main</url>
+           <snapshots>
+             <enabled>true</enabled>
+           </snapshots>
+          </repository>
+          
+          <repository>
+            <id>osgeo</id>
+            <name>Open Source Geospatial Foundation Repository</name>
+            <url>http://download.osgeo.org/webdav/geotools/</url>
+            <snapshots>
+              <enabled>true</enabled>
+            </snapshots>
+          </repository>
+         <repository>
             <id>JBoss</id>
             <url>https://repository.jboss.org/nexus/content/groups/public</url>
         </repository>
         <repository>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>opengeo</id>
-            <name>OpenGeo Maven Repository</name>
-            <url>http://repo.opengeo.org</url>
+            <id>MapFish</id>
+            <url>http://dev.mapfish.org/maven/repository</url>
         </repository>
         <repository>
-            <id>jasig</id>
-            <name>JASIG Developers Maven Repository</name>
-            <url>https://developer.jasig.org/repo/content/repositories/3rd-party</url>
+            <id>Pentaho</id>
+            <url>http://repository.pentaho.org/artifactory/repo</url>
         </repository>
     </repositories>
-
-    
-    <!-- =========================================================== -->
-    <!--     Plugin repositories.                                    -->
-    <!--     This is where Maven looks for plugin dependencies.      -->
-    <!-- =========================================================== -->
-    <pluginRepositories>
-        <pluginRepository>
-            <id>codehaus-snapshot-plugins</id>
-            <name>codehaus-shapshot-plugins</name>
-            <url>http://snapshots.repository.codehaus.org/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </pluginRepository>
-    </pluginRepositories>
-
 
     <!-- =========================================================== -->
     <!--     Modules for the build in approximate dependency order   -->
@@ -668,66 +645,10 @@
         <module>webapp</module>
     </modules>
 
-<!--
-    <distributionManagement>
-        <repository>
-            <id>nfms4redd</id>
-            <url>ftp://maven.nfms4redd.org/repo</url>
-            <uniqueVersion>false</uniqueVersion>
-        </repository>
-    </distributionManagement>
--->
+
     <!-- Profiles set on the command-line overwrite default properties. -->
     <profiles>
-        <profile>
-            <id>extensive.tests</id>
-            <properties>
-                <extensive.tests>true</extensive.tests>
-            </properties>
-        </profile>
-        <profile>
-            <id>interactive.tests</id>
-            <properties>
-                <interactive.tests>true</interactive.tests>
-            </properties>
-        </profile>
-        <profile>
-            <id>site.build</id>
-            <properties>
-                <allow.test.skip>false</allow.test.skip>
-                <allow.test.failure.ignore>true</allow.test.failure.ignore>
-                <extensive.tests>true</extensive.tests>
-            </properties>
-        </profile>
-        <profile>
-            <id>online</id>
-            <properties>
-                <online.skip.pattern>disabled</online.skip.pattern>
-            </properties>
-        </profile>
-        <profile>
-            <id>stress</id>
-            <properties>
-                <stress.skip.pattern>disabled</stress.skip.pattern>
-            </properties>
-        </profile>
-        <profile>
-            <id>java5</id>
-            <activation>
-                <jdk>1.5</jdk>
-            </activation>
-            <reporting>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <configuration>
-                            <source>1.5</source>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </reporting>
-        </profile>
+        
         <profile>
             <id>site.geosolutions</id>
             <distributionManagement>
@@ -738,18 +659,7 @@
                 </site>
             </distributionManagement>
         </profile>
-        <!-- deploy libs -->
-        <profile>
-            <id>deployJar</id>
-            <activation>
-                <property>
-                    <name>deployJar</name>
-                </property>
-            </activation>
-            <modules>
-                <module>deploy</module>
-            </modules>
-        </profile>
+        
     </profiles>
 
 </project>

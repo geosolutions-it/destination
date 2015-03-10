@@ -18,11 +18,11 @@ package it.geosolutions.process.gs;
 
 import java.io.File;
 
+import org.geoserver.config.GeoServerDataDirectory;
 import org.geotools.process.factory.DescribeParameter;
 import org.geotools.process.factory.DescribeProcess;
 import org.geotools.process.factory.DescribeResult;
 import org.geotools.process.gs.GSProcess;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 /**
  * @author "Mauro Bartolomeoli - mauro.bartolomeoli@geo-solutions.it"
@@ -32,9 +32,9 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
 public class DestinationRemoveDownload implements GSProcess {
 	
 	private String downloadFolder;
-	
-	public DestinationRemoveDownload() {
-		downloadFolder = GeoserverDataDirectory.getGeoserverDataDirectory()
+
+	public DestinationRemoveDownload(GeoServerDataDirectory dataDirectory) {
+		downloadFolder = dataDirectory.root()
 				.getAbsolutePath()
 				+ File.separator
 				+ "www"

@@ -36,8 +36,8 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tools.ant.util.FileUtils;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultTransaction;
@@ -446,7 +446,9 @@ public class OriginalArcsIngestionProcess extends InputObject {
 			return reader.readLine();
 			
 		} finally {
-			FileUtils.close(reader);			
+			if(reader != null) {
+			    reader.close();
+			}			
 		}
 	}
 

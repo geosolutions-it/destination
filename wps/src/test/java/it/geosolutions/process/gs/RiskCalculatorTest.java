@@ -39,7 +39,6 @@ import org.junit.Before;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.FilterFactory2;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 
 
@@ -82,7 +81,7 @@ public class RiskCalculatorTest extends TestCase {
 			
 			GeoServerResourceLoader resourceLoader = new GeoServerResourceLoader(
 					new File(dataDirPath));
-			GeoserverDataDirectory.setResourceLoader(resourceLoader);
+			//GeoserverDataDirectory.setResourceLoader(resourceLoader);
 			DefaultGeoServerLoader loader = new DefaultGeoServerLoader(resourceLoader);
 			catalog = (Catalog)loader.postProcessBeforeInitialization(catalog, "catalog");
 			if(catalog != null) {

@@ -30,6 +30,7 @@ import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.impl.CatalogImpl;
 import org.geoserver.config.DefaultGeoServerLoader;
 import org.geoserver.config.GeoServer;
+import org.geoserver.config.GeoServerDataDirectory;
 import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
@@ -54,7 +55,6 @@ import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 /**
  * @author "Mauro Bartolomeoli - mauro.bartolomeoli@geo-solutions.it"
@@ -97,11 +97,11 @@ public class DestinationDownloadTest extends TestCase {
 			final GeoServerResourceLoader resourceLoader = new GeoServerResourceLoader(
 					new File(dataDirPath));
 			
-			GeoserverDataDirectory.setResourceLoader(resourceLoader);
+			final GeoServerDataDirectory dataDirectory = new GeoServerDataDirectory(resourceLoader);
 			DefaultGeoServerLoader loader = new DefaultGeoServerLoader(resourceLoader);
 			catalog = (Catalog)loader.postProcessBeforeInitialization(catalog, "catalog");
 			if(catalog != null) {
-				downloader = new DestinationDownload(catalog);	
+				downloader = new DestinationDownload(catalog, dataDirectory);	
 				
 				DataStoreInfo dataStoreInfo = catalog.getDataStoreByName(dataStoreName);
 				dataStore = (JDBCDataStore)dataStoreInfo.getDataStore(null);

@@ -30,7 +30,6 @@ import org.geoserver.platform.GeoServerResourceLoader;
 import org.geotools.feature.SchemaException;
 import org.geotools.jdbc.JDBCDataStore;
 import org.geotools.process.ProcessException;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 /**
  * @author "Mauro Bartolomeoli - mauro.bartolomeoli@geo-solutions.it"
@@ -57,7 +56,7 @@ public class ProcessingRepositoryTest extends TestCase {
 			
 			GeoServerResourceLoader resourceLoader = new GeoServerResourceLoader(
 					new File(dataDirPath));
-			GeoserverDataDirectory.setResourceLoader(resourceLoader);
+			//GeoserverDataDirectory.setResourceLoader(resourceLoader);
 			DefaultGeoServerLoader loader = new DefaultGeoServerLoader(resourceLoader);
 			catalog = (Catalog)loader.postProcessBeforeInitialization(catalog, "catalog");
 			if(catalog != null) {
