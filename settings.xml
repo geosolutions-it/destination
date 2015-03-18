@@ -168,6 +168,16 @@ under the License.
 		<name>Jetty Staging Repository</name>
 		<url>https://oss.sonatype.org/content/groups/jetty</url>
 	</mirror>
+    <mirror>
+		<id>sonatype-nexus-snapshots-secure</id>
+		<mirrorOf>sonatype-nexus-snapshots</mirrorOf>
+		<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+	  </mirror>
+	  <mirror>
+		<id>sonatype-nexus-releases-secure</id>
+		<mirrorOf>sonatype-nexus-releases</mirrorOf>
+		<url>https://oss.sonatype.org/content/repositories/releases</url>
+	  </mirror>
   </mirrors>
 
   <!-- profiles
