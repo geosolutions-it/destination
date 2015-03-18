@@ -76,7 +76,7 @@
             <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-actions</artifactId>
             <type>pom</type>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.4-GT12.2-13032015</version>
         </dependency>
         
         <dependency>

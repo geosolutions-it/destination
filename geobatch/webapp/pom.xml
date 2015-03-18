@@ -71,10 +71,10 @@
     <!-- ============================== -->
     <!-- GeoBatch -->
     <!-- ============================== -->
-    <dependency>
+    <!--dependency>
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-gui</artifactId>
-    </dependency>
+    </dependency-->
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-action-scripting</artifactId>

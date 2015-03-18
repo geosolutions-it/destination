@@ -112,12 +112,11 @@
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-opengis</artifactId>
 		</dependency>
-		<dependency>
+		<!--dependency>
 			<groupId>org.geotools.jdbc</groupId>
 			<artifactId>gt-jdbc-postgis</artifactId>
-			<version>8-SNAPSHOT</version>
 			<scope>test</scope>
-		</dependency>
+		</dependency-->
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-coveragetools</artifactId>
@@ -161,17 +160,17 @@
 		<dependency>
 			<groupId>it.geosolutions.jaiext.zonal</groupId>
 			<artifactId>jt-zonal</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>1.0-M09032015</version>
 		</dependency>
 		<dependency>
 			<groupId>it.geosolutions.jaiext.nullop</groupId>
 			<artifactId>jt-nullop</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>1.0-M09032015</version>
 		</dependency>
 		<dependency>
 			<groupId>it.geosolutions.jaiext.bandmerge</groupId>
 			<artifactId>jt-bandmerge</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>1.0-M09032015</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
