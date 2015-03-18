@@ -28,4 +28,8 @@
       <constructor-arg index="0" ref="catalog"/>
     </bean>
 
+    <!--  Execution manager, the thing that actually orchestrates the process execution -->
+    <bean id="algebricProcess" class="org.geoserver.wps.raster.algebra.AlgebricProcess">
+        <constructor-arg ref="catalog" />
+    </bean>
 </beans>

@@ -1,1 +1,2 @@
 it.geosolutions.process.gs.DestinationProcessFactory
+org.geotools.process.raster.gs.AlgebricOpProcessFactory
