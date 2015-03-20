@@ -1,0 +1,13 @@
+<layer>
+  <name>siig_r_area_danno</name>
+  <id>LayerInfoImpl-6081ad47:1444e75fb17:-4a22</id>
+  <type>VECTOR</type>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl-6081ad47:1444e75fb17:-4a23</id>
+  </resource>
+  <enabled>true</enabled>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+</layer>

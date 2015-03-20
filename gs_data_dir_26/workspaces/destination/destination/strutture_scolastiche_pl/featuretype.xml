@@ -1,0 +1,124 @@
+<featureType>
+  <id>FeatureTypeInfoImpl--10a99c92:13d173f8f0a:-7fef</id>
+  <name>strutture_scolastiche_pl</name>
+  <nativeName>strutture_scolastiche_pl</nativeName>
+  <namespace>
+    <id>NamespaceInfoImpl--570ae188:124761b8d78:-7ffc</id>
+  </namespace>
+  <title>strutture_scolastiche_pl</title>
+  <keywords>
+    <string>features</string>
+    <string>strutture_scolastiche</string>
+  </keywords>
+  <nativeCRS class="projected">PROJCS[&quot;WGS 84 / UTM zone 32N&quot;, 
+  GEOGCS[&quot;WGS 84&quot;, 
+    DATUM[&quot;World Geodetic System 1984&quot;, 
+      SPHEROID[&quot;WGS 84&quot;, 6378137.0, 298.257223563, AUTHORITY[&quot;EPSG&quot;,&quot;7030&quot;]], 
+      AUTHORITY[&quot;EPSG&quot;,&quot;6326&quot;]], 
+    PRIMEM[&quot;Greenwich&quot;, 0.0, AUTHORITY[&quot;EPSG&quot;,&quot;8901&quot;]], 
+    UNIT[&quot;degree&quot;, 0.017453292519943295], 
+    AXIS[&quot;Geodetic longitude&quot;, EAST], 
+    AXIS[&quot;Geodetic latitude&quot;, NORTH], 
+    AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]], 
+  PROJECTION[&quot;Transverse_Mercator&quot;, AUTHORITY[&quot;EPSG&quot;,&quot;9807&quot;]], 
+  PARAMETER[&quot;central_meridian&quot;, 9.0], 
+  PARAMETER[&quot;latitude_of_origin&quot;, 0.0], 
+  PARAMETER[&quot;scale_factor&quot;, 0.9996], 
+  PARAMETER[&quot;false_easting&quot;, 500000.0], 
+  PARAMETER[&quot;false_northing&quot;, 0.0], 
+  UNIT[&quot;m&quot;, 1.0], 
+  AXIS[&quot;Easting&quot;, EAST], 
+  AXIS[&quot;Northing&quot;, NORTH], 
+  AUTHORITY[&quot;EPSG&quot;,&quot;32632&quot;]]</nativeCRS>
+  <srs>EPSG:32632</srs>
+  <nativeBoundingBox>
+    <minx>440661.104163579</minx>
+    <maxx>444347.636836422</maxx>
+    <miny>4955701.4959</miny>
+    <maxy>4960028.4716</maxy>
+    <crs class="projected">EPSG:32632</crs>
+  </nativeBoundingBox>
+  <latLonBoundingBox>
+    <minx>8.24983437260599</minx>
+    <maxx>8.29690884985607</maxx>
+    <miny>44.752241590629275</miny>
+    <maxy>44.791487542504164</maxy>
+    <crs>GEOGCS[&quot;WGS84(DD)&quot;, 
+  DATUM[&quot;WGS84&quot;, 
+    SPHEROID[&quot;WGS84&quot;, 6378137.0, 298.257223563]], 
+  PRIMEM[&quot;Greenwich&quot;, 0.0], 
+  UNIT[&quot;degree&quot;, 0.017453292519943295], 
+  AXIS[&quot;Geodetic longitude&quot;, EAST], 
+  AXIS[&quot;Geodetic latitude&quot;, NORTH]]</crs>
+  </latLonBoundingBox>
+  <projectionPolicy>FORCE_DECLARED</projectionPolicy>
+  <enabled>true</enabled>
+  <advertised>true</advertised>
+  <metadata>
+    <entry key="cachingEnabled">false</entry>
+    <entry key="JDBC_VIRTUAL_TABLE">
+      <virtualTable>
+        <name>strutture_scolastiche_pl</name>
+        <sql>SELECT partner_it,partner_en,partner_fr,partner_de,id_tematico,fk_bersaglio_umano_pl as fk_geo,denominazione_it,denominazione_en,denominazione_fr,denominazione_de,descrizione_uso_it,descrizione_uso_en,descrizione_uso_fr,descrizione_uso_de,fonte_iscritti_it,fonte_iscritti_en,fonte_iscritti_fr,fonte_iscritti_de,iscritti,fonte_addetti_scuole_it,fonte_addetti_scuole_en,fonte_addetti_scuole_fr,fonte_addetti_scuole_de,addetti,geometria&#xd;
+FROM&#xd;
+   v_geo_scuola_pl&#xd;
+    where v_geo_scuola_pl.fk_bersaglio_umano_pl in (&#xd;
+    SELECT distinct bersaglio.fk_bersaglio_umano_pl&#xd;
+        FROM v_geo_scuola_pl bersaglio&#xd;
+     join siig_geo_ln_arco_1 on &#xd;
+    st_dwithin(bersaglio.geometria, siig_geo_ln_arco_1.geometria, %distanzaumano%)&#xd;
+    where siig_geo_ln_arco_1.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)&#xd;
+    )&#xd;
+UNION&#xd;
+SELECT partner_it,partner_en,partner_fr,partner_de,id_tematico,fk_bersaglio_umano_pl as fk_geo,denominazione_it,denominazione_en,denominazione_fr,denominazione_de,descrizione_uso_it,descrizione_uso_en,descrizione_uso_fr,descrizione_uso_de,fonte_iscritti_it,fonte_iscritti_en,fonte_iscritti_fr,fonte_iscritti_de,iscritti,fonte_addetti_scuole_it,fonte_addetti_scuole_en,fonte_addetti_scuole_fr,fonte_addetti_scuole_de,addetti,geometria&#xd;
+FROM&#xd;
+   v_geo_scuola_pl&#xd;
+    where &#xd;
+st_intersects(geometria,ST_GeomFromText(&apos;%wkt%&apos;,32632))&#xd;
+UNION&#xd;
+SELECT partner_it,partner_en,partner_fr,partner_de,id_tematico,fk_bersaglio_umano_pt as fk_geo,denominazione_it,denominazione_en,denominazione_fr,denominazione_de,descrizione_uso_it,descrizione_uso_en,descrizione_uso_fr,descrizione_uso_de,fonte_iscritti_it,fonte_iscritti_en,fonte_iscritti_fr,fonte_iscritti_de,iscritti,fonte_addetti_scuole_it,fonte_addetti_scuole_en,fonte_addetti_scuole_fr,fonte_addetti_scuole_de,addetti,ST_Buffer(geometria,50) as geometria&#xd;
+FROM&#xd;
+   v_geo_scuola_pt&#xd;
+    where v_geo_scuola_pt.fk_bersaglio_umano_pt in (&#xd;
+    SELECT distinct bersaglio.fk_bersaglio_umano_pt&#xd;
+        FROM v_geo_scuola_pt bersaglio&#xd;
+     join siig_geo_ln_arco_1 on &#xd;
+    st_dwithin(bersaglio.geometria, siig_geo_ln_arco_1.geometria, %distanzaumano%)&#xd;
+    where siig_geo_ln_arco_1.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)&#xd;
+    )&#xd;
+UNION&#xd;
+SELECT partner_it,partner_en,partner_fr,partner_de,id_tematico,fk_bersaglio_umano_pt as fk_geo,denominazione_it,denominazione_en,denominazione_fr,denominazione_de,descrizione_uso_it,descrizione_uso_en,descrizione_uso_fr,descrizione_uso_de,fonte_iscritti_it,fonte_iscritti_en,fonte_iscritti_fr,fonte_iscritti_de,iscritti,fonte_addetti_scuole_it,fonte_addetti_scuole_en,fonte_addetti_scuole_fr,fonte_addetti_scuole_de,addetti,ST_Buffer(geometria,50) as geometria&#xd;
+FROM&#xd;
+   v_geo_scuola_pt&#xd;
+    where &#xd;
+st_intersects(geometria,ST_GeomFromText(&apos;%wkt%&apos;,32632))</sql>
+        <keyColumn>id_tematico</keyColumn>
+        <geometry>
+          <name>geometria</name>
+          <type>MultiPolygon</type>
+          <srid>32632</srid>
+        </geometry>
+        <parameter>
+          <name>bounds</name>
+          <defaultValue>438859.3438263,4953719.9308777,445056.32630922,4961834.6496277</defaultValue>
+          <regexpValidator>^[\w\d\s,\.]+$</regexpValidator>
+        </parameter>
+        <parameter>
+          <name>distanzaumano</name>
+          <defaultValue>25</defaultValue>
+          <regexpValidator>^[\w\d\s]+$</regexpValidator>
+        </parameter>
+        <parameter>
+          <name>wkt</name>
+          <defaultValue>POLYGON((438892.7288562446 4975140.981545661,439193.9185034519 4975114.484753116,439211.81910092465 4974859.452787744,438763.54800271254 4974737.133442594,438892.7288562446 4975140.981545661))</defaultValue>
+          <regexpValidator>^[\w\d\s\.\(\)\,]+$</regexpValidator>
+        </parameter>
+      </virtualTable>
+    </entry>
+  </metadata>
+  <store class="dataStore">
+    <id>DataStoreInfoImpl--3970ff67:13c00cf828a:-7fef</id>
+  </store>
+  <maxFeatures>0</maxFeatures>
+  <numDecimals>0</numDecimals>
+</featureType>
