@@ -236,121 +236,38 @@
  </build>
   
   <repositories>
-  
-  <!--repository>
-   <id>ibiblio</id>
-   <name>Maven Repository</name>
-   <url>http://mirrors.ibiblio.org/pub/mirrors/maven/</url>
-   <snapshots>
-     <enabled>false</enabled>
-   </snapshots>
-  </repository> 
-  
   <repository>
-   <id>maven.cci.emory</id>
-   <name>Maven Repository</name>
-   <url>http://maven.cci.emory.edu/nexus/content/repositories/aiw</url>
-   <snapshots>
-     <enabled>false</enabled>
-   </snapshots>
-  </repository> 
-    
-  <repository>
-   <id>repo</id>
-   <name>Maven Repository</name>
-   <url>http://repo.maven.apache.org/maven2/</url>
-   <snapshots>
-     <enabled>false</enabled>
-   </snapshots>
-  </repository-->   
-  
-  <repository>
-   <id>geosolutions</id>
-   <name>GeoSolutions Maven Repository</name>
-   <url>http://maven.geo-solutions.it/</url>
-   <snapshots>
-     <enabled>true</enabled>
-   </snapshots>
-  </repository>  
-  
-  <!--repository>
-   <id>opengeo</id>
-   <name>OpenGeo Maven Repository</name>
-   <url>http://repo.opengeo.org/</url>
-   <snapshots>
-     <enabled>true</enabled>
-   </snapshots>
-  </repository-->
-  
-  <repository>
-    <id>osgeo</id>
-    <name>Open Source Geospatial Foundation Repository</name>
-    <url>http://download.osgeo.org/webdav/geotools/</url>
-    <snapshots>
-      <enabled>true</enabled>
-    </snapshots>
-  </repository>
+       <id>boundless</id>
+       <name>Boundless Maven Repository</name>
+       <url>http://repo.boundlessgeo.com/main</url>
+       <snapshots>
+         <enabled>true</enabled>
+       </snapshots>
+      </repository>
+      
+      <repository>
+        <id>osgeo</id>
+        <name>Open Source Geospatial Foundation Repository</name>
+        <url>http://download.osgeo.org/webdav/geotools/</url>
+        <snapshots>
+          <enabled>true</enabled>
+        </snapshots>
+      </repository>
 
-  <!--repository>
-    <id>Ibiblio</id>
-    <name>Ibiblio mirror</name>
-    <url>http://mirrors.ibiblio.org/pub/mirrors/maven</url>
-    <snapshots>
-      <enabled>false</enabled>
-    </snapshots>
-  </repository>
-  
-  <repository>
-    <id>Repo1 maven</id>
-    <name>Repo1 maven</name>
-    <url>http://repo1.maven.org/maven2/</url>
-    <snapshots>
-      <enabled>false</enabled>
-    </snapshots>
-  </repository>
-  
-  <repository>
-    <id>maven.cci.emory.edu</id>
-    <name>maven.cci.emory.edu</name>
-    <url>http://maven.cci.emory.edu/nexus/content/repositories/aiw/</url>
-    <snapshots>
-      <enabled>false</enabled>
-    </snapshots>
-  </repository-->  
-    
-  <repository>
-    <id>maven-restlet</id>
-    <name>Restlet Maven Repository</name>
-    <url>http://maven.restlet.org</url>
-    <snapshots>
-      <enabled>false</enabled>
-    </snapshots>
-  </repository>
-
-  <!--repository>
-   <id>fuse</id>
-   <name>Fuse repository</name>
-   <url>http://repo.fusesource.com/nexus/content/groups/public/</url>
-   <snapshots>
-     <enabled>false</enabled>
-   </snapshots>
-  </repository--> 
-  <repository>
-   <id>mapfish</id>
-   <name>MapFish dev repository</name>
-   <url>http://dev.mapfish.org/maven/repository/</url>
-   <snapshots>
-     <enabled>false</enabled>
-   </snapshots>
-  </repository> 
+      <repository>
+        <id>maven-restlet</id>
+        <name>Restlet Maven Repository</name>
+        <url>http://maven.restlet.org</url>
+        <snapshots>
+          <enabled>false</enabled>
+        </snapshots>
+      </repository>
     <repository>
-      <id>boundless</id>
-      <name>BoundlessGeo Maven Repository</name>
-      <url>http://repo.boundlessgeo.com/main</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
+      <id>geosolutions</id>
+      <name>GeoSolutions Repository</name>
+      <url>http://maven.geo-solutions.it</url>
     </repository>
+
 
  </repositories>
 </project>

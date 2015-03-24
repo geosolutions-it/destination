@@ -16,9 +16,11 @@
  */
 package org.geoserver.security.accessmanager;
 
+import org.geoserver.catalog.CatalogInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.Predicates;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WorkspaceInfo;
@@ -50,18 +52,18 @@ import org.springframework.security.core.GrantedAuthority;
  */
 public class DestinationAccessManager implements ResourceAccessManager {
 
-	FilterFactory2 ff;
-	
-	public DestinationAccessManager() {
-		super();
-		ff = CommonFactoryFinder.getFilterFactory2();
-	}
+    FilterFactory2 ff;
 
-	boolean isAdmin(Authentication user) {
+    public DestinationAccessManager() {
+        super();
+        ff = CommonFactoryFinder.getFilterFactory2();
+    }
+
+    boolean isAdmin(Authentication user) {
         if (user.getAuthorities() != null) {
             for (GrantedAuthority authority : user.getAuthorities()) {
                 final String userRole = authority.getAuthority();
-                if (GeoServerRole.ADMIN_ROLE.getAuthority().equals(userRole) ) {
+                if (GeoServerRole.ADMIN_ROLE.getAuthority().equals(userRole)) {
                     return true;
                 }
             }
@@ -69,12 +71,15 @@ public class DestinationAccessManager implements ResourceAccessManager {
 
         return false;
     }
-	
-	boolean hasAuthority(Authentication user, String authorityName) {
+
+    boolean hasAuthority(Authentication user, String authorityName) {
         if (user.getAuthorities() != null) {
             for (GrantedAuthority authority : user.getAuthorities()) {
-                final String userRole = authority.getAuthority();
-                if (authorityName.equalsIgnoreCase(userRole) ) {
+                String userRole = authority.getAuthority();
+                if(userRole.startsWith("ROLE_")) {
+                    userRole = userRole.substring("ROLE_".length());
+                }
+                if (authorityName.equalsIgnoreCase(userRole)) {
                     return true;
                 }
             }
@@ -82,59 +87,60 @@ public class DestinationAccessManager implements ResourceAccessManager {
 
         return false;
     }
-	
-	@Override
-	public WorkspaceAccessLimits getAccessLimits(Authentication user,
-			WorkspaceInfo workspace) {
-		return new WorkspaceAccessLimits(CatalogMode.HIDE, true, true);
-	}
 
-	@Override
-	public DataAccessLimits getAccessLimits(Authentication user, LayerInfo layer) {
-		return getAccessLimits(user, layer.getResource());
-	}
+    @Override
+    public WorkspaceAccessLimits getAccessLimits(Authentication user, WorkspaceInfo workspace) {
+        return new WorkspaceAccessLimits(CatalogMode.HIDE, true, true);
+    }
 
-	@Override
-	public DataAccessLimits getAccessLimits(Authentication user,
-			ResourceInfo resource) {
-		if(!isAdmin(user)) {
-			if (resource instanceof FeatureTypeInfo) {				
-				FeatureTypeInfo info = (FeatureTypeInfo)resource;
-				// we have only one limited table, siig_mtd_d_elaborazione
-				if(info.getName().equalsIgnoreCase("siig_mtd_d_elaborazione")) {
-					Filter filter;
-					if(hasAuthority(user, "BASE")) {
-						// base users only have access to Elaborazione Standard (id_elaborazione = 1)
-						filter = ff.equals(ff.property("id_elaborazione"), ff.literal(1));
-					} else if(hasAuthority(user, "MAJOR")) {
-						// major users have access to Elaborazione Standard and Personalizzata (id_elaborazione = 1,2)
-						filter = ff.less(ff.property("id_elaborazione"), ff.literal(3));
-					} else if(hasAuthority(user, "SUPER")) {
-						// super users have full access
-						filter = Filter.INCLUDE;
-					} else {
-						// other users have no access
-						filter = Filter.EXCLUDE;
-					}
-				
-					return new VectorAccessLimits(CatalogMode.HIDE, null, filter, null,
-							filter);
-				}
-			}           
+    @Override
+    public DataAccessLimits getAccessLimits(Authentication user, LayerInfo layer) {
+        return getAccessLimits(user, layer.getResource());
+    }
+
+    @Override
+    public DataAccessLimits getAccessLimits(Authentication user, ResourceInfo resource) {
+        if (!isAdmin(user)) {
+            if (resource instanceof FeatureTypeInfo) {
+                FeatureTypeInfo info = (FeatureTypeInfo) resource;
+                // we have only one limited table, siig_mtd_d_elaborazione
+                if (info.getName().equalsIgnoreCase("siig_mtd_d_elaborazione")) {
+                    Filter filter;
+                    if (hasAuthority(user, "BASE")) {
+                        // base users only have access to Elaborazione Standard (id_elaborazione = 1)
+                        filter = ff.equals(ff.property("id_elaborazione"), ff.literal(1));
+                    } else if (hasAuthority(user, "MAJOR")) {
+                        // major users have access to Elaborazione Standard and Personalizzata (id_elaborazione = 1,2)
+                        filter = ff.less(ff.property("id_elaborazione"), ff.literal(3));
+                    } else if (hasAuthority(user, "SUPER")) {
+                        // super users have full access
+                        filter = Filter.INCLUDE;
+                    } else {
+                        // other users have no access
+                        filter = Filter.EXCLUDE;
+                    }
+
+                    return new VectorAccessLimits(CatalogMode.HIDE, null, filter, null, filter);
+                }
+            }
         }
         return null;
-	}
+    }
 
-	@Override
-	public StyleAccessLimits getAccessLimits(Authentication user,
-			StyleInfo style) {
-		return new StyleAccessLimits(CatalogMode.HIDE);
-	}
+    @Override
+    public StyleAccessLimits getAccessLimits(Authentication user, StyleInfo style) {
+        return null;
+    }
 
-	@Override
-	public LayerGroupAccessLimits getAccessLimits(Authentication user,
-			LayerGroupInfo layerGroup) {
-		return new LayerGroupAccessLimits(CatalogMode.HIDE);
-	}
+    @Override
+    public LayerGroupAccessLimits getAccessLimits(Authentication user, LayerGroupInfo layerGroup) {
+        return null;
+    }
+
+    @Override
+    // not supported
+    public Filter getSecurityFilter(Authentication arg0, Class<? extends CatalogInfo> arg1) {
+        return Predicates.acceptAll();
+    }
 
 }
