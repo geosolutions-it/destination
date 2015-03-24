@@ -627,3 +627,9 @@ ON
     (
         fk_partner
     );
+    
+create view v_province(cod_provincia,sigla_provincia,descrizione) as
+select cod_provincia,sigla_provincia,descrizione from siig_geo_pl_province;
+
+create view v_comuni(cod_comune,cod_provincia,descrizione) as
+select cod_comune,cod_provincia,descrizione from siig_geo_pl_comuni
