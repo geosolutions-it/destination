@@ -61,7 +61,9 @@
         <name>rischio_2</name>
         <sql>select id_geo_arco, geometria, nr_incidenti_elab/lunghezza*1000 as rischio1, nr_incidenti_elab/lunghezza*1000 as rischio2&#xd;
 from siig_geo_ln_arco_2&#xd;
-where siig_geo_ln_arco_2.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)</sql>
+where siig_geo_ln_arco_2.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632) or cod_provincia=&apos;%provincia%&apos; or cod_comune=&apos;%comune%&apos;
+</sql>
+        <escapeSql>false</escapeSql>
         <keyColumn>id_geo_arco</keyColumn>
         <geometry>
           <name>geometria</name>
@@ -73,6 +75,16 @@ where siig_geo_ln_arco_2.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)</
           <defaultValue>250000,4800000,600000,5200000</defaultValue>
           <regexpValidator>^[\w\d\s,\.\-]+$</regexpValidator>
         </parameter>
+        <parameter>
+          <name>provincia</name>
+          <defaultValue>-1</defaultValue>
+          <regexpValidator>^[\w\d\s]+$</regexpValidator>
+        </parameter>
+        <parameter>
+          <name>comune</name>
+          <defaultValue>-1</defaultValue>
+          <regexpValidator>^[\w\d\s]+$</regexpValidator>
+        </parameter>
       </virtualTable>
     </entry>
   </metadata>
@@ -81,4 +93,6 @@ where siig_geo_ln_arco_2.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)</
   </store>
   <maxFeatures>0</maxFeatures>
   <numDecimals>0</numDecimals>
+  <overridingServiceSRS>false</overridingServiceSRS>
+  <circularArcPresent>false</circularArcPresent>
 </featureType>

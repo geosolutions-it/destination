@@ -10,18 +10,19 @@
     <string>features</string>
     <string>v_comuni</string>
   </keywords>
-  <srs>EPSG:4326</srs>
+  <srs>EPSG:32632</srs>
   <nativeBoundingBox>
-    <minx>-1.0</minx>
-    <maxx>0.0</maxx>
-    <miny>-1.0</miny>
-    <maxy>0.0</maxy>
+    <minx>313360.999831459</minx>
+    <maxx>766058.48993146</maxx>
+    <miny>4879535.00021822</miny>
+    <maxy>5220492.09551822</maxy>
+    <crs class="projected">EPSG:32632</crs>
   </nativeBoundingBox>
   <latLonBoundingBox>
-    <minx>-1.0</minx>
-    <maxx>0.0</maxx>
-    <miny>-1.0</miny>
-    <maxy>0.0</maxy>
+    <minx>6.539872268622737</minx>
+    <maxx>12.505263512361177</maxx>
+    <miny>44.0207354700402</miny>
+    <maxy>47.136961690241414</maxy>
     <crs>GEOGCS[&quot;WGS84(DD)&quot;, &#xd;
   DATUM[&quot;WGS84&quot;, &#xd;
     SPHEROID[&quot;WGS84&quot;, 6378137.0, 298.257223563]], &#xd;

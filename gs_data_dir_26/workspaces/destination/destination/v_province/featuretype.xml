@@ -10,18 +10,19 @@
     <string>features</string>
     <string>v_province</string>
   </keywords>
-  <srs>EPSG:4326</srs>
+  <srs>EPSG:32632</srs>
   <nativeBoundingBox>
-    <minx>-1.0</minx>
-    <maxx>0.0</maxx>
-    <miny>-1.0</miny>
-    <maxy>0.0</maxy>
+    <minx>313280.468728198</minx>
+    <maxx>765952.5</maxx>
+    <miny>4879335.00000383</miny>
+    <maxy>5220290.4962963</maxy>
+    <crs class="projected">EPSG:32632</crs>
   </nativeBoundingBox>
   <latLonBoundingBox>
-    <minx>-1.0</minx>
-    <maxx>0.0</maxx>
-    <miny>-1.0</miny>
-    <maxy>0.0</maxy>
+    <minx>6.538895377242832</minx>
+    <maxx>12.503750925281022</maxx>
+    <miny>44.01897618912544</miny>
+    <maxy>47.13514281580185</maxy>
     <crs>GEOGCS[&quot;WGS84(DD)&quot;, &#xd;
   DATUM[&quot;WGS84&quot;, &#xd;
     SPHEROID[&quot;WGS84&quot;, 6378137.0, 298.257223563]], &#xd;

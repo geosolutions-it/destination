@@ -2,6 +2,9 @@
   <name>v_province</name>
   <id>LayerInfoImpl-31d9e2c8:14c46ecb2ad:-26c8</id>
   <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl--570ae188:124761b8d78:-7fdf</id>
+  </defaultStyle>
   <resource class="featureType">
     <id>FeatureTypeInfoImpl-31d9e2c8:14c46ecb2ad:-26c9</id>
   </resource>
