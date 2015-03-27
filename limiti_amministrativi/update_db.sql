@@ -633,3 +633,110 @@ select cod_provincia,sigla_provincia,descrizione,ST_Envelope(geometria) as geome
 
 create view v_comuni(cod_comune,cod_provincia,descrizione) as
 select cod_comune,cod_provincia,descrizione,ST_Envelope(geometria) as geometria from siig_geo_pl_comuni;
+
+DROP view v_geo_grafo_ln;
+CREATE VIEW
+    v_geo_grafo_ln
+    (
+        id_geo_arco,
+        partner_it,
+        tipo_densita_veicolare_leggeri_pesanti_it,
+        densita_veicolare,
+        tipo_velocita_media_leggeri_pesanti_it,
+        velocita_media,
+        fl_nr_corsie,
+        nr_corsie,
+        flg_nr_incidenti,
+        nr_incidenti,
+        nr_incidenti_elab,
+        lunghezza,
+        elenco_dissesti,
+        geometria,
+        cod_provincia,
+        cod_comune
+    ) AS
+SELECT
+    siig_geo_ln_arco_1.id_geo_arco,
+    siig_d_partner.partner_it,
+    (z_cat(
+        CASE
+            WHEN ((siig_r_tipovei_geoarco1.flg_densita_veicolare)::text = 'S'::text)
+            THEN 'STIMATA'::text
+            WHEN ((siig_r_tipovei_geoarco1.flg_densita_veicolare)::text = 'C'::text)
+            THEN 'CALCOLATA'::text
+            WHEN ((siig_r_tipovei_geoarco1.flg_densita_veicolare)::text = 'M'::text)
+            THEN 'MODELLIZZATA'::text
+            ELSE NULL::text
+        END))::CHARACTER VARYING(50)                   AS tipo_densita_veicolare_leggeri_pesanti_it,
+    (z_cat(siig_r_tipovei_geoarco1.densita_veicolare))::CHARACTER VARYING(50) AS densita_veicolare,
+    (z_cat(
+        CASE
+            WHEN ((siig_r_tipovei_geoarco1.velocita_media)::text = 'S'::text)
+            THEN 'STIMATA'::text
+            WHEN ((siig_r_tipovei_geoarco1.velocita_media)::text = 'C'::text)
+            THEN 'CALCOLATA'::text
+            WHEN ((siig_r_tipovei_geoarco1.velocita_media)::text = 'M'::text)
+            THEN 'MODELLIZZATA'::text
+            ELSE NULL::text
+        END))::CHARACTER VARYING(50)                      AS tipo_velocita_media_leggeri_pesanti_it,
+    (z_cat(siig_r_tipovei_geoarco1.velocita_media))::CHARACTER VARYING(50) AS velocita_media,
+    CASE
+        WHEN ((siig_geo_ln_arco_1.flg_nr_corsie)::text = 'S'::text)
+        THEN 'STIMATO'::text
+        WHEN ((siig_geo_ln_arco_1.flg_nr_corsie)::text = 'C'::text)
+        THEN 'CALCOLATO'::text
+        WHEN ((siig_geo_ln_arco_1.flg_nr_corsie)::text = 'M'::text)
+        THEN 'MODELLIZZATO'::text
+        ELSE NULL::text
+    END AS fl_nr_corsie,
+    siig_geo_ln_arco_1.nr_corsie,
+    CASE
+        WHEN ((siig_geo_ln_arco_1.flg_nr_incidenti)::text = 'S'::text)
+        THEN 'STIMATO'::text
+        WHEN ((siig_geo_ln_arco_1.flg_nr_incidenti)::text = 'C'::text)
+        THEN 'CALCOLATO'::text
+        WHEN ((siig_geo_ln_arco_1.flg_nr_incidenti)::text = 'M'::text)
+        THEN 'MODELLIZZATO'::text
+        ELSE NULL::text
+    END AS flg_nr_incidenti,
+    siig_geo_ln_arco_1.nr_incidenti,
+    siig_geo_ln_arco_1.nr_incidenti_elab,
+    siig_geo_ln_arco_1.lunghezza,
+    z_cat(siig_d_dissesto.descrizione_it) AS elenco_dissesti,
+    siig_geo_ln_arco_1.geometria,
+    siig_geo_ln_arco_1.cod_provincia,
+    siig_geo_ln_arco_1.cod_comune
+FROM
+    (((siig_d_partner
+LEFT JOIN
+    siig_geo_ln_arco_1
+ON
+    (((
+                siig_d_partner.id_partner)::text = (siig_geo_ln_arco_1.fk_partner)::text)))
+LEFT JOIN
+    (siig_d_dissesto
+LEFT JOIN
+    siig_r_arco_1_dissesto
+ON
+    (((
+                siig_d_dissesto.id_dissesto)::text = (siig_r_arco_1_dissesto.id_dissesto)::text)))
+ON
+    ((
+            siig_geo_ln_arco_1.id_geo_arco = siig_r_arco_1_dissesto.id_geo_arco)))
+LEFT JOIN
+    siig_r_tipovei_geoarco1
+ON
+    ((
+            siig_geo_ln_arco_1.id_geo_arco = siig_r_tipovei_geoarco1.id_geo_arco)))
+GROUP BY
+    siig_geo_ln_arco_1.id_geo_arco,
+    siig_geo_ln_arco_1.geometria,
+    siig_geo_ln_arco_1.lunghezza,
+    siig_d_partner.partner_it,
+    siig_geo_ln_arco_1.nr_corsie,
+    siig_geo_ln_arco_1.flg_nr_corsie,
+    siig_geo_ln_arco_1.flg_nr_incidenti,
+    siig_geo_ln_arco_1.nr_incidenti,
+    siig_geo_ln_arco_1.nr_incidenti_elab
+ORDER BY
+    siig_geo_ln_arco_1.id_geo_arco;
