@@ -41,7 +41,7 @@ public class IrideSecurityProvider  extends GeoServerSecurityProvider{
     
     @Override
     public void configure(XStreamPersister xp) {
-        xp.getXStream().alias("iride", IrideSecurityProvider.class);
+        xp.getXStream().alias("iride", IrideSecurityServiceConfig.class);
     }
     
     @Override

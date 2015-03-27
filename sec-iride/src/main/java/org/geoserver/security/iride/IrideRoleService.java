@@ -41,6 +41,8 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.io.IOUtils;
+import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.platform.exception.GeoServerExceptions;
 import org.geoserver.security.GeoServerRoleService;
 import org.geoserver.security.GeoServerRoleStore;
 import org.geoserver.security.config.SecurityNamedServiceConfig;
@@ -79,7 +81,8 @@ public class IrideRoleService extends AbstractGeoServerSecurityService implement
         
         if(config instanceof IrideSecurityServiceConfig) {
             IrideSecurityServiceConfig irideCfg = (IrideSecurityServiceConfig)config;
-            serverURL = irideCfg.getServerURL();
+            serverURL = parseServerURL(irideCfg.getServerURL());
+            
             applicationName = irideCfg.getApplicationName();
             adminRole = irideCfg.getAdminRole();
             
@@ -93,6 +96,15 @@ public class IrideRoleService extends AbstractGeoServerSecurityService implement
 
     
     
+    private String parseServerURL(String url) {
+        if(url != null && url.startsWith("${") && url.endsWith("}")) {
+            url = GeoServerExtensions.getProperty(url.substring(2, url.length() - 1));
+        }
+        return url;
+    }
+
+
+
     /**
      * @param httpClient the httpClient to set
      */
