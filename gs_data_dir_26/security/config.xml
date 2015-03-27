@@ -1,5 +1,5 @@
 <security>
-  <roleServiceName>default</roleServiceName>
+  <roleServiceName>accreditoroles</roleServiceName>
   <authProviderNames>
     <string>default</string>
   </authProviderNames>
@@ -7,8 +7,9 @@
   <encryptingUrlParams>false</encryptingUrlParams>
   <filterChain>
     <filters name="web" class="org.geoserver.security.HtmlLoginFilterChain" interceptorName="interceptor" exceptionTranslationName="exception" path="/web/**,/gwc/rest/web/**,/" disabled="false" allowSessionCreation="true" ssl="false" matchHTTPMethod="false">
-      <filter>rememberme</filter>
-      <filter>form</filter>
+      <filter>basic</filter>
+      <filter>shibboleth</filter>
+      <filter>accredito</filter>
       <filter>anonymous</filter>
     </filters>
     <filters name="webLogin" class="org.geoserver.security.ConstantFilterChain" path="/j_spring_security_check,/j_spring_security_check/" disabled="false" allowSessionCreation="true" ssl="false" matchHTTPMethod="false">
@@ -26,6 +27,8 @@
     </filters>
     <filters name="default" class="org.geoserver.security.ServiceLoginFilterChain" interceptorName="interceptor" exceptionTranslationName="exception" path="/**" disabled="false" allowSessionCreation="false" ssl="false" matchHTTPMethod="false">
       <filter>basic</filter>
+      <filter>shibboleth</filter>
+      <filter>accredito</filter>
       <filter>anonymous</filter>
     </filters>
   </filterChain>

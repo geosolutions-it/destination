@@ -1,23 +1,20 @@
 <layerGroup>
   <id>LayerGroupInfoImpl-26788935:1410d939bed:4cc3</id>
   <name>popolazione_residente</name>
+  <mode>SINGLE</mode>
+  <title>popolazione_residente</title>
+  <abstractTxt>popolazione_residente</abstractTxt>
   <workspace>
     <id>WorkspaceInfoImpl--570ae188:124761b8d78:-7ffb</id>
   </workspace>
-  <layers>
-    <layer>
+  <publishables>
+    <published type="layer">
       <id>LayerInfoImpl--10a99c92:13d173f8f0a:-7ffc</id>
-    </layer>
-    <layer>
-      <id>LayerInfoImpl-26788935:1410d939bed:4cc2</id>
-    </layer>
-  </layers>
+    </published>
+  </publishables>
   <styles>
     <style>
       <id>StyleInfoImpl--67fd9ceb:13ccdfda991:7dca</id>
-    </style>
-    <style>
-      <id>StyleInfoImpl-26788935:1410d6d8049:2ad0</id>
     </style>
   </styles>
   <bounds>

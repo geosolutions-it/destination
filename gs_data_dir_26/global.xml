@@ -15,6 +15,14 @@
     <onlineResource>http://geoserver.org</onlineResource>
     <verbose>false</verbose>
     <verboseExceptions>false</verboseExceptions>
+    <metadata>
+      <map>
+        <entry>
+          <string>quietOnNotFound</string>
+          <boolean>false</boolean>
+        </entry>
+      </map>
+    </metadata>
     <localWorkspaceIncludesPrefix>false</localWorkspaceIncludesPrefix>
   </settings>
   <jai>
@@ -37,8 +45,9 @@
     <queueType>UNBOUNDED</queueType>
     <imageIOCacheThreshold>10240</imageIOCacheThreshold>
   </coverageAccess>
-  <updateSequence>93</updateSequence>
+  <updateSequence>112</updateSequence>
   <featureTypeCacheSize>0</featureTypeCacheSize>
   <globalServices>true</globalServices>
   <xmlPostRequestLogBufferSize>1024</xmlPostRequestLogBufferSize>
+  <xmlExternalEntitiesEnabled>false</xmlExternalEntitiesEnabled>
 </global>

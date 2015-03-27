@@ -60,7 +60,10 @@
         <name>buffer_2</name>
         <sql>SELECT id_geo_arco,geometria&#xd;
 from siig_geo_ln_arco_2&#xd;
-where geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)</sql>
+where geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)&#xd;
+or cod_provincia = &apos;%provincia%&apos; or cod_comune=&apos;%comune%&apos;
+</sql>
+        <escapeSql>false</escapeSql>
         <keyColumn>id_geo_arco</keyColumn>
         <geometry>
           <name>geometria</name>
@@ -72,6 +75,16 @@ where geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)</sql>
           <defaultValue>438859.3438263,4953719.9308777,445056.32630922,4961834.6496277</defaultValue>
           <regexpValidator>^[\w\d\s,\.]+$</regexpValidator>
         </parameter>
+        <parameter>
+          <name>provincia</name>
+          <defaultValue>-1</defaultValue>
+          <regexpValidator>^[\w\d\s]+$</regexpValidator>
+        </parameter>
+        <parameter>
+          <name>comune</name>
+          <defaultValue>-1</defaultValue>
+          <regexpValidator>^[\w\d\s]+$</regexpValidator>
+        </parameter>
       </virtualTable>
     </entry>
   </metadata>
@@ -80,4 +93,6 @@ where geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)</sql>
   </store>
   <maxFeatures>0</maxFeatures>
   <numDecimals>0</numDecimals>
+  <overridingServiceSRS>false</overridingServiceSRS>
+  <circularArcPresent>false</circularArcPresent>
 </featureType>
