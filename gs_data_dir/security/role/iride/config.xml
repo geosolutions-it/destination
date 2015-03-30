@@ -1,9 +1,0 @@
-<org.geoserver.security.iride.IrideSecurityServiceConfig>
-  <id>-1706d4a4:141e64cb539:-7ffd</id>
-  <name>iride</name>
-  <className>org.geoserver.security.iride.IrideRoleService</className>
-  <!--serverURL>http://localhost:8085/iride2simApplIridepepWsfad/services/iride2simIridepep</serverURL-->
-  <serverURL>http://localhost/iride.xml</serverURL>
-  <adminRole>SUPERUSER_SIIG</adminRole>
-  <applicationName>SIIG</applicationName>
-</org.geoserver.security.iride.IrideSecurityServiceConfig>
