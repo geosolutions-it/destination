@@ -1,8 +1,0 @@
-<org.geoserver.security.config.RequestHeaderAuthenticationFilterConfig>
-  <id>-9102bec:144fd6b0913:-4832</id>
-  <name>accredito</name>
-  <className>org.geoserver.security.filter.GeoServerRequestHeaderAuthenticationFilter</className>
-  <roleSource>RoleService</roleSource>
-  <roleServiceName>accreditoroles</roleServiceName>
-  <principalHeaderAttribute>Shib-Identita-CodiceFiscale</principalHeaderAttribute>
-</org.geoserver.security.config.RequestHeaderAuthenticationFilterConfig>
