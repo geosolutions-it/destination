@@ -1,6 +1,0 @@
-<usernamePassword>
-  <id>-13e4d74e:14ba75bbf9f:-7ffe</id>
-  <name>geostore</name>
-  <className>org.geoserver.security.auth.UsernamePasswordAuthenticationProvider</className>
-  <userGroupServiceName>geostore</userGroupServiceName>
-</usernamePassword>
