@@ -60,7 +60,7 @@
         <jai_imageio.version>1.1</jai_imageio.version>
         <imageio-ext.version>1.1.7</imageio-ext.version>
         <imageio-ext.group>it.geosolutions.imageio-ext</imageio-ext.group>
-		<jaiext.version>1.0-SNAPSHOT</jaiext.version>
+		<jaiext.version>1.0-M09032015</jaiext.version>
 <!--
         <allow.test.skip>true</allow.test.skip>
         <allow.test.failure.ignore>false</allow.test.failure.ignore>
