@@ -73,8 +73,11 @@ public class DestinationAccessManager implements ResourceAccessManager {
 	boolean hasAuthority(Authentication user, String authorityName) {
         if (user.getAuthorities() != null) {
             for (GrantedAuthority authority : user.getAuthorities()) {
-                final String userRole = authority.getAuthority();
-                if (authorityName.equalsIgnoreCase(userRole) ) {
+                String userRole = authority.getAuthority();
+                if(userRole.startsWith("ROLE_")) {
+                    userRole = userRole.substring("ROLE_".length());
+                }
+                if (authorityName.equalsIgnoreCase(userRole)) {
                     return true;
                 }
             }
@@ -128,13 +131,13 @@ public class DestinationAccessManager implements ResourceAccessManager {
 	@Override
 	public StyleAccessLimits getAccessLimits(Authentication user,
 			StyleInfo style) {
-		return new StyleAccessLimits(CatalogMode.HIDE);
+		return null;
 	}
 
 	@Override
 	public LayerGroupAccessLimits getAccessLimits(Authentication user,
 			LayerGroupInfo layerGroup) {
-		return new LayerGroupAccessLimits(CatalogMode.HIDE);
+		return null;
 	}
 
 }
