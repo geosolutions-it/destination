@@ -1,0 +1,8 @@
+<iride>
+  <id>-1706d4a4:141e64cb539:-7ffd</id>
+  <name>iride</name>
+  <className>org.geoserver.security.iride.IrideRoleService</className>
+  <serverURL>${IRIDE_URL}</serverURL>
+  <adminRole>SUPERUSER_SIIG</adminRole>
+  <applicationName>SIIG</applicationName>
+</iride>
