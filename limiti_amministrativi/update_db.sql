@@ -903,3 +903,86 @@ update siig_mtd_t_formula set formula='select sum(psc) from siig_r_scenario_sost
 update siig_mtd_t_formula set formula='select id_geo_arco,avg(%simulazione(cff,id_bersaglio)%) from siig_r_arco_%livello%_scen_tipobers where id_geo_arco in (%id_geo_arco%) and id_bersaglio in (%id_bersaglio%) group by id_geo_arco' where id_formula=131;
 update siig_mtd_t_formula set formula='select (%formula(38,id_gravita,5)%)' where id_formula=132;
 update siig_mtd_t_formula set formula='select id_geo_arco,%formula(117)%*1000*(%formula(112)%) from siig_geo_ln_arco_%livello%  where id_geo_arco in (%id_geo_arco%) ' where id_formula=133;
+
+-- griglia a 2km
+CREATE TABLE siig_geo_grid_2(
+        gid NUMERIC(9,0) NOT NULL,
+        geometria geometry(POLYGON,32632),
+        PRIMARY KEY (gid)
+);
+
+CREATE INDEX
+    siig_geo_grid_2_gidx
+ON siig_geo_grid_2 using GIST(geometria);
+
+CREATE OR REPLACE FUNCTION public.makegrid_2d (
+  bound_polygon public.geometry,
+  grid_step integer,
+  metric_srid integer = 32632
+)
+RETURNS public.geometry AS
+$body$
+DECLARE
+  BoundM public.geometry; --Bound polygon transformed to metric projection (with metric_srid SRID)
+  Xmin DOUBLE PRECISION;
+  Xmax DOUBLE PRECISION;
+  Ymax DOUBLE PRECISION;
+  X DOUBLE PRECISION;
+  Y DOUBLE PRECISION;
+  sectors public.geometry[];
+  i INTEGER;
+BEGIN
+  BoundM := ST_Transform($1, $3); --From WGS84 (SRID 4326) to metric projection, to operate with step in meters
+  Xmin := ST_XMin(BoundM);
+  Xmax := ST_XMax(BoundM);
+  Ymax := ST_YMax(BoundM);
+
+  Y := ST_YMin(BoundM); --current sector's corner coordinate
+  i := -1;
+  <<yloop>>
+  LOOP
+    IF (Y > Ymax) THEN  --Better if generating polygons exceeds bound for one step. You always can crop the result. But if not you may get not quite correct data for outbound polygons (if you calculate frequency per a sector  e.g.)
+        EXIT;
+    END IF;
+
+    X := Xmin;
+    <<xloop>>
+    LOOP
+      IF (X > Xmax) THEN
+          EXIT;
+      END IF;
+
+      i := i + 1;
+      sectors[i] := ST_GeomFromText('POLYGON(('||X||' '||Y||', '||(X+$2)||' '||Y||', '||(X+$2)||' '||(Y+$2)||', '||X||' '||(Y+$2)||', '||X||' '||Y||'))', $3);
+
+      X := X + $2;
+    END LOOP xloop;
+    Y := Y + $2;
+  END LOOP yloop;
+
+  RETURN ST_Transform(ST_Collect(sectors), ST_SRID($1));
+END;
+$body$
+LANGUAGE 'plpgsql';
+
+INSERT INTO siig_geo_grid_2(gid,geometria)
+SELECT row_number() OVER (ORDER BY q_grid.cell) AS gid,q_grid.cell AS geometria
+FROM
+(SELECT (st_dump(makegrid_2d(st_geomfromtext('Polygon((300000 4870000,770000 4870000,770000 5180000,300000 5180000,300000 4870000))'::text, 32632), 2000, 32632))).geom AS cell) q_grid
+
+-- griglia a 2km tagliata sui confini comunali
+CREATE TABLE siig_geo_grid_2_clip(
+        gid NUMERIC(9,0) NOT NULL,
+        geometria geometry(MULTIPOLYGON,32632),
+        PRIMARY KEY (gid)
+);
+
+CREATE INDEX
+    siig_geo_grid_2_clip_gidx
+ON siig_geo_grid_2_clip using GIST(geometria);
+
+insert into siig_geo_grid_2_clip(gid,geometria)
+SELECT row_number() OVER () AS gid,ST_Multi(ST_Intersection(siig_geo_grid_2.geometria,siig_geo_pl_comuni.geometria))  AS geometria
+FROM
+siig_geo_grid_2 inner join siig_geo_pl_comuni
+on ST_Intersects(siig_geo_grid_2.geometria , siig_geo_pl_comuni.geometria);
