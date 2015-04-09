@@ -1,15 +1,12 @@
 <style>
-  <id>StyleInfoImpl-40c3825f:14bfdafd8bf:-6ad5</id>
-  <name>province</name>
+  <id>StyleInfoImpl-285be26e:14c9e256652:ef0</id>
+  <name>comuni</name>
   <workspace>
     <id>WorkspaceInfoImpl--570ae188:124761b8d78:-7ffb</id>
   </workspace>
-  <sldVersion>
-    <version>1.0.0</version>
-  </sldVersion>
   <format>sld</format>
   <languageVersion>
     <version>1.0.0</version>
   </languageVersion>
-  <filename>province.sld</filename>
+  <filename>comuni.sld</filename>
 </style>

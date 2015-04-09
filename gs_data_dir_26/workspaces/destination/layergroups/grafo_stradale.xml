@@ -1,20 +1,23 @@
 <layerGroup>
   <id>LayerGroupInfoImpl--7e9de184:13f61c0b107:-62d3</id>
   <name>grafo_stradale</name>
+  <mode>SINGLE</mode>
+  <title>grafo_stradale</title>
+  <abstractTxt>grafo_stradale</abstractTxt>
   <workspace>
     <id>WorkspaceInfoImpl--570ae188:124761b8d78:-7ffb</id>
   </workspace>
-  <layers>
-    <layer>
+  <publishables>
+    <published type="layer">
       <id>LayerInfoImpl-6081ad47:1444e75fb17:36ca</id>
-    </layer>
-    <layer>
+    </published>
+    <published type="layer">
       <id>LayerInfoImpl-6081ad47:1444e75fb17:36cc</id>
-    </layer>
-    <layer>
+    </published>
+    <published type="layer">
       <id>LayerInfoImpl-78a95515:14714e98bc3:-5d93</id>
-    </layer>
-  </layers>
+    </published>
+  </publishables>
   <styles>
     <style>
       <id>StyleInfoImpl--7e9de184:13f61c0b107:-4d9e</id>

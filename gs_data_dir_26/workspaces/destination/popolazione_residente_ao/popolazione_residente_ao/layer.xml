@@ -8,7 +8,7 @@
   <resource class="coverage">
     <id>CoverageInfoImpl-1c09ce8a:142dcbfbba4:-7eb8</id>
   </resource>
-  <enabled>true</enabled>
+  <queryable>false</queryable>
   <attribution>
     <logoWidth>0</logoWidth>
     <logoHeight>0</logoHeight>

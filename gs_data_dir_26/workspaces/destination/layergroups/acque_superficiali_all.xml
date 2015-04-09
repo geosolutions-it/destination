@@ -1,26 +1,23 @@
 <layerGroup>
   <id>LayerGroupInfoImpl--529052f4:13d68619d83:-67c5</id>
   <name>acque_superficiali_all</name>
+  <mode>SINGLE</mode>
+  <title>acque_superficiali_all</title>
+  <abstractTxt>acque_superficiali_all</abstractTxt>
   <workspace>
     <id>WorkspaceInfoImpl--570ae188:124761b8d78:-7ffb</id>
   </workspace>
-  <layers>
-    <layer>
+  <publishables>
+    <published type="layer">
       <id>LayerInfoImpl--30e2edf6:13db00e44fe:-67b9</id>
-    </layer>
-    <layer>
-      <id>LayerInfoImpl-494d950f:13ed56219f2:-7ff3</id>
-    </layer>
-    <layer>
+    </published>
+    <published type="layer">
       <id>LayerInfoImpl-4926a9c2:14182fcba1d:-7ff4</id>
-    </layer>
-  </layers>
+    </published>
+  </publishables>
   <styles>
     <style>
       <id>StyleInfoImpl--67fd9ceb:13ccdbc5905:-3c87</id>
-    </style>
-    <style>
-      <id>StyleInfoImpl-26788935:1410d6d8049:3447</id>
     </style>
     <style>
       <id>StyleInfoImpl--529052f4:13d68619d83:-67c6</id>

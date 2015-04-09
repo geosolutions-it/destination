@@ -1,38 +1,35 @@
 <layerGroup>
   <id>LayerGroupInfoImpl--529052f4:13d6830255c:-32c8</id>
   <name>industria_servizi_all</name>
+  <mode>SINGLE</mode>
+  <title>industria_servizi_all</title>
+  <abstractTxt>industria_servizi_all</abstractTxt>
   <workspace>
     <id>WorkspaceInfoImpl--570ae188:124761b8d78:-7ffb</id>
   </workspace>
-  <layers>
-    <layer>
+  <publishables>
+    <published type="layer">
       <id>LayerInfoImpl--529052f4:13d6830255c:-32ca</id>
-    </layer>
-    <layer>
-      <id>LayerInfoImpl-494d950f:13ed56219f2:-7ffd</id>
-    </layer>
-    <layer>
+    </published>
+    <published type="layer">
       <id>LayerInfoImpl--2b4125c7:142dbcaed5a:-7fe3</id>
-    </layer>
-    <layer>
+    </published>
+    <published type="layer">
       <id>LayerInfoImpl--2b4125c7:142dbcaed5a:-7fe0</id>
-    </layer>
-    <layer>
+    </published>
+    <published type="layer">
       <id>LayerInfoImpl--2b4125c7:142dbcaed5a:-7fe6</id>
-    </layer>
-    <layer>
+    </published>
+    <published type="layer">
       <id>LayerInfoImpl--2b4125c7:142dbcaed5a:-7fdd</id>
-    </layer>
-    <layer>
+    </published>
+    <published type="layer">
       <id>LayerInfoImpl--2b4125c7:142dbcaed5a:-7fe9</id>
-    </layer>
-  </layers>
+    </published>
+  </publishables>
   <styles>
     <style>
       <id>StyleInfoImpl-50bf8b26:13cce86fb2a:-7fff</id>
-    </style>
-    <style>
-      <id>StyleInfoImpl-26788935:1410d546ba6:-7fff</id>
     </style>
     <style>
       <id>StyleInfoImpl--529052f4:13d6830255c:-32c9</id>

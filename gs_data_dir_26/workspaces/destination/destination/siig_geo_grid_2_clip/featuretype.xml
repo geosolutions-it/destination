@@ -1,13 +1,13 @@
 <featureType>
-  <id>FeatureTypeInfoImpl-6081ad47:1444e75fb17:36c9</id>
-  <name>v_geo_grafo_ln</name>
-  <nativeName>v_geo_grafo_ln</nativeName>
+  <id>FeatureTypeInfoImpl-285be26e:14c99960405:469f</id>
+  <name>siig_geo_grid_2_clip</name>
+  <nativeName>siig_geo_grid_2_clip</nativeName>
   <namespace>
     <id>NamespaceInfoImpl--570ae188:124761b8d78:-7ffc</id>
   </namespace>
-  <title>v_geo_grafo_ln</title>
+  <title>siig_geo_grid_2_clip</title>
   <keywords>
-    <string>v_geo_grafo_ln</string>
+    <string>siig_geo_grid_2_clip</string>
     <string>features</string>
   </keywords>
   <nativeCRS class="projected">PROJCS[&quot;WGS 84 / UTM zone 32N&quot;, &#xd;
@@ -32,17 +32,17 @@
   AUTHORITY[&quot;EPSG&quot;,&quot;32632&quot;]]</nativeCRS>
   <srs>EPSG:32632</srs>
   <nativeBoundingBox>
-    <minx>0.0</minx>
-    <maxx>761707.75</maxx>
-    <miny>0.0</miny>
-    <maxy>5216902.50012207</maxy>
+    <minx>313360.999831459</minx>
+    <maxx>766058.48993146</maxx>
+    <miny>4879535.00021822</miny>
+    <maxy>5182000.0</maxy>
     <crs class="projected">EPSG:32632</crs>
   </nativeBoundingBox>
   <latLonBoundingBox>
-    <minx>2.4324712080546615</minx>
-    <maxx>12.445969435320345</maxx>
-    <miny>0.0</miny>
-    <maxy>47.105583830697036</maxy>
+    <minx>6.555681566771741</minx>
+    <maxx>12.48276620123235</maxx>
+    <miny>44.0207354700402</miny>
+    <maxy>46.79058986725162</maxy>
     <crs>GEOGCS[&quot;WGS84(DD)&quot;, &#xd;
   DATUM[&quot;WGS84&quot;, &#xd;
     SPHEROID[&quot;WGS84&quot;, 6378137.0, 298.257223563]], &#xd;
@@ -53,10 +53,8 @@
   </latLonBoundingBox>
   <projectionPolicy>FORCE_DECLARED</projectionPolicy>
   <enabled>true</enabled>
-  <advertised>true</advertised>
   <metadata>
-    <entry key="cacheAgeMax">120</entry>
-    <entry key="cachingEnabled">true</entry>
+    <entry key="cachingEnabled">false</entry>
   </metadata>
   <store class="dataStore">
     <id>DataStoreInfoImpl--3970ff67:13c00cf828a:-7fef</id>

@@ -1,26 +1,23 @@
 <layerGroup>
   <id>LayerGroupInfoImpl--529052f4:13d68619d83:-502a</id>
   <name>beni_culturali_all</name>
+  <mode>SINGLE</mode>
+  <title>beni_culturali_all</title>
+  <abstractTxt>beni_culturali_all</abstractTxt>
   <workspace>
     <id>WorkspaceInfoImpl--570ae188:124761b8d78:-7ffb</id>
   </workspace>
-  <layers>
-    <layer>
+  <publishables>
+    <published type="layer">
       <id>LayerInfoImpl--529052f4:13d68619d83:-502c</id>
-    </layer>
-    <layer>
-      <id>LayerInfoImpl-494d950f:13ed56219f2:-7ff5</id>
-    </layer>
-    <layer>
+    </published>
+    <published type="layer">
       <id>LayerInfoImpl--38c05adb:1419c644a17:-40f1</id>
-    </layer>
-  </layers>
+    </published>
+  </publishables>
   <styles>
     <style>
       <id>StyleInfoImpl--67fd9ceb:13ccdfda991:70dd</id>
-    </style>
-    <style>
-      <id>StyleInfoImpl-26788935:1410d647fae:5408</id>
     </style>
     <style>
       <id>StyleInfoImpl--529052f4:13d68619d83:-502b</id>

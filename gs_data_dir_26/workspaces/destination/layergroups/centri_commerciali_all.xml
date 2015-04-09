@@ -1,38 +1,35 @@
 <layerGroup>
   <id>LayerGroupInfoImpl-24346e05:13d5e1f949a:3c51</id>
   <name>centri_commerciali_all</name>
+  <mode>SINGLE</mode>
+  <title>centri_commerciali_all</title>
+  <abstractTxt>centri_commerciali_all</abstractTxt>
   <workspace>
     <id>WorkspaceInfoImpl--570ae188:124761b8d78:-7ffb</id>
   </workspace>
-  <layers>
-    <layer>
+  <publishables>
+    <published type="layer">
       <id>LayerInfoImpl-24346e05:13d5e1f949a:-3c3e</id>
-    </layer>
-    <layer>
-      <id>LayerInfoImpl-494d950f:13ed56219f2:-7ff7</id>
-    </layer>
-    <layer>
+    </published>
+    <published type="layer">
       <id>LayerInfoImpl-1c09ce8a:142dcbfbba4:-7db3</id>
-    </layer>
-    <layer>
+    </published>
+    <published type="layer">
       <id>LayerInfoImpl-1c09ce8a:142dcbfbba4:-7db0</id>
-    </layer>
-    <layer>
+    </published>
+    <published type="layer">
       <id>LayerInfoImpl-1c09ce8a:142dcbfbba4:-7dad</id>
-    </layer>
-    <layer>
+    </published>
+    <published type="layer">
       <id>LayerInfoImpl-1c09ce8a:142dcbfbba4:-7daa</id>
-    </layer>
-    <layer>
+    </published>
+    <published type="layer">
       <id>LayerInfoImpl-1c09ce8a:142dcbfbba4:-7da7</id>
-    </layer>
-  </layers>
+    </published>
+  </publishables>
   <styles>
     <style>
       <id>StyleInfoImpl-50bf8b26:13cce86fb2a:-2974</id>
-    </style>
-    <style>
-      <id>StyleInfoImpl-26788935:1410d647fae:585a</id>
     </style>
     <style>
       <id>StyleInfoImpl-24346e05:13d5e1f949a:3c50</id>

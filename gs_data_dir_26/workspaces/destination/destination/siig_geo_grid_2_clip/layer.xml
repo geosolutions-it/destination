@@ -1,12 +1,12 @@
 <layer>
-  <name>v_geo_grafo_ln_2</name>
-  <id>LayerInfoImpl-6081ad47:1444e75fb17:36cc</id>
+  <name>siig_geo_grid_2_clip</name>
+  <id>LayerInfoImpl-285be26e:14c99960405:46a0</id>
   <type>VECTOR</type>
   <defaultStyle>
-    <id>StyleInfoImpl--7e9de184:13f61c0b107:-4d9d</id>
+    <id>StyleInfoImpl--570ae188:124761b8d78:-7fe0</id>
   </defaultStyle>
   <resource class="featureType">
-    <id>FeatureTypeInfoImpl-6081ad47:1444e75fb17:36cb</id>
+    <id>FeatureTypeInfoImpl-285be26e:14c99960405:469f</id>
   </resource>
   <attribution>
     <logoWidth>0</logoWidth>
