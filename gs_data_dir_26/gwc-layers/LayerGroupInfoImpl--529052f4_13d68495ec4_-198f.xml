@@ -22,7 +22,8 @@
     <int>3</int>
     <int>3</int>
   </metaWidthHeight>
+  <expireCache>0</expireCache>
+  <expireClients>0</expireClients>
   <parameterFilters/>
   <gutter>0</gutter>
-  <autoCacheStyles>false</autoCacheStyles>
 </GeoServerTileLayer>

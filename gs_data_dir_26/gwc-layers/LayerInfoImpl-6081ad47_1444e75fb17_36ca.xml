@@ -1,7 +1,7 @@
 <GeoServerTileLayer>
-  <id>LayerGroupInfoImpl--7e9de184:13f61c0b107:-62d3</id>
+  <id>LayerInfoImpl-6081ad47:1444e75fb17:36ca</id>
   <enabled>true</enabled>
-  <name>destination:grafo_stradale</name>
+  <name>destination:v_geo_grafo_ln</name>
   <mimeFormats>
     <string>image/jpeg</string>
     <string>image/png</string>
@@ -12,10 +12,10 @@
       <gridSetName>EPSG:4326</gridSetName>
       <extent>
         <coords>
-          <double>6.522053394858875</double>
-          <double>44.03409878502676</double>
-          <double>11.59892211303577</double>
-          <double>46.56934225219235</double>
+          <double>2.4324712080546615</double>
+          <double>0.0</double>
+          <double>12.445969435320345</double>
+          <double>47.10563002152124</double>
         </coords>
       </extent>
     </gridSubset>
@@ -23,10 +23,10 @@
       <gridSetName>EPSG:900913</gridSetName>
       <extent>
         <coords>
-          <double>726031.6628422312</double>
-          <double>5470720.566080636</double>
-          <double>1291186.1033739827</double>
-          <double>5872060.896550399</double>
+          <double>270781.45624994393</double>
+          <double>-7.081154551613622E-10</double>
+          <double>1385478.9799685073</double>
+          <double>5959332.656075652</double>
         </coords>
       </extent>
       <zoomStart>5</zoomStart>
@@ -41,6 +41,13 @@
   </metaWidthHeight>
   <expireCache>0</expireCache>
   <expireClients>0</expireClients>
-  <parameterFilters/>
+  <parameterFilters>
+    <styleParameterFilter>
+      <key>STYLES</key>
+      <defaultValue></defaultValue>
+      <availableStyles class="sorted-set"/>
+      <defaultStyle>grafo_stradale_1</defaultStyle>
+    </styleParameterFilter>
+  </parameterFilters>
   <gutter>0</gutter>
 </GeoServerTileLayer>

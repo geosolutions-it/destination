@@ -1,7 +1,7 @@
 <GeoServerTileLayer>
-  <id>LayerGroupInfoImpl-24346e05:13d598ba09f:-3e9b</id>
+  <id>LayerInfoImpl-40c3825f:14bfdafd8bf:-6ad8</id>
   <enabled>true</enabled>
-  <name>destination:acque_sotterranee_all</name>
+  <name>destination:siig_geo_pl_comuni</name>
   <mimeFormats>
     <string>image/jpeg</string>
     <string>image/png</string>
@@ -12,10 +12,10 @@
       <gridSetName>EPSG:900913</gridSetName>
       <extent>
         <coords>
-          <double>712630.5053544755</double>
-          <double>5460555.753134976</double>
-          <double>1409048.1713438316</double>
-          <double>5972800.892141017</double>
+          <double>728015.250796134</double>
+          <double>5468651.60599188</double>
+          <double>1392079.56643175</double>
+          <double>5964617.096136482</double>
         </coords>
       </extent>
       <zoomStart>5</zoomStart>
@@ -27,20 +27,27 @@
       <gridSetName>EPSG:4326</gridSetName>
       <extent>
         <coords>
-          <double>6.401668748897438</double>
-          <double>43.96841578228022</double>
-          <double>12.657695083788262</double>
-          <double>47.18791614697322</double>
+          <double>6.539872268622737</double>
+          <double>44.0207354700402</double>
+          <double>12.505263512361177</double>
+          <double>47.137931253046524</double>
         </coords>
       </extent>
     </gridSubset>
   </gridSubsets>
   <metaWidthHeight>
-    <int>3</int>
-    <int>3</int>
+    <int>4</int>
+    <int>4</int>
   </metaWidthHeight>
   <expireCache>0</expireCache>
   <expireClients>0</expireClients>
-  <parameterFilters/>
+  <parameterFilters>
+    <styleParameterFilter>
+      <key>STYLES</key>
+      <defaultValue></defaultValue>
+      <availableStyles class="sorted-set"/>
+      <defaultStyle>comuni</defaultStyle>
+    </styleParameterFilter>
+  </parameterFilters>
   <gutter>0</gutter>
 </GeoServerTileLayer>

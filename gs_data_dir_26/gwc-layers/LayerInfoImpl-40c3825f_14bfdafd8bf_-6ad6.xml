@@ -1,7 +1,7 @@
 <GeoServerTileLayer>
-  <id>LayerGroupInfoImpl--7e9de184:13f61c0b107:-62d3</id>
+  <id>LayerInfoImpl-40c3825f:14bfdafd8bf:-6ad6</id>
   <enabled>true</enabled>
-  <name>destination:grafo_stradale</name>
+  <name>destination:siig_geo_pl_province</name>
   <mimeFormats>
     <string>image/jpeg</string>
     <string>image/png</string>
@@ -12,10 +12,10 @@
       <gridSetName>EPSG:4326</gridSetName>
       <extent>
         <coords>
-          <double>6.522053394858875</double>
-          <double>44.03409878502676</double>
-          <double>11.59892211303577</double>
-          <double>46.56934225219235</double>
+          <double>6.538895377242832</double>
+          <double>44.01897618912544</double>
+          <double>12.503750925281022</double>
+          <double>47.13611715283758</double>
         </coords>
       </extent>
     </gridSubset>
@@ -23,10 +23,10 @@
       <gridSetName>EPSG:900913</gridSetName>
       <extent>
         <coords>
-          <double>726031.6628422312</double>
-          <double>5470720.566080636</double>
-          <double>1291186.1033739827</double>
-          <double>5872060.896550399</double>
+          <double>727906.5037451625</double>
+          <double>5468379.262059824</double>
+          <double>1391911.1860082066</double>
+          <double>5964320.226610987</double>
         </coords>
       </extent>
       <zoomStart>5</zoomStart>
@@ -41,6 +41,13 @@
   </metaWidthHeight>
   <expireCache>0</expireCache>
   <expireClients>0</expireClients>
-  <parameterFilters/>
+  <parameterFilters>
+    <styleParameterFilter>
+      <key>STYLES</key>
+      <defaultValue></defaultValue>
+      <availableStyles class="sorted-set"/>
+      <defaultStyle>province</defaultStyle>
+    </styleParameterFilter>
+  </parameterFilters>
   <gutter>0</gutter>
 </GeoServerTileLayer>
