@@ -35,13 +35,19 @@ import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Transaction;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.Hints;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.opengis.feature.GeometryAttribute;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory2;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -649,6 +655,7 @@ public class ArcsIngestionProcess extends InputObject {
 			lunghezza = 1.0;
 		}
 		if(geo != null) {
+			
 			Transaction rowTransaction = new DefaultTransaction();
 			setTransaction(outputObjects, rowTransaction);			
 			
@@ -660,7 +667,7 @@ public class ArcsIngestionProcess extends InputObject {
 				} else {
 					addAggregateGeoFeature(outputObjects[4], id, idTematico, geo,
 							(int)lunghezza, corsie, incidenti, inputFeature, idOrigin, 
-							flgCorsieCounter.getMax(), flgIncidentiCounter.getMax());						
+							flgCorsieCounter.getMax(), flgIncidentiCounter.getMax(), dataStore);						
 					if(!dontComputeVehicle) {
 						addAggregateVehicleFeature(outputObjects[0], id, (int)lunghezza,
 								tgm, velocita, flgTgmCounter.getMax(),
@@ -830,7 +837,9 @@ public class ArcsIngestionProcess extends InputObject {
 	 */
 	private void addAggregateGeoFeature(OutputObject outputObject, int id, int idTematico,
 			Geometry geo, int lunghezza, int corsie, double incidenti, SimpleFeature inputFeature, 
-			int idOrigin, String flgCorsie, String flgIncidenti) throws IOException {
+			int idOrigin, String flgCorsie, String flgIncidenti, DataStore dataStore) throws IOException {
+		//ricavo i codici provinciali e comunali 
+		CodiceProvincialeComunale codiciProvincialiComunali = getCodiceProvincialeComune(dataStore, geo);
 		SimpleFeatureBuilder geoFeatureBuilder = outputObject.getBuilder();
 		for(AttributeDescriptor attr : outputObject.getSchema().getAttributeDescriptors()) {
 			if(attr.getLocalName().equals(geoId)) {
@@ -841,6 +850,14 @@ public class ArcsIngestionProcess extends InputObject {
 				geoFeatureBuilder.add(idTematico+"");
 			} else if(attr.getLocalName().equals("geometria")) {
 				geoFeatureBuilder.add(geo);
+			} else if(attr.getLocalName().equals("cod_comune")){
+				if(codiciProvincialiComunali!=null && codiciProvincialiComunali.getCodiceComune()!=null){
+					geoFeatureBuilder.add(codiciProvincialiComunali.getCodiceComune());
+				}
+			} else if(attr.getLocalName().equals("cod_provincia")){
+				if(codiciProvincialiComunali!=null && codiciProvincialiComunali.getCodiceProvincia()!=null){
+					geoFeatureBuilder.add(codiciProvincialiComunali.getCodiceProvincia());
+				}
 			} else if(attr.getLocalName().equals("lunghezza")) {
 				geoFeatureBuilder.add(lunghezza);
 			} else if(attr.getLocalName().equals("nr_incidenti")) {
@@ -944,8 +961,9 @@ public class ArcsIngestionProcess extends InputObject {
 		Transaction rowTransaction = new DefaultTransaction();
 		setTransaction(outputObjects, rowTransaction);
 		
-		try {							
-			addGeoFeature(outputObjects[4], id, inputFeature);						
+		try {
+			//addGeoFeature(outputObjects[4], id, inputFeature);	
+			addGeoFeature(outputObjects[4], id, inputFeature, dataStore);	//modificato fra					
 			addVehicleFeature(outputObjects[0], id, inputFeature);
 			addDissestoFeature(outputObjects[1], id, inputFeature);
 			addCFFFeature(outputObjects[2], id, inputFeature);
@@ -1244,8 +1262,11 @@ public class ArcsIngestionProcess extends InputObject {
 	 * @throws IOException
 	 */
 	private void addGeoFeature(OutputObject geoObject,
-			int id,  SimpleFeature inputFeature) throws IOException {				
+			int id,  SimpleFeature inputFeature, DataStore dataStore) throws IOException {				
 		SimpleFeatureBuilder geoFeatureBuilder = geoObject.getBuilder();
+		CodiceProvincialeComunale codici = null;
+		Geometry geometry = (Geometry)inputFeature.getDefaultGeometry();
+		codici = getCodiceProvincialeComune(dataStore,geometry);
 		// compiles the attributes from target and read feature data
 		for(AttributeDescriptor attr : geoObject.getSchema().getAttributeDescriptors()) {
 			if(attr.getLocalName().equals(geoId)) {
@@ -1253,7 +1274,15 @@ public class ArcsIngestionProcess extends InputObject {
 			} else if(attr.getLocalName().equals("fk_partner")) {
 				geoFeatureBuilder.add(partner+"");
 			} else if(attr.getLocalName().equals("geometria")) {
-				geoFeatureBuilder.add(inputFeature.getDefaultGeometry());
+				geoFeatureBuilder.add(geometry);
+			} else if(attr.getLocalName().equals("cod_comune")) {
+				if(codici!=null && codici.getCodiceComune()!=null){
+					geoFeatureBuilder.add(codici.getCodiceComune());
+				}
+			} else if(attr.getLocalName().equals("cod_provincia")) {
+				if(codici!=null && codici.getCodiceProvincia()!=null){
+					geoFeatureBuilder.add(codici.getCodiceProvincia());
+				}
 			} else if(attr.getLocalName().equals("lunghezza")) {
 				Number lunghezza = (Number)getMapping(inputFeature,attributeMappings, attr.getLocalName());
 				if(lunghezza == null || lunghezza.intValue() <= 0) {
@@ -1273,6 +1302,37 @@ public class ArcsIngestionProcess extends InputObject {
 		geoObject.getWriter().addFeatures(DataUtilities
 				.collection(geoFeature));
 	}
+	
+	private CodiceProvincialeComunale getCodiceProvincialeComune(DataStore dataStore, Geometry geometry) throws IOException {
+		CodiceProvincialeComunale codici = new CodiceProvincialeComunale();
+		FilterFactory2 filterFactory = CommonFactoryFinder.getFilterFactory2();
+		
+		SimpleFeatureSource tabComuni = dataStore.getFeatureSource("siig_geo_pl_comuni");
+		Filter filtroComuni = filterFactory.intersects(filterFactory.property("geometria"), filterFactory.literal(geometry));
+		SimpleFeatureCollection elencoComuni = tabComuni.getFeatures(filtroComuni);
+		SimpleFeatureIterator iterComuni = elencoComuni.features();
+		try{
+			if(iterComuni!=null){
+				double lunghezza = 0.0;
+				while(iterComuni.hasNext()){
+					SimpleFeature rec = iterComuni.next();
+					Geometry geomComune = (Geometry) rec.getDefaultGeometry();
+					Geometry intersezione = geomComune.intersection(geometry);
+					if(intersezione!=null && intersezione.getLength()>lunghezza){
+						lunghezza = intersezione.getLength();
+						codici.setCodiceComune((String) rec.getAttribute("cod_comune"));
+						codici.setCodiceProvincia((String) rec.getAttribute("cod_provincia"));
+					}
+				}
+			}
+		}finally{
+			iterComuni.close();
+		}
+		
+		
+		return codici;
+	}
+	
 	
 	/**
 	 * Drops the input feature.
