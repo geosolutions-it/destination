@@ -1,0 +1,15 @@
+<layer>
+  <name>bersagli_umani</name>
+  <id>LayerInfoImpl-463d9aa6:14ca275d6d6:-dbf</id>
+  <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl-463d9aa6:14ca275d6d6:1d94</id>
+  </defaultStyle>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl-463d9aa6:14ca275d6d6:-dc0</id>
+  </resource>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+</layer>

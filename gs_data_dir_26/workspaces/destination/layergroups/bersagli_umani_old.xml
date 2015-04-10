@@ -1,29 +1,32 @@
 <layerGroup>
   <id>LayerGroupInfoImpl--10a99c92:13d173f8f0a:-7fe4</id>
-  <name>bersagli_umani</name>
+  <name>bersagli_umani_old</name>
+  <mode>SINGLE</mode>
+  <title>bersagli_umani_old</title>
+  <abstractTxt>bersagli_umani_old</abstractTxt>
   <workspace>
     <id>WorkspaceInfoImpl--570ae188:124761b8d78:-7ffb</id>
   </workspace>
-  <layers>
-    <layer>
+  <publishables>
+    <published type="layer">
       <id>LayerInfoImpl--10a99c92:13d173f8f0a:-7ffc</id>
-    </layer>
-    <layer>
+    </published>
+    <published type="layer">
       <id>LayerInfoImpl--10a99c92:13d173f8f0a:-7ff7</id>
-    </layer>
-    <layer>
+    </published>
+    <published type="layer">
       <id>LayerInfoImpl--10a99c92:13d173f8f0a:-7ff3</id>
-    </layer>
-    <layer>
+    </published>
+    <published type="layer">
       <id>LayerInfoImpl--10a99c92:13d173f8f0a:-7fee</id>
-    </layer>
-    <layer>
+    </published>
+    <published type="layer">
       <id>LayerInfoImpl--10a99c92:13d173f8f0a:-7fea</id>
-    </layer>
-    <layer>
+    </published>
+    <published type="layer">
       <id>LayerInfoImpl--10a99c92:13d173f8f0a:-7fe5</id>
-    </layer>
-  </layers>
+    </published>
+  </publishables>
   <styles>
     <style>
       <id>StyleInfoImpl--67fd9ceb:13ccdfda991:7dca</id>

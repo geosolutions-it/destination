@@ -1,15 +1,12 @@
 <style>
-  <id>StyleInfoImpl-544e5b2b:13eacdb7b86:-1a75</id>
-  <name>rischio_1</name>
+  <id>StyleInfoImpl-463d9aa6:14ca275d6d6:1d94</id>
+  <name>bersagli_umani</name>
   <workspace>
     <id>WorkspaceInfoImpl--570ae188:124761b8d78:-7ffb</id>
   </workspace>
-  <sldVersion>
-    <version>1.0.0</version>
-  </sldVersion>
   <format>sld</format>
   <languageVersion>
     <version>1.0.0</version>
   </languageVersion>
-  <filename>rischio_1.sld</filename>
+  <filename>bersagli_umani.sld</filename>
 </style>

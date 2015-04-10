@@ -32,7 +32,7 @@
             <Localized lang="de">Shadensbereich</Localized>
           </Title>
           <Abstract>Buffer per Rischio Incidentale</Abstract>
-          <MinScaleDenominator>17070</MinScaleDenominator>
+          <MinScaleDenominator>34150</MinScaleDenominator>
           <MaxScaleDenominator>50000</MaxScaleDenominator>
           <PolygonSymbolizer>
            

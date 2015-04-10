@@ -1,32 +1,35 @@
 <layerGroup>
   <id>LayerGroupInfoImpl--7e711dd1:13d160851b0:-7fec</id>
-  <name>bersagli_ambientali</name>
+  <name>bersagli_ambientali_old</name>
+  <mode>SINGLE</mode>
+  <title>bersagli_ambientali_old</title>
+  <abstractTxt>bersagli_ambientali_old</abstractTxt>
   <workspace>
     <id>WorkspaceInfoImpl--570ae188:124761b8d78:-7ffb</id>
   </workspace>
-  <layers>
-    <layer>
+  <publishables>
+    <published type="layer">
       <id>LayerInfoImpl-4172e293:13d127ce697:-7fd7</id>
-    </layer>
-    <layer>
+    </published>
+    <published type="layer">
       <id>LayerInfoImpl-4172e293:13d127ce697:-7fd4</id>
-    </layer>
-    <layer>
+    </published>
+    <published type="layer">
       <id>LayerInfoImpl-53d17a5c:13d15bf7c8f:-7ffb</id>
-    </layer>
-    <layer>
+    </published>
+    <published type="layer">
       <id>LayerInfoImpl--7e711dd1:13d160851b0:-7ffe</id>
-    </layer>
-    <layer>
+    </published>
+    <published type="layer">
       <id>LayerInfoImpl--7e711dd1:13d160851b0:-7ff6</id>
-    </layer>
-    <layer>
+    </published>
+    <published type="layer">
       <id>LayerInfoImpl--7e711dd1:13d160851b0:-7ff1</id>
-    </layer>
-    <layer>
+    </published>
+    <published type="layer">
       <id>LayerInfoImpl--7e711dd1:13d160851b0:-7fed</id>
-    </layer>
-  </layers>
+    </published>
+  </publishables>
   <styles>
     <style>
       <id>StyleInfoImpl--67fd9ceb:13ccdbc5905:-6a55</id>

@@ -1,0 +1,15 @@
+<layer>
+  <name>bersagli_ambientali</name>
+  <id>LayerInfoImpl-463d9aa6:14ca2958f39:-265c</id>
+  <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl-463d9aa6:14ca2958f39:-265b</id>
+  </defaultStyle>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl-463d9aa6:14ca2958f39:-265d</id>
+  </resource>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+</layer>

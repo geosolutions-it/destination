@@ -1,0 +1,119 @@
+<featureType>
+  <id>FeatureTypeInfoImpl-463d9aa6:14ca2958f39:-265d</id>
+  <name>bersagli_ambientali</name>
+  <nativeName>bersagli_ambiental</nativeName>
+  <namespace>
+    <id>NamespaceInfoImpl--570ae188:124761b8d78:-7ffc</id>
+  </namespace>
+  <title>bersagli_ambientali</title>
+  <keywords>
+    <string>features</string>
+    <string>bersagli_ambiental</string>
+  </keywords>
+  <nativeCRS class="projected">PROJCS[&quot;WGS 84 / UTM zone 32N&quot;, &#xd;
+  GEOGCS[&quot;WGS 84&quot;, &#xd;
+    DATUM[&quot;World Geodetic System 1984&quot;, &#xd;
+      SPHEROID[&quot;WGS 84&quot;, 6378137.0, 298.257223563, AUTHORITY[&quot;EPSG&quot;,&quot;7030&quot;]], &#xd;
+      AUTHORITY[&quot;EPSG&quot;,&quot;6326&quot;]], &#xd;
+    PRIMEM[&quot;Greenwich&quot;, 0.0, AUTHORITY[&quot;EPSG&quot;,&quot;8901&quot;]], &#xd;
+    UNIT[&quot;degree&quot;, 0.017453292519943295], &#xd;
+    AXIS[&quot;Geodetic longitude&quot;, EAST], &#xd;
+    AXIS[&quot;Geodetic latitude&quot;, NORTH], &#xd;
+    AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]], &#xd;
+  PROJECTION[&quot;Transverse_Mercator&quot;, AUTHORITY[&quot;EPSG&quot;,&quot;9807&quot;]], &#xd;
+  PARAMETER[&quot;central_meridian&quot;, 9.0], &#xd;
+  PARAMETER[&quot;latitude_of_origin&quot;, 0.0], &#xd;
+  PARAMETER[&quot;scale_factor&quot;, 0.9996], &#xd;
+  PARAMETER[&quot;false_easting&quot;, 500000.0], &#xd;
+  PARAMETER[&quot;false_northing&quot;, 0.0], &#xd;
+  UNIT[&quot;m&quot;, 1.0], &#xd;
+  AXIS[&quot;Easting&quot;, EAST], &#xd;
+  AXIS[&quot;Northing&quot;, NORTH], &#xd;
+  AUTHORITY[&quot;EPSG&quot;,&quot;32632&quot;]]</nativeCRS>
+  <srs>EPSG:32632</srs>
+  <nativeBoundingBox>
+    <minx>330245.158357732</minx>
+    <maxx>491394.530909091</maxx>
+    <miny>4914115.00325131</miny>
+    <maxy>5013931.99810157</maxy>
+    <crs class="projected">EPSG:32632</crs>
+  </nativeBoundingBox>
+  <latLonBoundingBox>
+    <minx>6.836418380699265</minx>
+    <maxx>8.891972895779784</maxx>
+    <miny>44.360446325430104</miny>
+    <maxy>45.278834547834585</maxy>
+    <crs>GEOGCS[&quot;WGS84(DD)&quot;, &#xd;
+  DATUM[&quot;WGS84&quot;, &#xd;
+    SPHEROID[&quot;WGS84&quot;, 6378137.0, 298.257223563]], &#xd;
+  PRIMEM[&quot;Greenwich&quot;, 0.0], &#xd;
+  UNIT[&quot;degree&quot;, 0.017453292519943295], &#xd;
+  AXIS[&quot;Geodetic longitude&quot;, EAST], &#xd;
+  AXIS[&quot;Geodetic latitude&quot;, NORTH]]</crs>
+  </latLonBoundingBox>
+  <projectionPolicy>FORCE_DECLARED</projectionPolicy>
+  <enabled>true</enabled>
+  <metadata>
+    <entry key="cachingEnabled">false</entry>
+    <entry key="JDBC_VIRTUAL_TABLE">
+      <virtualTable>
+        <name>bersagli_ambiental</name>
+        <sql>select id_tematico,id_bersaglio,siig_t_bersaglio_non_umano.id_partner,fk_bers_non_umano_pl,&#xd;
+fk_tipo_uso,fk_tipo_captazione,fk_classe_clc,fk_iucn,fk_tipo_bene,area_buffer,&#xd;
+denominazione_it,denominazione_en,denominazione_de,denominazione_fr,&#xd;
+superficie,&#xd;
+denominazione_ente_it,denominazione_ente_en,denominazione_ente_de,denominazione_ente_fr,&#xd;
+profondita_max,quota_pdc,&#xd;
+toponimo_completo_it,toponimo_completo_en,toponimo_completo_de,toponimo_completo_fr,&#xd;
+eliminato_descrizione_bene,&#xd;
+geobersaglio.geometria&#xd;
+from&#xd;
+(select distinct idgeo_bers_non_umano_pl as id,bersaglio.geometria&#xd;
+from siig_geo_bers_non_umano_pl bersaglio&#xd;
+inner join siig_geo_ln_arco_1 on &#xd;
+st_dwithin(bersaglio.geometria, siig_geo_ln_arco_1.geometria, %distanza%)&#xd;
+where siig_geo_ln_arco_1.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632) or cod_provincia=&apos;%provincia%&apos; or cod_comune=&apos;%comune%&apos;&#xd;
+) geobersaglio&#xd;
+inner join siig_t_bersaglio_non_umano on&#xd;
+siig_t_bersaglio_non_umano.fk_bers_non_umano_pl = geobersaglio.id&#xd;
+inner join siig_d_partner on siig_d_partner.id_partner = siig_t_bersaglio_non_umano.id_partner
+</sql>
+        <escapeSql>false</escapeSql>
+        <keyColumn>id_tematico</keyColumn>
+        <keyColumn>id_bersaglio</keyColumn>
+        <geometry>
+          <name>geometria</name>
+          <type>MultiPolygon</type>
+          <srid>32632</srid>
+        </geometry>
+        <parameter>
+          <name>bounds</name>
+          <defaultValue>438859.3438263,4953719.9308777,445056.32630922,4961834.6496277</defaultValue>
+          <regexpValidator>^[\w\d\s,\.]+$</regexpValidator>
+        </parameter>
+        <parameter>
+          <name>provincia</name>
+          <defaultValue>-1</defaultValue>
+          <regexpValidator>^[\w\d\s]+$</regexpValidator>
+        </parameter>
+        <parameter>
+          <name>comune</name>
+          <defaultValue>-1</defaultValue>
+          <regexpValidator>^[\w\d\s]+$</regexpValidator>
+        </parameter>
+        <parameter>
+          <name>distanza</name>
+          <defaultValue>25</defaultValue>
+          <regexpValidator>^[\w\d\s]+$</regexpValidator>
+        </parameter>
+      </virtualTable>
+    </entry>
+  </metadata>
+  <store class="dataStore">
+    <id>DataStoreInfoImpl--3970ff67:13c00cf828a:-7fef</id>
+  </store>
+  <maxFeatures>0</maxFeatures>
+  <numDecimals>0</numDecimals>
+  <overridingServiceSRS>false</overridingServiceSRS>
+  <circularArcPresent>false</circularArcPresent>
+</featureType>

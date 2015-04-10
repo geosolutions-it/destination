@@ -41,7 +41,7 @@
                     <Localized lang="de">Reversiblie Verletzungen</Localized>
                     </Title>
                     <Abstract>Buffer per Rischio Incidentale</Abstract>
-                    <MaxScaleDenominator>17070</MaxScaleDenominator>
+                    <MaxScaleDenominator>34150</MaxScaleDenominator>
                     <PolygonSymbolizer>
                         <Geometry>
                           <ogc:PropertyName>geometria4</ogc:PropertyName>
@@ -66,7 +66,7 @@
                     <Localized lang="de">Irreversiblie Verletzungen</Localized>
                     </Title>
                     <Abstract>Buffer per Rischio Incidentale</Abstract>
-                    <MaxScaleDenominator>17070</MaxScaleDenominator>
+                    <MaxScaleDenominator>34150</MaxScaleDenominator>
                     <PolygonSymbolizer>
                         <Geometry>
                             <ogc:PropertyName>geometria3</ogc:PropertyName>
@@ -92,7 +92,7 @@
                     <Localized lang="de">Beginn Letalität</Localized>
                     </Title>
                     <Abstract>Buffer per Rischio Incidentale</Abstract>
-                    <MaxScaleDenominator>17070</MaxScaleDenominator>
+                    <MaxScaleDenominator>34150</MaxScaleDenominator>
                     <PolygonSymbolizer>
                         <Geometry>
                             <ogc:PropertyName>geometria2</ogc:PropertyName>
@@ -118,7 +118,7 @@
                     <Localized lang="de">Hohe Letalität</Localized>
                     </Title>
                     <Abstract>Buffer per Rischio Incidentale</Abstract>
-                    <MaxScaleDenominator>17070</MaxScaleDenominator>
+                    <MaxScaleDenominator>34150</MaxScaleDenominator>
                     <PolygonSymbolizer>
                         <Geometry>
                             <ogc:PropertyName>geometria</ogc:PropertyName>

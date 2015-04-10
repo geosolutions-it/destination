@@ -1,0 +1,16 @@
+<layer>
+  <name>utenti_coinvolti</name>
+  <id>LayerInfoImpl-463d9aa6:14ca25dfd6d:7b68</id>
+  <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl-463d9aa6:14ca25dfd6d:7b69</id>
+  </defaultStyle>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl-463d9aa6:14ca25dfd6d:7b67</id>
+  </resource>
+  <opaque>true</opaque>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+</layer>
