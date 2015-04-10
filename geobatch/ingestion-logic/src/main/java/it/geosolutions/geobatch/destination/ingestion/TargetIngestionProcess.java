@@ -23,8 +23,6 @@ import it.geosolutions.geobatch.destination.common.utils.DbUtils;
 import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
 
 import java.io.IOException;
-import java.io.Serializable;
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
@@ -38,15 +36,20 @@ import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.Hints;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.jdbc.JDBCDataStore;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 
 /**
@@ -59,6 +62,10 @@ public class TargetIngestionProcess extends InputObject {
 		
 	
 	private final static Logger LOGGER = LoggerFactory.getLogger(TargetIngestionProcess.class);
+
+        private static final double POINTS_BUFFER = 20;
+
+        private static final double LINES_BUFFER = 1;
 	
 	private static Pattern typeNameParts  = Pattern.compile("^([A-Z]{2})[_-]([A-Z]{2,3})[_-]([A-Z]+)([_-][C|I])?[_-]([0-9]{8})[_-]([0-9]{2})$");
 	
@@ -137,7 +144,8 @@ public class TargetIngestionProcess extends InputObject {
 			geometryType = geometryTypes.get(m.group(6)).toString();			
 			
 			// final part of the target geo table name (siig_geo_<suffix>) 
-			geoSuffix = (targetMacroType.equals("BU") ? "bersaglio_umano" : "bers_non_umano") + "_" + geometryType;
+			//geoSuffix = (targetMacroType.equals("BU") ? "bersaglio_umano" : "bers_non_umano") + "_" + geometryType;
+			geoSuffix = (targetMacroType.equals("BU") ? "bersaglio_umano" : "bers_non_umano") + "_pl";
 			// target geo table name (siig_geo_<suffix>)
 			geoTypeName = "siig_geo_" + geoSuffix;
 			// target geo id name (idgeo_<suffix>)
@@ -217,7 +225,8 @@ public class TargetIngestionProcess extends InputObject {
 						nonGeoObject.getWriter().removeFeatures(removeFilter);
 					} else {
 						// on update we only reset the foreign key column
-						nonGeoObject.getWriter().modifyFeatures(nonGeoObject.getSchema().getDescriptor(fkGeoId).getName(), null, removeFilter);
+					        // not needed anymore
+						// nonGeoObject.getWriter().modifyFeatures(nonGeoObject.getSchema().getDescriptor(fkGeoId).getName(), null, removeFilter);
 					}						
 					
 					if(hasMoreData) {
@@ -230,10 +239,12 @@ public class TargetIngestionProcess extends InputObject {
 							)
 							
 						); 
-						nonGeoObject.getWriter().removeFeatures(extraRemoveFilter);
+						// not needed anymore
+						// nonGeoObject.getWriter().removeFeatures(extraRemoveFilter);
+					} else {
+        					// remove geo records
+        					geoObject.getWriter().removeFeatures(removeFilter);
 					}
-					// remove geo records
-					geoObject.getWriter().removeFeatures(removeFilter);
 					
 					//maxId = (BigDecimal)getOutputId(geoObject);
 					
@@ -260,16 +271,21 @@ public class TargetIngestionProcess extends InputObject {
 						Transaction rowTransaction = new DefaultTransaction();
 						setTransaction(outputObjects, rowTransaction);
 						
-						try {							
-							addGeoFeature(geoObject, id, inputFeature);
+						try {	
+						        if(hasMoreData) {
+						            boolean added = addOrUpdateGeoFeature(nonGeoObject, geoObject, id, inputFeature);
+						            if(added) {
+						                addOrUpdateFeature(nonGeoObject, id, inputFeature);
+						            }
+						        } else {
+						            addGeoFeature(geoObject, id, inputFeature);
 							
-							if(hasMoreData) {
-								addOrUpdateFeature(nonGeoObject, id, inputFeature);
-							} else if(update) {
-								updateFeature(nonGeoObject, id, inputFeature);
-							} else {
-								addFeature(nonGeoObject, id, inputFeature);
-							}		
+        						    if(update) {
+        							updateFeature(nonGeoObject, id, inputFeature);
+        						    } else {
+        							addFeature(nonGeoObject, id, inputFeature);
+        						    }
+						        }
 							
 							rowTransaction.commit();
 							
@@ -312,10 +328,90 @@ public class TargetIngestionProcess extends InputObject {
 	}
 
 
-
-	
-	
 	/**
+         * Add a new record or update the existing one for non-geo table 
+         *  
+         * @param targetType
+         * @param partner
+         * @param geometryType
+         * @param fkGeoId
+         * @param schema
+         * @param featureBuilder
+         * @param featureWriter
+         * @param id
+         * @param inputFeature
+         * @throws IOException
+         */
+        private boolean addOrUpdateGeoFeature(OutputObject object, OutputObject geoObject,
+                        int id, SimpleFeature inputFeature) throws IOException {
+                Map<String,String> mappings = (Map<String,String>)attributeMappings.get(targetType);
+                
+                // key filter
+                Filter filter = filterFactory.and(
+                                filterFactory.and(
+                                        filterFactory.equals(
+                                                filterFactory.property("id_tematico"),
+                                                filterFactory.literal(getMapping(inputFeature, mappings, "id_tematico"))
+                                        ),
+                                        filterFactory.equals(
+                                                filterFactory.property("id_bersaglio"),
+                                                filterFactory.literal(targetType)
+                                        )
+                                ),                              
+                                filterFactory.equals(
+                                        filterFactory.property("id_partner"),
+                                        filterFactory.literal(partner)
+                                )
+                );
+                Query existing = new Query(object.getSchema().getName().getLocalPart(), filter);
+                FeatureCollection<SimpleFeatureType, SimpleFeature> features = object.getWriter().getFeatures(existing);
+                if(features.size() > 0) {
+                        FeatureIterator<SimpleFeature> iterator = features.features();
+                        Number geoId = (Number)iterator.next().getAttribute(fkGeoId);
+                        try {
+                            return updateGeoFeature(geoObject, id, geoId.intValue(), inputFeature);
+                        } finally {
+                            iterator.close();
+                        }
+                } else {
+                        addGeoFeature(geoObject, id, inputFeature);
+                        return true;
+                }               
+        }
+	
+	
+	private boolean updateGeoFeature(OutputObject object, int id,  int geoIdValue, SimpleFeature inputFeature) throws IOException {
+	    Filter filter = filterFactory.equals(
+                    filterFactory.property(geoId),
+                    filterFactory.literal(geoIdValue)
+            );
+	    FeatureCollection<SimpleFeatureType, SimpleFeature> features = object.getReader().getFeatures(filter);
+	    if(features.size() > 0) {
+	        Geometry geometry = null;
+	        FeatureIterator<SimpleFeature> iterator = features.features();
+	        try {
+                    geometry = (Geometry)iterator.next().getAttribute("geometria");
+                    Geometry newGeometry = (Geometry)inputFeature.getDefaultGeometry();
+                    if(geometry == null) {
+                        geometry = newGeometry;
+                    } else if(newGeometry != null) {
+                        geometry = geometry.union(transformGeometry(newGeometry, geometryType));
+                    }
+                    object.getWriter().modifyFeatures(object.getSchema().getDescriptor("geometria").getName(), geometry, filter);
+	        } finally {
+	            iterator.close();
+	        }
+	        return false;
+	    } else {
+	        addGeoFeature(object, id, inputFeature);
+	        return true;
+	    }
+        
+        }
+
+
+
+    /**
 	 * Add a new record or update the existing one for non-geo table 
 	 *  
 	 * @param targetType
@@ -467,8 +563,9 @@ public class TargetIngestionProcess extends InputObject {
 	 * @param targetType
 	 * @return
 	 */
-	private boolean hasAlternativeGeo(int targetType) {		
-		return targetType == 4 || targetType == 6 || targetType >= 14;
+	private boolean hasAlternativeGeo(int targetType) {
+	    return targetType == 15;
+	    //return targetType == 4 || targetType == 6 || targetType >= 14;
 	}
 
 	
@@ -498,7 +595,7 @@ public class TargetIngestionProcess extends InputObject {
 				geoFeatureBuilder.add(partner+"");
 			}
 			if(attr.getLocalName().equals("geometria")) {
-				geoFeatureBuilder.add(inputFeature.getDefaultGeometry());
+				geoFeatureBuilder.add(transformGeometry((Geometry)inputFeature.getDefaultGeometry(), geometryType));
 			}
 		}
 		
@@ -508,7 +605,19 @@ public class TargetIngestionProcess extends InputObject {
 				.collection(geoFeature));
 	}
 	
-	/**
+	private Geometry transformGeometry(Geometry geometry, String type) {
+            if(type.equalsIgnoreCase("pt")) {
+                return geometry.buffer(POINTS_BUFFER);
+            } else if(type.equalsIgnoreCase("ln")) {
+                return geometry.buffer(LINES_BUFFER);
+            } else {
+                return geometry;
+            }
+        }
+
+
+
+    /**
 	 * Adds a new non-geo feature.
 	 * 
 	 * @param targetType
