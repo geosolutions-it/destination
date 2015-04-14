@@ -667,7 +667,7 @@ public class ArcsIngestionProcess extends InputObject {
 				} else {
 					addAggregateGeoFeature(outputObjects[4], id, idTematico, geo,
 							(int)lunghezza, corsie, incidenti, inputFeature, idOrigin, 
-							flgCorsieCounter.getMax(), flgIncidentiCounter.getMax(), dataStore);						
+							flgCorsieCounter.getMax(), flgIncidentiCounter.getMax());						
 					if(!dontComputeVehicle) {
 						addAggregateVehicleFeature(outputObjects[0], id, (int)lunghezza,
 								tgm, velocita, flgTgmCounter.getMax(),
@@ -837,9 +837,9 @@ public class ArcsIngestionProcess extends InputObject {
 	 */
 	private void addAggregateGeoFeature(OutputObject outputObject, int id, int idTematico,
 			Geometry geo, int lunghezza, int corsie, double incidenti, SimpleFeature inputFeature, 
-			int idOrigin, String flgCorsie, String flgIncidenti, DataStore dataStore) throws IOException {
+			int idOrigin, String flgCorsie, String flgIncidenti) throws IOException {
 		//ricavo i codici provinciali e comunali 
-		CodiceProvincialeComunale codiciProvincialiComunali = getCodiceProvincialeComune(dataStore, geo);
+		CodiceProvincialeComunale codiciProvincialiComunali = getCodiceProvincialeComune(geo);
 		SimpleFeatureBuilder geoFeatureBuilder = outputObject.getBuilder();
 		for(AttributeDescriptor attr : outputObject.getSchema().getAttributeDescriptors()) {
 			if(attr.getLocalName().equals(geoId)) {
@@ -853,10 +853,14 @@ public class ArcsIngestionProcess extends InputObject {
 			} else if(attr.getLocalName().equals("cod_comune")){
 				if(codiciProvincialiComunali!=null && codiciProvincialiComunali.getCodiceComune()!=null){
 					geoFeatureBuilder.add(codiciProvincialiComunali.getCodiceComune());
+				}else{
+					geoFeatureBuilder.add(null);
 				}
 			} else if(attr.getLocalName().equals("cod_provincia")){
 				if(codiciProvincialiComunali!=null && codiciProvincialiComunali.getCodiceProvincia()!=null){
 					geoFeatureBuilder.add(codiciProvincialiComunali.getCodiceProvincia());
+				}else{
+					geoFeatureBuilder.add(null);
 				}
 			} else if(attr.getLocalName().equals("lunghezza")) {
 				geoFeatureBuilder.add(lunghezza);
@@ -963,7 +967,7 @@ public class ArcsIngestionProcess extends InputObject {
 		
 		try {
 			//addGeoFeature(outputObjects[4], id, inputFeature);	
-			addGeoFeature(outputObjects[4], id, inputFeature, dataStore);	//modificato fra					
+			addGeoFeature(outputObjects[4], id, inputFeature);			
 			addVehicleFeature(outputObjects[0], id, inputFeature);
 			addDissestoFeature(outputObjects[1], id, inputFeature);
 			addCFFFeature(outputObjects[2], id, inputFeature);
@@ -1262,11 +1266,11 @@ public class ArcsIngestionProcess extends InputObject {
 	 * @throws IOException
 	 */
 	private void addGeoFeature(OutputObject geoObject,
-			int id,  SimpleFeature inputFeature, DataStore dataStore) throws IOException {				
+			int id,  SimpleFeature inputFeature) throws IOException {				
 		SimpleFeatureBuilder geoFeatureBuilder = geoObject.getBuilder();
 		CodiceProvincialeComunale codici = null;
 		Geometry geometry = (Geometry)inputFeature.getDefaultGeometry();
-		codici = getCodiceProvincialeComune(dataStore,geometry);
+		codici = getCodiceProvincialeComune(geometry);
 		// compiles the attributes from target and read feature data
 		for(AttributeDescriptor attr : geoObject.getSchema().getAttributeDescriptors()) {
 			if(attr.getLocalName().equals(geoId)) {
@@ -1278,10 +1282,14 @@ public class ArcsIngestionProcess extends InputObject {
 			} else if(attr.getLocalName().equals("cod_comune")) {
 				if(codici!=null && codici.getCodiceComune()!=null){
 					geoFeatureBuilder.add(codici.getCodiceComune());
+				}else{
+					geoFeatureBuilder.add(null);
 				}
 			} else if(attr.getLocalName().equals("cod_provincia")) {
 				if(codici!=null && codici.getCodiceProvincia()!=null){
 					geoFeatureBuilder.add(codici.getCodiceProvincia());
+				}else{
+					geoFeatureBuilder.add(null);
 				}
 			} else if(attr.getLocalName().equals("lunghezza")) {
 				Number lunghezza = (Number)getMapping(inputFeature,attributeMappings, attr.getLocalName());
@@ -1303,7 +1311,7 @@ public class ArcsIngestionProcess extends InputObject {
 				.collection(geoFeature));
 	}
 	
-	private CodiceProvincialeComunale getCodiceProvincialeComune(DataStore dataStore, Geometry geometry) throws IOException {
+	private CodiceProvincialeComunale getCodiceProvincialeComune(Geometry geometry) throws IOException {
 		CodiceProvincialeComunale codici = new CodiceProvincialeComunale();
 		FilterFactory2 filterFactory = CommonFactoryFinder.getFilterFactory2();
 		
