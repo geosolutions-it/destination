@@ -1,23 +1,20 @@
 <layerGroup>
   <id>LayerGroupInfoImpl-24346e05:13d598ba09f:-5fb4</id>
   <name>buffer_human</name>
+  <mode>SINGLE</mode>
+  <title>buffer_human</title>
+  <abstractTxt>buffer_human</abstractTxt>
   <workspace>
     <id>WorkspaceInfoImpl--570ae188:124761b8d78:-7ffb</id>
   </workspace>
-  <layers>
-    <layer>
+  <publishables>
+    <published type="layer">
       <id>LayerInfoImpl--6bb16c1e:13d1c38eee9:-7ffd</id>
-    </layer>
-    <layer>
-      <id>LayerInfoImpl-24346e05:13d598ba09f:-5fb5</id>
-    </layer>
-  </layers>
+    </published>
+  </publishables>
   <styles>
     <style>
       <id>StyleInfoImpl-229a69a5:13c1e8f59b1:-7fe9</id>
-    </style>
-    <style>
-      <id>StyleInfoImpl-24346e05:13d598ba09f:-54f2</id>
     </style>
   </styles>
   <bounds>
@@ -55,7 +52,7 @@
     </Identifier>
     <Identifier>
       <authority>it</authority>
-      <identifier>Aree di Danno Sociale </identifier>
+      <identifier>Aree di Danno Sociale</identifier>
     </Identifier>
     <Identifier>
       <authority>fr</authority>

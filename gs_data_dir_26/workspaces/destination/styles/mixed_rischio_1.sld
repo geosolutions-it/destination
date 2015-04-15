@@ -23,6 +23,13 @@
                 </ogc:Function>
               </ogc:Function>
               <ogc:Function name="parameter">
+                <ogc:Literal>level</ogc:Literal>
+                <ogc:Function name="env">
+                   <ogc:Literal>resolution</ogc:Literal>
+                   <ogc:Literal>1</ogc:Literal>
+                </ogc:Function>
+              </ogc:Function>
+              <ogc:Function name="parameter">
                 <ogc:Literal>formula</ogc:Literal>
                 <ogc:Function name="env">
                    <ogc:Literal>formula</ogc:Literal>
@@ -148,7 +155,7 @@
         </ogc:PropertyIsLessThanOrEqualTo>
      </ogc:And>
    </ogc:Filter>
-     <MaxScaleDenominator>34150</MaxScaleDenominator>
+     
    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
      <Stroke>
       <CssParameter name="stroke">#14F200</CssParameter>
@@ -255,7 +262,7 @@
         </ogc:PropertyIsGreaterThanOrEqualTo>
      </ogc:And>
    </ogc:Filter>
-     <MaxScaleDenominator>34150</MaxScaleDenominator>
+     
    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
      <Stroke>
       <CssParameter name="stroke">#0A7900</CssParameter>
@@ -356,7 +363,7 @@
         </ogc:PropertyIsGreaterThanOrEqualTo>
      </ogc:And>
    </ogc:Filter>
-     <MaxScaleDenominator>34150</MaxScaleDenominator>
+     
    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
      <Stroke>
       <CssParameter name="stroke">#053800</CssParameter>
@@ -463,7 +470,7 @@
         </ogc:PropertyIsLessThanOrEqualTo>
      </ogc:And>
    </ogc:Filter>
-     <MaxScaleDenominator>34150</MaxScaleDenominator>
+     
    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
      <Stroke>
       <CssParameter name="stroke">#A5FB00</CssParameter>
@@ -576,7 +583,7 @@
         </ogc:PropertyIsGreaterThanOrEqualTo>
      </ogc:And>
    </ogc:Filter>
-     <MaxScaleDenominator>34150</MaxScaleDenominator>
+     
    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
      <Stroke>
       <CssParameter name="stroke">#FFFB00</CssParameter>
@@ -683,7 +690,7 @@
         </ogc:PropertyIsGreaterThanOrEqualTo>
      </ogc:And>
    </ogc:Filter>
-     <MaxScaleDenominator>34150</MaxScaleDenominator>
+     
    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
      <Stroke>
       <CssParameter name="stroke">#FF9800</CssParameter>
@@ -784,7 +791,7 @@
         </ogc:PropertyIsLessThanOrEqualTo>
      </ogc:And>
    </ogc:Filter>
-     <MaxScaleDenominator>34150</MaxScaleDenominator>
+     
    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
      <Stroke>
       <CssParameter name="stroke">#FFB4B4</CssParameter>
@@ -891,7 +898,7 @@
         </ogc:PropertyIsGreaterThanOrEqualTo>
      </ogc:And>
    </ogc:Filter>
-     <MaxScaleDenominator>34150</MaxScaleDenominator>
+     
    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
      <Stroke>
       <CssParameter name="stroke">#FF6A6A</CssParameter>
@@ -992,7 +999,7 @@
         </ogc:PropertyIsGreaterThanOrEqualTo>
      </ogc:And>
    </ogc:Filter>
-     <MaxScaleDenominator>34150</MaxScaleDenominator>
+     
    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
      <Stroke>
       <CssParameter name="stroke">#FF0000</CssParameter>

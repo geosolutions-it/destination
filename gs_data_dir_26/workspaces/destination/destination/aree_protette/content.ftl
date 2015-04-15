@@ -40,7 +40,7 @@
                 </tr>
         </#if>
     </#list>
-	<th>${["Type","Tipologia","Tipologia","Tipologia"][locale]}</th><td>${["Protected Areas","Aree protette","Aree protette","Aree protette"][locale]}</td> 
+	<th>${["Type","Tipologia","Tipologia","Typologie"][locale]}</th><td>${["Protected Areas","Aree protette","Aree protette","Schutzgebiete"][locale]}</td> 
     </tr>
 
 </table>

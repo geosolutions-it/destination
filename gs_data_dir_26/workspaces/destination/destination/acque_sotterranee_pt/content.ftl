@@ -39,7 +39,7 @@
                 </tr>
         </#if>
     </#list>
-	<th>${["Type","Tipologia","Tipologia","Tipologia"][locale]}</th><td>${["Underground Waters","Acque sotterranee","Acque sotterranee","Acque sotterranee"][locale]}</td> 
+	<th>${["Type","Tipologia","Tipologia","Typologie"][locale]}</th><td>${["Underground Waters","Acque sotterranee","Acque sotterranee","Acque sotterranee"][locale]}</td> 
     </tr>
 
 </table>

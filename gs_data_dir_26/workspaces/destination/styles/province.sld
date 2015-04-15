@@ -21,7 +21,12 @@
         <!--FeatureTypeName>Feature</FeatureTypeName-->
         <Rule>
           <Name>Rule 1</Name>
-          <Title>Green Line</Title>
+          <Title>Province
+            <Localized lang="it">Province</Localized>
+            <Localized lang="en">Provinces</Localized>
+            <Localized lang="fr">Provinces</Localized>
+            <Localized lang="de">Provinzen</Localized>
+          </Title>
           <Abstract>A green line with a 2 pixel width</Abstract>
 
           <!-- like a polygonsymbolizer -->

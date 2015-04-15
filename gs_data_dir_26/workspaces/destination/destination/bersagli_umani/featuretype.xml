@@ -333,11 +333,12 @@ siig_d_tipo_uso.descrizione_uso_fr,&#xd;
 siig_d_tipo_uso.descrizione_uso_de,&#xd;
 geobersaglio.geometria&#xd;
 from&#xd;
-(select distinct idgeo_bersaglio_umano_pl as id,bersaglio.geometria&#xd;
+(select idgeo_bersaglio_umano_pl as id,bersaglio.geometria&#xd;
 from siig_geo_bersaglio_umano_pl bersaglio&#xd;
-inner join siig_geo_ln_arco_1 on &#xd;
-st_dwithin(bersaglio.geometria, siig_geo_ln_arco_1.geometria, %distanzaumano%)&#xd;
-where siig_geo_ln_arco_1.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632) or cod_provincia=&apos;%provincia%&apos; or cod_comune=&apos;%comune%&apos;&#xd;
+inner join siig_geo_ln_arco_%resolution% on &#xd;
+st_dwithin(bersaglio.geometria, siig_geo_ln_arco_%resolution%.geometria, %distanzaumano%)&#xd;
+where siig_geo_ln_arco_%resolution%.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632) or cod_provincia=&apos;%provincia%&apos; or cod_comune=&apos;%comune%&apos;&#xd;
+group by idgeo_bersaglio_umano_pl&#xd;
 ) geobersaglio&#xd;
 inner join siig_t_bersaglio_umano on siig_t_bersaglio_umano.fk_bersaglio_umano_pl = geobersaglio.id&#xd;
 inner join siig_d_partner on siig_d_partner.id_partner = siig_t_bersaglio_umano.id_partner&#xd;
@@ -371,6 +372,11 @@ left outer join siig_d_tipo_uso on siig_d_tipo_uso.id_tipo_uso = siig_t_bersagli
           <name>comune</name>
           <defaultValue>-1</defaultValue>
           <regexpValidator>^[\w\d\s]+$</regexpValidator>
+        </parameter>
+        <parameter>
+          <name>resolution</name>
+          <defaultValue>1</defaultValue>
+          <regexpValidator>^[\d\s]+$</regexpValidator>
         </parameter>
       </virtualTable>
     </entry>

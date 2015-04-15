@@ -65,16 +65,18 @@ FROM&#xd;
     where v_geo_popolazione_turistica_pl.fk_bersaglio_umano_pl in (&#xd;
     SELECT distinct bersaglio.fk_bersaglio_umano_pl&#xd;
         FROM v_geo_popolazione_turistica_pl bersaglio&#xd;
-     join siig_geo_ln_arco_1 on &#xd;
-    st_dwithin(bersaglio.geometria, siig_geo_ln_arco_1.geometria, %distanzaumano%)&#xd;
-    where siig_geo_ln_arco_1.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)&#xd;
+     join siig_geo_ln_arco_%resolution% on &#xd;
+    st_dwithin(bersaglio.geometria, siig_geo_ln_arco_%resolution%.geometria, %distanzaumano%)&#xd;
+    where siig_geo_ln_arco_%resolution%.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)&#xd;
     )&#xd;
 UNION&#xd;
 SELECT v_geo_popolazione_turistica_pl.*&#xd;
 FROM&#xd;
    v_geo_popolazione_turistica_pl&#xd;
     where &#xd;
-st_intersects(geometria,ST_GeomFromText(&apos;%wkt%&apos;,32632))</sql>
+st_intersects(geometria,ST_GeomFromText(&apos;%wkt%&apos;,32632))
+</sql>
+        <escapeSql>false</escapeSql>
         <keyColumn>fk_bersaglio_umano_pl</keyColumn>
         <geometry>
           <name>geometria</name>
@@ -92,6 +94,11 @@ st_intersects(geometria,ST_GeomFromText(&apos;%wkt%&apos;,32632))</sql>
           <regexpValidator>^[\w\d\s]+$</regexpValidator>
         </parameter>
         <parameter>
+          <name>resolution</name>
+          <defaultValue>1</defaultValue>
+          <regexpValidator>^[\d\s]+$</regexpValidator>
+        </parameter>
+        <parameter>
           <name>wkt</name>
           <defaultValue>POLYGON((438892.7288562446 4975140.981545661,439193.9185034519 4975114.484753116,439211.81910092465 4974859.452787744,438763.54800271254 4974737.133442594,438892.7288562446 4975140.981545661))</defaultValue>
           <regexpValidator>^[\w\d\s\.\(\)\,]+$</regexpValidator>
@@ -104,4 +111,6 @@ st_intersects(geometria,ST_GeomFromText(&apos;%wkt%&apos;,32632))</sql>
   </store>
   <maxFeatures>0</maxFeatures>
   <numDecimals>0</numDecimals>
+  <overridingServiceSRS>false</overridingServiceSRS>
+  <circularArcPresent>false</circularArcPresent>
 </featureType>

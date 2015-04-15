@@ -32,7 +32,7 @@
                 </tr>
         </#if>
     </#list>
-    <th>${["Risk","Rischio","Rischio","Rischio"][locale]}</th><td>${tot}</td>
+    <th>${["Risk","Rischio","Rischio","Risiko"][locale]}</th><td>${tot}</td>
     </tr>
 
 </table>

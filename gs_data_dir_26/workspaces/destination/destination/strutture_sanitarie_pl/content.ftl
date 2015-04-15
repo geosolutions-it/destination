@@ -53,7 +53,7 @@
                 </tr>
         </#if>
     </#list>
-	<th>${["Type","Tipologia","Tipologia","Tipologia"][locale]}</th><td>${["Sanitary Structures Users/Employees","Utenti/Addetti strutture sanitarie","Utenti/Addetti strutture sanitarie","Utenti/Addetti strutture sanitarie"][locale]}</td> 
+	<th>${["Type","Tipologia","Tipologia","Typologie"][locale]}</th><td>${["Sanitary Structures Users/Employees","Utenti/Addetti strutture sanitarie","Utenti/Addetti strutture sanitarie","Sanitäre Strukturen"][locale]}</td> 
     </tr>
 
 </table>

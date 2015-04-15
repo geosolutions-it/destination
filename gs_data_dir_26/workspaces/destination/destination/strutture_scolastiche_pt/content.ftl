@@ -47,7 +47,7 @@
                 </tr>
         </#if>
     </#list>
-	<th>${["Type","Tipologia","Tipologia","Tipologia"][locale]}</th><td>${["Scholastic Structures Users/Employees","Iscritti/Addetti strutture scolastiche","Iscritti/Addetti strutture scolastiche","Iscritti/Addetti strutture scolastiche"][locale]}</td> 
+	<th>${["Type","Tipologia","Tipologia","Typologie"][locale]}</th><td>${["Scholastic Structures Users/Employees","Iscritti/Addetti strutture scolastiche","Iscritti/Addetti strutture scolastiche","Iscritti/Addetti strutture scolastiche"][locale]}</td> 
     </tr>
 
 </table>

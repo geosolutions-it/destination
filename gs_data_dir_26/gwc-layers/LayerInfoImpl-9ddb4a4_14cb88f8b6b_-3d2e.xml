@@ -1,7 +1,7 @@
 <GeoServerTileLayer>
-  <id>LayerInfoImpl-463d9aa6:14ca275d6d6:-dbf</id>
+  <id>LayerInfoImpl-9ddb4a4:14cb88f8b6b:-3d2e</id>
   <enabled>true</enabled>
-  <name>destination:bersagli_umani</name>
+  <name>destination:v_geo_grafo_ln_1</name>
   <mimeFormats>
     <string>image/jpeg</string>
     <string>image/png</string>
@@ -9,25 +9,9 @@
   <gridSubsets>
     <gridSubset>
       <gridSetName>EPSG:900913</gridSetName>
-      <extent>
-        <coords>
-          <double>915757.423638454</double>
-          <double>5579661.319240681</double>
-          <double>924755.510978007</double>
-          <double>5591232.044125007</double>
-        </coords>
-      </extent>
     </gridSubset>
     <gridSubset>
       <gridSetName>EPSG:4326</gridSetName>
-      <extent>
-        <coords>
-          <double>8.22638890200339</double>
-          <double>44.73348521430883</double>
-          <double>8.307220095853015</double>
-          <double>44.80727696162362</double>
-        </coords>
-      </extent>
     </gridSubset>
   </gridSubsets>
   <metaWidthHeight>
@@ -41,7 +25,7 @@
       <key>STYLES</key>
       <defaultValue></defaultValue>
       <availableStyles class="sorted-set"/>
-      <defaultStyle>bersagli_umani</defaultStyle>
+      <defaultStyle>grafo_stradale_1</defaultStyle>
     </styleParameterFilter>
   </parameterFilters>
   <gutter>0</gutter>

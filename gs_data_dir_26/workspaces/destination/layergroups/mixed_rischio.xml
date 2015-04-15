@@ -1,29 +1,18 @@
 <layerGroup>
   <id>LayerGroupInfoImpl--3705ef22:13ef4b731ce:-7dbc</id>
   <name>mixed_rischio</name>
+  <mode>SINGLE</mode>
   <workspace>
     <id>WorkspaceInfoImpl--570ae188:124761b8d78:-7ffb</id>
   </workspace>
-  <layers>
-    <layer>
+  <publishables>
+    <published type="layer">
       <id>LayerInfoImpl--1bf56c14:13eefa54d37:-7ef9</id>
-    </layer>
-    <layer>
-      <id>LayerInfoImpl--1bf56c14:13eefa54d37:-7ef4</id>
-    </layer>
-    <layer>
-      <id>LayerInfoImpl--1bf56c14:13eefa54d37:-7eef</id>
-    </layer>
-  </layers>
+    </published>
+  </publishables>
   <styles>
     <style>
       <id>StyleInfoImpl-72bb612b:13ef4d86d02:-7e07</id>
-    </style>
-    <style>
-      <id>StyleInfoImpl-40220030:13ef4fa591e:-7cc6</id>
-    </style>
-    <style>
-      <id>StyleInfoImpl-40220030:13ef4fa591e:-7808</id>
     </style>
   </styles>
   <bounds>

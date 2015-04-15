@@ -41,7 +41,7 @@
                 </tr>
         </#if>
     </#list>
-	<th>${["Type","Tipologia","Tipologia","Tipologia"][locale]}</th><td>${["Tourist People","Popolazione turistica","Popolazione turistica","Popolazione turistica"][locale]}</td> 
+	<th>${["Type","Tipologia","Tipologia","Typologie"][locale]}</th><td>${["Tourist People","Popolazione turistica","Popolazione turistica","Tourismus"][locale]}</td> 
     </tr>
 
 </table>

@@ -21,21 +21,21 @@
 	</#list>
   
 	<#if type == 'ambientali'>
-		<tr><th>${["Radius","Raggio","Raggio","Raggio"][locale]}</th><td>${(feature.distance1.value?number)?int}</td></tr>
+		<tr><th>${["Radius","Raggio","Raggio","Radius"][locale]}</th><td>${(feature.distance1.value?number)?int}</td></tr>
 	</#if>
 	<#if type == 'sociali'>
 		
 		<#if feature.distance1.value?number != 0>
-			<tr><th>${["High letality","Elevata letalità","Elevata letalità","Elevata letalità"][locale]}</th><td>${(feature.distance1.value?number)?int}</td></tr>
+			<tr><th>${["High letality","Elevata letalità","Elevata letalità","Hohe Letalität"][locale]}</th><td>${(feature.distance1.value?number)?int}</td></tr>
 		</#if>
 		<#if feature.distance2.value?number != 0>
-			<tr><th>${["Start letality","Inizio letalità","Inizio letalità","Inizio letalità"][locale]}</th><td>${(feature.distance2.value?number)?int}</td></tr>
+			<tr><th>${["Start letality","Inizio letalità","Inizio letalità","Beginn Letalität"][locale]}</th><td>${(feature.distance2.value?number)?int}</td></tr>
 		</#if>
 		<#if feature.distance3.value?number != 0>
-			<tr><th>${["Irreversible Damage","Danni irreversibili","Danni irreversibili","Danni irreversibili"][locale]}</th><td>${(feature.distance3.value?number)?int}</td></tr>
+			<tr><th>${["Irreversible Damage","Danni irreversibili","Danni irreversibili","Irreversible Verletzungen"][locale]}</th><td>${(feature.distance3.value?number)?int}</td></tr>
 		</#if>
 		<#if feature.distance4.value?number != 0>
-			<tr><th>${["Reversible Damage","Danni reversibili","Danni reversibili","Danni reversibili"][locale]}</th><td>${(feature.distance4.value?number)?int}</td></tr>
+			<tr><th>${["Reversible Damage","Danni reversibili","Danni reversibili","Reversiblie Verletzungen"][locale]}</th><td>${(feature.distance4.value?number)?int}</td></tr>
 		</#if>
 		
 	</#if>

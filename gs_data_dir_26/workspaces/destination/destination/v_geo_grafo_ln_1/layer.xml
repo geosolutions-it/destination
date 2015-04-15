@@ -1,12 +1,12 @@
 <layer>
-  <name>v_geo_grafo_ln</name>
-  <id>LayerInfoImpl-6081ad47:1444e75fb17:36ca</id>
+  <name>v_geo_grafo_ln_1</name>
+  <id>LayerInfoImpl-9ddb4a4:14cb88f8b6b:-3d2e</id>
   <type>VECTOR</type>
   <defaultStyle>
     <id>StyleInfoImpl--7e9de184:13f61c0b107:-4d9e</id>
   </defaultStyle>
   <resource class="featureType">
-    <id>FeatureTypeInfoImpl-6081ad47:1444e75fb17:36c9</id>
+    <id>FeatureTypeInfoImpl-9ddb4a4:14cb88f8b6b:-3d2f</id>
   </resource>
   <attribution>
     <logoWidth>0</logoWidth>

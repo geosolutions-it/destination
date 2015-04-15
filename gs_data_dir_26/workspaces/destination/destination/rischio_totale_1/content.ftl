@@ -36,10 +36,10 @@
                 </tr>
         </#if>
     </#list>
-    <th>${["Social Risk","Rischio Sociale","Rischio Sociale","Rischio Sociale"][locale]}</th><td>${sociale}</td>
+    <th>${["Social Risk","Rischio Sociale","Rischio Sociale","Anthropologischen Risiken"][locale]}</th><td>${sociale}</td>
 	</tr>
 	<tr>
-	<th>${["Environmental Risk","Rischio Ambientale","Rischio Ambientale","Rischio Ambientale"][locale]}</th><td>${ambientale}</td>
+	<th>${["Environmental Risk","Rischio Ambientale","Rischio Ambientale","Umweltrisiken"][locale]}</th><td>${ambientale}</td>
     </tr>
 
 </table>

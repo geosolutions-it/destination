@@ -65,9 +65,9 @@ FROM&#xd;
     where v_geo_industria_pl.fk_bersaglio_umano_pl in (&#xd;
     SELECT distinct bersaglio.fk_bersaglio_umano_pl&#xd;
         FROM v_geo_industria_pl bersaglio&#xd;
-     join siig_geo_ln_arco_1 on &#xd;
-    st_dwithin(bersaglio.geometria, siig_geo_ln_arco_1.geometria, %distanzaumano%)&#xd;
-    where siig_geo_ln_arco_1.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)&#xd;
+     join siig_geo_ln_arco_%resolution% on &#xd;
+    st_dwithin(bersaglio.geometria, siig_geo_ln_arco_%resolution%.geometria, %distanzaumano%)&#xd;
+    where siig_geo_ln_arco_%resolution%.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)&#xd;
     )&#xd;
 UNION&#xd;
 SELECT partner_it,partner_en,partner_fr,partner_de,id_tematico,fk_bersaglio_umano_pl as fk_geo,denominazione_it,denominazione_en,denominazione_fr,denominazione_de,cod_fisc,descrizione_ateco_it,descrizione_ateco_en,descrizione_ateco_fr,descrizione_ateco_de,addetti,fonte_addetti_it,fonte_addetti_en,fonte_addetti_fr,fonte_addetti_de,geometria&#xd;
@@ -91,6 +91,11 @@ FROM&#xd;
           <name>distanzaumano</name>
           <defaultValue>25</defaultValue>
           <regexpValidator>^[\w\d\s]+$</regexpValidator>
+        </parameter>
+        <parameter>
+          <name>resolution</name>
+          <defaultValue>1</defaultValue>
+          <regexpValidator>^[\d\s]+$</regexpValidator>
         </parameter>
         <parameter>
           <name>wkt</name>

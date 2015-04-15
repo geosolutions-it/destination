@@ -65,16 +65,18 @@ FROM&#xd;
     where v_geo_aree_protette_pl.fk_bers_non_umano_pl in (&#xd;
     SELECT distinct bersaglio.fk_bers_non_umano_pl&#xd;
         FROM v_geo_aree_protette_pl bersaglio&#xd;
-     join siig_geo_ln_arco_1 on &#xd;
-    st_dwithin(bersaglio.geometria, siig_geo_ln_arco_1.geometria, %distanza%)&#xd;
-    where siig_geo_ln_arco_1.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)&#xd;
+     join siig_geo_ln_arco_%resolution% on &#xd;
+    st_dwithin(bersaglio.geometria, siig_geo_ln_arco_%resolution%.geometria, %distanza%)&#xd;
+    where siig_geo_ln_arco_%resolution%.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)&#xd;
     )&#xd;
 UNION&#xd;
 SELECT v_geo_aree_protette_pl.*&#xd;
 FROM&#xd;
    v_geo_aree_protette_pl&#xd;
     where &#xd;
-st_intersects(geometria,ST_GeomFromText(&apos;%wkt%&apos;,32632))</sql>
+st_intersects(geometria,ST_GeomFromText(&apos;%wkt%&apos;,32632))
+</sql>
+        <escapeSql>false</escapeSql>
         <keyColumn>fk_bers_non_umano_pl</keyColumn>
         <geometry>
           <name>geometria</name>
@@ -85,6 +87,11 @@ st_intersects(geometria,ST_GeomFromText(&apos;%wkt%&apos;,32632))</sql>
           <name>bounds</name>
           <defaultValue>438859.3438263,4953719.9308777,445056.32630922,4961834.6496277</defaultValue>
           <regexpValidator>^[\w\d\s,\.]+$</regexpValidator>
+        </parameter>
+        <parameter>
+          <name>resolution</name>
+          <defaultValue>1</defaultValue>
+          <regexpValidator>^[\d\s]+$</regexpValidator>
         </parameter>
         <parameter>
           <name>distanza</name>
@@ -104,4 +111,6 @@ st_intersects(geometria,ST_GeomFromText(&apos;%wkt%&apos;,32632))</sql>
   </store>
   <maxFeatures>0</maxFeatures>
   <numDecimals>0</numDecimals>
+  <overridingServiceSRS>false</overridingServiceSRS>
+  <circularArcPresent>false</circularArcPresent>
 </featureType>

@@ -1,29 +1,20 @@
 <layerGroup>
   <id>LayerGroupInfoImpl--3e3f965d:13eacac4bdf:-3e14</id>
   <name>rischio</name>
+  <mode>SINGLE</mode>
+  <title>Rischio</title>
+  <abstractTxt>Rischio</abstractTxt>
   <workspace>
     <id>WorkspaceInfoImpl--570ae188:124761b8d78:-7ffb</id>
   </workspace>
-  <layers>
-    <layer>
+  <publishables>
+    <published type="layer">
       <id>LayerInfoImpl--1bf56c14:13eefa54d37:-7ef9</id>
-    </layer>
-    <layer>
-      <id>LayerInfoImpl--1bf56c14:13eefa54d37:-7ef4</id>
-    </layer>
-    <layer>
-      <id>LayerInfoImpl--1bf56c14:13eefa54d37:-7eef</id>
-    </layer>
-  </layers>
+    </published>
+  </publishables>
   <styles>
     <style>
       <id>StyleInfoImpl-544e5b2b:13eacdb7b86:-1a75</id>
-    </style>
-    <style>
-      <id>StyleInfoImpl--3e3f965d:13eacac4bdf:-5ae</id>
-    </style>
-    <style>
-      <id>StyleInfoImpl--3e3f965d:13eacac4bdf:-717b</id>
     </style>
   </styles>
   <bounds>

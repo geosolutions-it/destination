@@ -16,9 +16,15 @@
       <!-- A FeatureTypeStyle for rendering lines -->
       <FeatureTypeStyle>
         <Rule>
+          <Title>Grafo Stradale
+            <Localized lang="it">Grafo Stradale</Localized>
+            <Localized lang="en">Roads Graph</Localized>
+            <Localized lang="fr">Graphique de la route</Localized>
+            <Localized lang="de">Straﬂennetz</Localized>
+          </Title>
           <MinScaleDenominator>68500</MinScaleDenominator>
           <Name>rule1</Name>
-          <Title>Grafo Stradale</Title>
+          
           <Abstract>A solid blue line with a 1 pixel width</Abstract>
           <LineSymbolizer>
             <Stroke>

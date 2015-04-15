@@ -59,7 +59,7 @@
       <virtualTable>
         <name>buffer</name>
         <sql>SELECT id_geo_arco,geometria&#xd;
-from siig_geo_ln_arco_1&#xd;
+from siig_geo_ln_arco_%resolution%&#xd;
 where geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)&#xd;
 or cod_provincia = &apos;%provincia%&apos; or cod_comune=&apos;%comune%&apos;
 </sql>
@@ -84,6 +84,11 @@ or cod_provincia = &apos;%provincia%&apos; or cod_comune=&apos;%comune%&apos;
           <name>comune</name>
           <defaultValue>-1</defaultValue>
           <regexpValidator>^[\w\d\s]+$</regexpValidator>
+        </parameter>
+        <parameter>
+          <name>resolution</name>
+          <defaultValue>1</defaultValue>
+          <regexpValidator>^[\d\s]+$</regexpValidator>
         </parameter>
       </virtualTable>
     </entry>
