@@ -202,7 +202,8 @@ public class RiskCalculator extends RiskCalculatorBase {
     
             @DescribeParameter(name = "damageArea", description = "optional field containing damage area geometry or an id for the ProcessingRepository storing the same data", min = 0) String damageArea,
             @DescribeParameter(name = "extendedSchema", description = "optional field that chooses an extended schema for the result (useful for download)", min = 0) Boolean extendedSchema,
-            @DescribeParameter(name = "crs", description ="EPSG code of the crs to use for damage calculation", min=0) String crs
+            @DescribeParameter(name = "crs", description ="EPSG code of the crs to use for damage calculation", min=0) String crs,
+            @DescribeParameter(name = "level", description ="optional aggregation level", min=0) Integer level
     
     ) throws IOException, SQLException {
         // building DataStore connection using Catalog/storeName or connection input
@@ -266,7 +267,7 @@ public class RiskCalculator extends RiskCalculatorBase {
                     connectionParams, processing, formula, target, materials,
                     scenarios, entities, severeness, fpfield, 1, true, null, null,
                     simulationTargets, cffs, pscs, padrs, piss, distancesList,
-                    extendedSchema);
+                    extendedSchema, level);
         } else if (processing == 4) {
             // damage calculus
             try {
@@ -280,7 +281,7 @@ public class RiskCalculator extends RiskCalculatorBase {
                         connectionParams, processing, formula, target, materials,
                         scenarios, entities, severeness, fpfield, 1, false,
                         damageAreaGeometry, damageValues, null, null, null, null,
-                        null, null, extendedSchema);
+                        null, null, extendedSchema, level);
             } catch (ParseException e) {
                 throw new ProcessException("Error reading targets WKT", e);
             }
@@ -294,7 +295,7 @@ public class RiskCalculator extends RiskCalculatorBase {
             return calculateRisk(features, dataStore, storeName, precision,
                     connectionParams, processing, formula, target, materials,
                     scenarios, entities, severeness, fpfield, batch, false, null,
-                    null, null, null, null, null, null, null, extendedSchema);
+                    null, null, null, null, null, null, null, extendedSchema, level);
     
         }
     
@@ -534,7 +535,7 @@ public class RiskCalculator extends RiskCalculatorBase {
             Map<Integer, Double> damageValues, List<TargetInfo> changedTargets,
             Map<Integer, Map<Integer, Double>> cffs, List<String> psc,
             Map<Integer, Map<Integer, Double>> padrs, Map<Integer, Double> piss,
-            List<Integer> distances, boolean extendedSchema) throws IOException,
+            List<Integer> distances, boolean extendedSchema, Integer level) throws IOException,
             SQLException {
     
         if (precision == null) {
@@ -575,7 +576,9 @@ public class RiskCalculator extends RiskCalculatorBase {
             SimpleFeatureType ft = tb.buildFeatureType();
     
             // feature level (1, 2, 3)
-            int level = FormulaUtils.getLevel(features);
+            if(level == null) {
+                level = FormulaUtils.getLevel(features);
+            }
     
             LOGGER.fine("Doing formula calculus with the following parameters: Processing=" + processing +
                     ",Formula=" + formula + ",Target=" + target + ",Substances=" + materials + ",Scenarios=" +

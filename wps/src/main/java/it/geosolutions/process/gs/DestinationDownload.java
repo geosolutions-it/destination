@@ -887,7 +887,7 @@ public class DestinationDownload extends RiskCalculatorBase {
 				storeName, batch, precision, connectionParams, processing,
 				formula, target, materials, scenarios, entities, severeness,
 				fpfield, changedTargets, cff, psc, padr, pis, distances,
-				damageArea, true, crs);			
+				damageArea, true, crs, null /* TODO: implement level */);			
 		
 		return writeToShapeFile(riskShapeFileName, fc);
 	}
