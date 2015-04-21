@@ -968,12 +968,13 @@ LANGUAGE 'plpgsql';
 INSERT INTO siig_geo_grid_2(gid,geometria)
 SELECT row_number() OVER (ORDER BY q_grid.cell) AS gid,q_grid.cell AS geometria
 FROM
-(SELECT (st_dump(makegrid_2d(st_geomfromtext('Polygon((300000 4870000,770000 4870000,770000 5180000,300000 5180000,300000 4870000))'::text, 32632), 2000, 32632))).geom AS cell) q_grid
+(SELECT (st_dump(makegrid_2d(st_geomfromtext('Polygon((300000 4870000,770000 4870000,770000 5220000,300000 5220000,300000 4870000))'::text, 32632), 2000, 32632))).geom AS cell) q_grid
 
 -- griglia a 2km tagliata sui confini comunali
 CREATE TABLE siig_geo_grid_2_clip(
         gid NUMERIC(9,0) NOT NULL,
         geometria geometry(MULTIPOLYGON,32632),
+        fk_partner varchar(5),
         PRIMARY KEY (gid)
 );
 
@@ -981,11 +982,14 @@ CREATE INDEX
     siig_geo_grid_2_clip_gidx
 ON siig_geo_grid_2_clip using GIST(geometria);
 
-insert into siig_geo_grid_2_clip(gid,geometria)
-SELECT row_number() OVER () AS gid,ST_Multi(ST_Intersection(siig_geo_grid_2.geometria,siig_geo_pl_comuni.geometria))  AS geometria
+insert into siig_geo_grid_2_clip(gid,geometria,fk_partner)
+SELECT row_number() OVER () AS gid,ST_Multi(ST_Intersection(siig_geo_grid_2.geometria,siig_geo_pl_comuni.geometria))  AS geometria,
+(case when cod_provincia in ('001','002','003','004','005','006','096','103') then '1' when cod_provincia in ('012','013','014','015','016','017','018','019','020','097','098','108') then '2' when cod_provincia in ('007') then '3' when cod_provincia in ('021') then '4' else '5' end)
 FROM
 siig_geo_grid_2 inner join siig_geo_pl_comuni
 on ST_Intersects(siig_geo_grid_2.geometria , siig_geo_pl_comuni.geometria);
+
+alter table siig_geo_pl_arco_3 alter column geometria TYPE geometry(MULTIPOLYGON, 32632) USING ST_Multi(geometria);
 
 DROP VIEW v_geo_grafo_ln;
 
