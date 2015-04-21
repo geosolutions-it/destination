@@ -23,6 +23,7 @@ import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
@@ -74,7 +75,8 @@ public class ArcsIngestionProcess extends InputObject {
 
     public static Properties bersaglio = new Properties();
 
-    private String gridTypeName = "siig_geo_grid";
+    //private String gridTypeName = "siig_geo_grid";
+    private static Map<Integer, String> gridTypeNames = new HashMap<Integer, String>();
 
     private String geoTypeName = "siig_geo_ln_arco_X";
 
@@ -127,6 +129,8 @@ public class ArcsIngestionProcess extends InputObject {
                 LOGGER.error(e.getMessage(), e);
             }
         }
+        
+        gridTypeNames.put(3, "siig_geo_grid_2_clip");
     }
 
     /**
@@ -221,7 +225,7 @@ public class ArcsIngestionProcess extends InputObject {
                 int startErrors = errors;
 
                 // setup input reader
-                createInputReader(dataStore, Transaction.AUTO_COMMIT, onGrid ? gridTypeName : null);
+                createInputReader(dataStore, Transaction.AUTO_COMMIT, onGrid ? gridTypeNames.get(aggregationLevel) : null);
 
                 Transaction transaction = new DefaultTransaction();
 
@@ -285,7 +289,9 @@ public class ArcsIngestionProcess extends InputObject {
                 } finally {
                     transaction.close();
                 }
-
+                if(onGrid) {
+                    setInputFilter(filterFactory.equals(filterFactory.property("fk_partner"),filterFactory.literal(partner+"")));
+                }
                 // calculates total objects to import
                 int total = getImportCount();
 
@@ -364,7 +370,7 @@ public class ArcsIngestionProcess extends InputObject {
                 int startErrors = errors;
 
                 // setup input reader
-                createInputReader(dataStore, Transaction.AUTO_COMMIT, onGrid ? gridTypeName : null);
+                createInputReader(dataStore, Transaction.AUTO_COMMIT, onGrid ? gridTypeNames.get(aggregationLevel) : null);
 
                 Transaction transaction = new DefaultTransaction();
 
@@ -455,7 +461,7 @@ public class ArcsIngestionProcess extends InputObject {
             boolean update) throws IOException {
         try {
             String inputGeometryName = getInputGeometryName(dataStore);
-
+            
             SimpleFeature gridFeature = null;
             while ((gridFeature = readInput()) != null) {
 
@@ -474,7 +480,7 @@ public class ArcsIngestionProcess extends InputObject {
                 try {
                     errors = aggregateStep(trace, dataStore, outputObjects, total, errors,
                             startErrors, outputName, id, idTematico, iterator, cell, false, true,
-                            update);
+                            update, true);
                 } finally {
                     iterator.close();
                 }
@@ -510,7 +516,7 @@ public class ArcsIngestionProcess extends InputObject {
             try {
                 errors = aggregateStep(trace, dataStore, outputObjects, total, errors, startErrors,
                         outputName, id, idTematico, null, null, computeOnlyGeoFeature, false,
-                        update);
+                        update, false);
             } finally {
                 closeInputReader();
             }
@@ -541,7 +547,7 @@ public class ArcsIngestionProcess extends InputObject {
     private int aggregateStep(int trace, DataStore dataStore, OutputObject[] outputObjects,
             int total, int errors, int startErrors, String outputName, int id, int idTematico,
             FeatureIterator<SimpleFeature> iterator, Geometry aggregateGeo,
-            boolean computeOnlyGeoFeature, boolean dontComputeVehicle, boolean update)
+            boolean computeOnlyGeoFeature, boolean dontComputeVehicle, boolean update, boolean writeEmpty)
             throws IOException {
 
         SimpleFeature inputFeature;
@@ -653,6 +659,9 @@ public class ArcsIngestionProcess extends InputObject {
         if ((int) lunghezza <= 0) {
             lunghezza = 1.0;
         }
+        if(geo == null && writeEmpty) {
+            geo = aggregateGeo;
+        }
         if (geo != null) {
             Transaction rowTransaction = new DefaultTransaction();
             setTransaction(outputObjects, rowTransaction);
@@ -661,14 +670,14 @@ public class ArcsIngestionProcess extends InputObject {
                 if (update) {
                     updateAggregateGeoFeature(outputObjects[4], id, idTematico, geo,
                             (int) lunghezza, corsie, incidenti, inputFeature, idOrigin,
-                            flgCorsieCounter.getMax(), flgIncidentiCounter.getMax());
+                            flgCorsieCounter.getMax("C"), flgIncidentiCounter.getMax("C"));
                 } else {
                     addAggregateGeoFeature(outputObjects[4], id, idTematico, geo, (int) lunghezza,
-                            corsie, incidenti, inputFeature, idOrigin, flgCorsieCounter.getMax(),
-                            flgIncidentiCounter.getMax());
+                            corsie, incidenti, inputFeature, idOrigin, flgCorsieCounter.getMax("C"),
+                            flgIncidentiCounter.getMax("C"));
                     if (!dontComputeVehicle) {
                         addAggregateVehicleFeature(outputObjects[0], id, (int) lunghezza, tgm,
-                                velocita, flgTgmCounter.getMax(), flgVelocCounter.getMax(),
+                                velocita, flgTgmCounter.getMax("C"), flgVelocCounter.getMax("C"),
                                 inputFeature);
                     }
 

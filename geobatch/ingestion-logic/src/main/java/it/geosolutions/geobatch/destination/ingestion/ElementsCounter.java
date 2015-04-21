@@ -53,7 +53,10 @@ public class ElementsCounter {
         }
     }
     
-    public String getMax(){
+    public String getMax(String defaultValue){
+        if(maxElement == null || maxElement.trim().isEmpty()) {
+            return defaultValue;
+        }
         return maxElement;
     }
 }
