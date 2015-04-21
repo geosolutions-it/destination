@@ -555,7 +555,7 @@ public class RiskCalculator extends RiskCalculatorBase {
             SimpleFeatureTypeBuilder tb = new SimpleFeatureTypeBuilder();
             tb.add("id_geo_arco", features.getSchema().getDescriptor("id_geo_arco")
                     .getType().getBinding());
-            tb.add("geometria", MultiLineString.class, features.getSchema()
+            tb.add("geometria", features.getSchema().getGeometryDescriptor().getType().getBinding(), features.getSchema()
                     .getGeometryDescriptor().getCoordinateReferenceSystem());
     
             if (extendedSchema) {
@@ -591,166 +591,166 @@ public class RiskCalculator extends RiskCalculatorBase {
                 throw new ProcessException("Unable to load formula " + formula);
             }
     
-            if (((!formulaDescriptor.hasGrid() && level == 3) || (!formulaDescriptor
+            /*if (((!formulaDescriptor.hasGrid() && level == 3) || (!formulaDescriptor
                     .hasNoGrid() && level < 3)) && !extendedSchema) {
                 LOGGER.fine("Formula not supported on this level, returning empty collection");
                 return new EmptyFeatureCollection(ft);
-            } else {
-                // iterator on source
-                SimpleFeatureIterator iter = features.features();
-    
-                // result builder
-                SimpleFeatureBuilder fb = new SimpleFeatureBuilder(ft);
-                ListFeatureCollection result = new ListFeatureCollection(ft);
-                int count = 0;
-                Double[] risk = new Double[] { 0.0, 0.0 };
-    
-                // iterate source features
-                try {
-                    // we will calculate risk in batch of arcs
-                    // we store each feature of the batch in a map
-                    // indexed by id
-                    Map<Number, SimpleFeature> temp = new HashMap<Number, SimpleFeature>();
-                    StringBuilder ids = new StringBuilder();
-                    String fk_partner = null;
-    
-                    while (iter.hasNext()) {
-                        SimpleFeature feature = iter.next();
-                        Number id = (Number) feature.getAttribute("id_geo_arco");
-                        fk_partner = (String) feature.getAttribute("fk_partner");
-                        fb.add(id);
-                        fb.add(feature.getDefaultGeometry());
-                        if (formulaDescriptor.takeFromSource()) {
-                            risk[0] = ((Number) feature.getAttribute("rischio1"))
-                                    .doubleValue();
-                            risk[1] = ((Number) feature.getAttribute("rischio2"))
-                                    .doubleValue();
-                        }
-                        fb.add(risk[0]);
-                        fb.add(risk[1]);
-                        if (extendedSchema) {
-                            fb.add((Number) feature.getAttribute("nr_corsie"));
-                            fb.add((Number) feature.getAttribute("lunghezza"));
-                            fb.add((Number) feature.getAttribute("nr_incidenti"));
-                        }
-                        temp.put(id.intValue(), fb.buildFeature(id + ""));
-    
-                        if (simulation) {
-                            Double pis = piss.get(id.intValue());
-                            Map<Integer, Double> padr = padrs.get(id.intValue());
-                            Map<Integer, Double> cff = cffs.get(id.intValue());
-    
-                            Map<Integer, Map<Integer, Double>> simulationTargets = new HashMap<Integer, Map<Integer, Double>>();
-    
-                            if (!changedTargets.isEmpty()) {
-                                for (int distance : distances) {
-                                    Geometry buffer = BufferUtils
-                                            .iterativeBuffer((Geometry) feature
-                                                    .getDefaultGeometry(),
-                                                    (double) distance, 100);
-                                    for (TargetInfo targetInfo : changedTargets) {
-                                        if (targetInfo.getGeometry() != null) {
-                                            Geometry intersection = buffer
-                                                    .intersection(targetInfo
-                                                            .getGeometry());
-                                            if (intersection != null
-                                                    && intersection.getArea() > 0) {
-                                                Map<Integer, Double> distancesMap = simulationTargets
-                                                        .get(targetInfo.getType());
-                                                if (distancesMap == null) {
-                                                    distancesMap = new HashMap<Integer, Double>();
-                                                    simulationTargets.put(
-                                                            targetInfo.getType(),
-                                                            distancesMap);
-                                                }
-                                                double value = 0.0;
-                                                if (targetInfo.isHuman()) {
-                                                    value = intersection.getArea()
-                                                            / targetInfo
-                                                                    .getGeometry()
-                                                                    .getArea()
-                                                            * targetInfo.getValue();
-                                                } else {
-                                                    value = intersection.getArea();
-                                                }
-                                                if (targetInfo.isRemoved()) {
-                                                    value = -value;
-                                                }
-                                                distancesMap.put(distance, value);
+            } else {*/
+            // iterator on source
+            SimpleFeatureIterator iter = features.features();
+
+            // result builder
+            SimpleFeatureBuilder fb = new SimpleFeatureBuilder(ft);
+            ListFeatureCollection result = new ListFeatureCollection(ft);
+            int count = 0;
+            Double[] risk = new Double[] { 0.0, 0.0 };
+
+            // iterate source features
+            try {
+                // we will calculate risk in batch of arcs
+                // we store each feature of the batch in a map
+                // indexed by id
+                Map<Number, SimpleFeature> temp = new HashMap<Number, SimpleFeature>();
+                StringBuilder ids = new StringBuilder();
+                String fk_partner = null;
+
+                while (iter.hasNext()) {
+                    SimpleFeature feature = iter.next();
+                    Number id = (Number) feature.getAttribute("id_geo_arco");
+                    fk_partner = (String) feature.getAttribute("fk_partner");
+                    fb.add(id);
+                    fb.add(feature.getDefaultGeometry());
+                    if (formulaDescriptor.takeFromSource()) {
+                        risk[0] = ((Number) feature.getAttribute("rischio1"))
+                                .doubleValue();
+                        risk[1] = ((Number) feature.getAttribute("rischio2"))
+                                .doubleValue();
+                    }
+                    fb.add(risk[0]);
+                    fb.add(risk[1]);
+                    if (extendedSchema) {
+                        fb.add((Number) feature.getAttribute("nr_corsie"));
+                        fb.add((Number) feature.getAttribute("lunghezza"));
+                        fb.add((Number) feature.getAttribute("nr_incidenti"));
+                    }
+                    temp.put(id.intValue(), fb.buildFeature(id + ""));
+
+                    if (simulation) {
+                        Double pis = piss.get(id.intValue());
+                        Map<Integer, Double> padr = padrs.get(id.intValue());
+                        Map<Integer, Double> cff = cffs.get(id.intValue());
+
+                        Map<Integer, Map<Integer, Double>> simulationTargets = new HashMap<Integer, Map<Integer, Double>>();
+
+                        if (!changedTargets.isEmpty()) {
+                            for (int distance : distances) {
+                                Geometry buffer = BufferUtils
+                                        .iterativeBuffer((Geometry) feature
+                                                .getDefaultGeometry(),
+                                                (double) distance, 100);
+                                for (TargetInfo targetInfo : changedTargets) {
+                                    if (targetInfo.getGeometry() != null) {
+                                        Geometry intersection = buffer
+                                                .intersection(targetInfo
+                                                        .getGeometry());
+                                        if (intersection != null
+                                                && intersection.getArea() > 0) {
+                                            Map<Integer, Double> distancesMap = simulationTargets
+                                                    .get(targetInfo.getType());
+                                            if (distancesMap == null) {
+                                                distancesMap = new HashMap<Integer, Double>();
+                                                simulationTargets.put(
+                                                        targetInfo.getType(),
+                                                        distancesMap);
                                             }
+                                            double value = 0.0;
+                                            if (targetInfo.isHuman()) {
+                                                value = intersection.getArea()
+                                                        / targetInfo
+                                                                .getGeometry()
+                                                                .getArea()
+                                                        * targetInfo.getValue();
+                                            } else {
+                                                value = intersection.getArea();
+                                            }
+                                            if (targetInfo.isRemoved()) {
+                                                value = -value;
+                                            }
+                                            distancesMap.put(distance, value);
                                         }
                                     }
                                 }
                             }
-    
+                        }
+
+                        FormulaUtils
+                                .calculateSimulationFormulaValuesOnSingleArc(
+                                        conn, level, processing,
+                                        formulaDescriptor, id.intValue(),
+                                        fk_partner, materials, scenarios,
+                                        entities, severeness, fpfield, target,
+                                        simulationTargets, temp, precision,
+                                        cff, psc, padr, pis, null,
+                                        extendedSchema);
+
+                        result.addAll(temp.values());
+                        temp = new HashMap<Number, SimpleFeature>();
+                    } else if (damageArea != null) {
+                        Geometry arcGeometry = (Geometry) feature
+                                .getDefaultGeometry();
+                        if (arcGeometry != null
+                                && arcGeometry.intersects(damageArea)) {
                             FormulaUtils
                                     .calculateSimulationFormulaValuesOnSingleArc(
                                             conn, level, processing,
                                             formulaDescriptor, id.intValue(),
                                             fk_partner, materials, scenarios,
-                                            entities, severeness, fpfield, target,
-                                            simulationTargets, temp, precision,
-                                            cff, psc, padr, pis, null,
-                                            extendedSchema);
-    
+                                            entities, severeness, fpfield,
+                                            target, null, temp, precision,
+                                            null, null, null, null,
+                                            damageValues, extendedSchema);
                             result.addAll(temp.values());
-                            temp = new HashMap<Number, SimpleFeature>();
-                        } else if (damageArea != null) {
-                            Geometry arcGeometry = (Geometry) feature
-                                    .getDefaultGeometry();
-                            if (arcGeometry != null
-                                    && arcGeometry.intersects(damageArea)) {
-                                FormulaUtils
-                                        .calculateSimulationFormulaValuesOnSingleArc(
-                                                conn, level, processing,
-                                                formulaDescriptor, id.intValue(),
-                                                fk_partner, materials, scenarios,
-                                                entities, severeness, fpfield,
-                                                target, null, temp, precision,
-                                                null, null, null, null,
-                                                damageValues, extendedSchema);
-                                result.addAll(temp.values());
-                            }
-                            temp = new HashMap<Number, SimpleFeature>();
-                        } else {
-                            ids.append("," + id);
-                            count++;
-                            // calculate batch items a time
-                            if (count % batch == 0) {
-                                LOGGER.fine("Calculated " + count + " values");
-                                FormulaUtils.calculateFormulaValues(conn, level,
-                                        processing, formulaDescriptor, ids
-                                                .toString().substring(1),
-                                        fk_partner, materials, scenarios, entities,
-                                        severeness, fpfield, target, temp,
-                                        precision, extendedSchema);
-                                result.addAll(temp.values());
-                                ids = new StringBuilder();
-                                temp = new HashMap<Number, SimpleFeature>();
-                            }
                         }
-    
+                        temp = new HashMap<Number, SimpleFeature>();
+                    } else {
+                        ids.append("," + id);
+                        count++;
+                        // calculate batch items a time
+                        if (count % batch == 0) {
+                            LOGGER.fine("Calculated " + count + " values");
+                            FormulaUtils.calculateFormulaValues(conn, level,
+                                    processing, formulaDescriptor, ids
+                                            .toString().substring(1),
+                                    fk_partner, materials, scenarios, entities,
+                                    severeness, fpfield, target, temp,
+                                    precision, extendedSchema);
+                            result.addAll(temp.values());
+                            ids = new StringBuilder();
+                            temp = new HashMap<Number, SimpleFeature>();
+                        }
                     }
-    
-                    if (ids.length() > 0) {
-                        // final calculus for remaining items not in batch size
-                        LOGGER.fine("Calculating remaining items");
-                        FormulaUtils.calculateFormulaValues(conn, level,
-                                processing, formulaDescriptor, ids.toString()
-                                        .substring(1), fk_partner, materials,
-                                scenarios, entities, severeness, fpfield, target,
-                                temp, precision, extendedSchema);
-                        
-                    }
-                    result.addAll(temp.values());
-                    LOGGER.fine("Total calculated values: " + result.size());
-                    
-    
-                } finally {
-                    iter.close();
+
                 }
-                return result;
+
+                if (ids.length() > 0) {
+                    // final calculus for remaining items not in batch size
+                    LOGGER.fine("Calculating remaining items");
+                    FormulaUtils.calculateFormulaValues(conn, level,
+                            processing, formulaDescriptor, ids.toString()
+                                    .substring(1), fk_partner, materials,
+                            scenarios, entities, severeness, fpfield, target,
+                            temp, precision, extendedSchema);
+                    
+                }
+                result.addAll(temp.values());
+                LOGGER.fine("Total calculated values: " + result.size());
+                
+
+            } finally {
+                iter.close();
             }
+            return result;
+            //}
     
         } finally {
             transaction.close();
