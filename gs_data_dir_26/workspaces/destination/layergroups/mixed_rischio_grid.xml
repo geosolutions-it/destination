@@ -1,0 +1,26 @@
+<layerGroup>
+  <id>LayerGroupInfoImpl--30593225:14cd6c20397:-588f</id>
+  <name>mixed_rischio_grid</name>
+  <mode>SINGLE</mode>
+  <title>mixed_rischio_grid</title>
+  <workspace>
+    <id>WorkspaceInfoImpl--570ae188:124761b8d78:-7ffb</id>
+  </workspace>
+  <publishables>
+    <published type="layer">
+      <id>LayerInfoImpl--1bf56c14:13eefa54d37:-7eef</id>
+    </published>
+  </publishables>
+  <styles>
+    <style>
+      <id>StyleInfoImpl-40220030:13ef4fa591e:-7808</id>
+    </style>
+  </styles>
+  <bounds>
+    <minx>317643.0</minx>
+    <maxx>517643.0</maxx>
+    <miny>4881313.0</miny>
+    <maxy>5141313.0</maxy>
+    <crs class="projected">EPSG:32632</crs>
+  </bounds>
+</layerGroup>

@@ -59,14 +59,14 @@
       <virtualTable>
         <name>rischio_3</name>
         <sql>select id_geo_arco, geometria, nr_incidenti_elab/5 as rischio1, nr_incidenti_elab/5 as rischio2&#xd;
-from siig_geo_pl_arco_3&#xd;
-where siig_geo_pl_arco_3.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632) or cod_provincia=&apos;%provincia%&apos; or cod_comune=&apos;%comune%&apos;
+from siig_geo_pl_arco_%resolution%&#xd;
+where siig_geo_pl_arco_%resolution%.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632) or cod_provincia=&apos;%provincia%&apos; or cod_comune=&apos;%comune%&apos;
 </sql>
         <escapeSql>false</escapeSql>
         <keyColumn>id_geo_arco</keyColumn>
         <geometry>
           <name>geometria</name>
-          <type>Polygon</type>
+          <type>MultiPolygon</type>
           <srid>32632</srid>
         </geometry>
         <parameter>
@@ -83,6 +83,11 @@ where siig_geo_pl_arco_3.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632) o
           <name>comune</name>
           <defaultValue>-1</defaultValue>
           <regexpValidator>^[\w\d\s]+$</regexpValidator>
+        </parameter>
+        <parameter>
+          <name>resolution</name>
+          <defaultValue>3</defaultValue>
+          <regexpValidator>^[\d\s]+$</regexpValidator>
         </parameter>
       </virtualTable>
     </entry>
