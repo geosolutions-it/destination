@@ -16,6 +16,10 @@
  */
 package it.geosolutions.geobatch.destination.action;
 
+import java.io.BufferedOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,9 +27,11 @@ import java.util.Map;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.jdbc.JDBCDataStore;
 import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory2;
 
 /**
  * @author "Mauro Bartolomeoli - mauro.bartolomeoli@geo-solutions.it"
@@ -33,22 +39,24 @@ import org.opengis.feature.simple.SimpleFeatureType;
  */
 public class DataExtractor {
 
+        static FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
 	/**
 	 * @param args
+	 * @throws FileNotFoundException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws FileNotFoundException {
 		Map<String, Serializable> datastoreParams = new HashMap<String, Serializable>();
         datastoreParams.put("port", 5432);
         datastoreParams.put("schema", "siig_p");
         datastoreParams.put("passwd", "siig_p");
         datastoreParams.put("dbtype", "postgis");
-        datastoreParams.put("host", "192.168.1.31");
+        datastoreParams.put("host", "localhost");
         datastoreParams.put("Expose primary keys", "true");
         datastoreParams.put("user", "siig_p");
         datastoreParams.put("database", "destination_staging");
         
         String[] typeNames = new String[] {
-        		"siig_geo_pl_pter"
+        		"siig_geo_pl_province"
         		/*
         		"siig_d_patrimonialita_strada",
         		"siig_t_incidentalita",
@@ -93,14 +101,14 @@ public class DataExtractor {
         };
         
         JDBCDataStore dataStore = null;
-        
+        System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream("j:/develop/province.txt")), true));
         try {
         	dataStore = (JDBCDataStore)DataStoreFinder.getDataStore(datastoreParams);
 	        for(String typeName : typeNames) {
-	        		
+	        		Filter filter = ff.equals(ff.property("cod_provincia"),ff.literal("021"));
 	        	SimpleFeatureIterator iterator = null;
 	        	try {
-		        	iterator = dataStore.getFeatureSource(typeName).getFeatures().features();
+		        	iterator = dataStore.getFeatureSource(typeName).getFeatures(filter).features();
 		        	while(iterator.hasNext()) {
 		        		SimpleFeature feature = iterator.next();
 		        		System.out.println(typeName+"="+DataUtilities.encodeFeature(feature, true));

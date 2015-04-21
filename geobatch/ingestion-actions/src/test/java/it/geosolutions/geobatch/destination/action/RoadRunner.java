@@ -73,10 +73,10 @@ public class RoadRunner{
         datastoreParams.put("schema", "siig_p");
         datastoreParams.put("passwd", "siig_p");
         datastoreParams.put("dbtype", "postgis");
-        datastoreParams.put("host", "192.168.1.31");
+        datastoreParams.put("host", "localhost");
         datastoreParams.put("Expose primary keys", "true");
         datastoreParams.put("user", "siig_p");
-        datastoreParams.put("database", "lose_ingestion");
+        datastoreParams.put("database", "destination_staging");
         
         JDBCDataStore dataStore = null;        
         MetadataIngestionHandler metadataHandler = null;
@@ -88,7 +88,7 @@ public class RoadRunner{
         	//String inputFeature = "TI_C_Grafo_20140124";
         	//String inputFeature = "BZ_C_Grafo_20131125";
         	
-        	String inputFeature = "LU_C_Grafo_20140929_CALCS";
+        	String inputFeature = "BZ_C_Grafo_20131125";
         	
         	dataStore = (JDBCDataStore)DataStoreFinder.getDataStore(datastoreParams);	        
 	        metadataHandler = new MetadataIngestionHandler(dataStore);
@@ -107,6 +107,7 @@ public class RoadRunner{
 	        //arcIngestion.importArcs(null, 2, false, false, false, null);	        
 	        //arcIngestion.importArcs(null, 3, false, false, false, null);
 	        //arcIngestion.importArcs(null, 3, true, false, false, "A");
+	        arcIngestion.importArcs(null, 3, true, false, false, "A");
 
             // Spalmatore
 			ZeroRemovalComputation zeroComputation = new ZeroRemovalComputation(
@@ -160,7 +161,7 @@ public class RoadRunner{
                     null, null, null, null,
                     null,null);*/
             // Aggregation level 3
-            /*
+            
             // Selection of the thread number, used for dividing the input cells into N group, each one for one thread
             int threadMaxNumber = 1;
             // Group division of the input cells
@@ -176,7 +177,7 @@ public class RoadRunner{
             ImageUtilities.disposePlanarImageChain(PlanarImage.wrapRenderedImage(images[0]));
             // Image Disposal
             ImageUtilities.disposePlanarImageChain(PlanarImage.wrapRenderedImage(images[1]));
-*/
+
 			
 	        RiskComputation riskComputation = new RiskComputation(
 	        		inputFeature,
@@ -184,7 +185,7 @@ public class RoadRunner{
 					metadataHandler, dataStore);
 	    	
 	        
-	        riskComputation.prefetchRiskAtLevel(15, 1, 1, 26, 100, "1,2,3,4,5,6,7,8,9,10,11,12", "1,2,3,4,5,6,7,8,9,10,11,12,13,14", "0,1", "1,2,3,4,5", "fp_scen_centrale", "PURGE_INSERT", null, false, false);
+	        //riskComputation.prefetchRiskAtLevel(15, 1, 1, 26, 100, "1,2,3,4,5,6,7,8,9,10,11,12", "1,2,3,4,5,6,7,8,9,10,11,12,13,14", "0,1", "1,2,3,4,5", "fp_scen_centrale", "PURGE_INSERT", null, false, false);
 	        //riskComputation.prefetchRiskAtLevel(15, 2, 1, 26, 100, "1,2,3,4,5,6,7,8,9,10,11,12", "1,2,3,4,5,6,7,8,9,10,11,12,13,14", "0,1", "1,2,3,4,5", "fp_scen_centrale", "PURGE_INSERT", null, false);
 	        //riskComputation.prefetchRiskAtLevel(15, 3, 1, 29, 100, "1,2,3,4,5,6,7,8,9,10,11,12", "1,2,3,4,5,6,7,8,9,10,11,12,13,14", "0,1", "1,2,3,4,5", "fp_scen_centrale", "PURGE_INSERT", "B", false);
 	        

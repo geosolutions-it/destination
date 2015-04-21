@@ -46,10 +46,10 @@ public class TargetRunner{
         datastoreParams.put("schema", "siig_p");
         datastoreParams.put("passwd", "siig_p");
         datastoreParams.put("dbtype", "postgis");
-        datastoreParams.put("host", "192.168.1.31");
+        datastoreParams.put("host", "localhost");
         datastoreParams.put("Expose primary keys", "true");
         datastoreParams.put("user", "siig_p");
-        datastoreParams.put("database", "lose_staging");
+        datastoreParams.put("database", "destination_staging");
         
         JDBCDataStore dataStore = null;        
         MetadataIngestionHandler metadataHandler = null;
@@ -58,11 +58,11 @@ public class TargetRunner{
         	dataStore = (JDBCDataStore)DataStoreFinder.getDataStore(datastoreParams);
 	        metadataHandler = new MetadataIngestionHandler(dataStore);
 	        
-	        TargetIngestionProcess targetIngestion = new TargetIngestionProcess("LU_BNU-ASUP_C_20140710_02",
+	        TargetIngestionProcess targetIngestion = new TargetIngestionProcess("BZ_BNU-ASOTT_C_20130521_01",
 	                new ProgressListenerForwarder(null), metadataHandler, dataStore);        
 	        
 	        
-	        targetIngestion.importTarget(CRS.decode("EPSG:3003"), false);
+	        targetIngestion.importTarget(CRS.decode("EPSG:32632"), false);
 	        
 	       
         } catch(Exception e) {
