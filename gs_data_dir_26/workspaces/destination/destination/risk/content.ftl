@@ -17,7 +17,7 @@
 <table class="featureInfo">
   <tr>
 
-    <th class="title">${["Attribute","Attribute","Attribute","Attribut"][locale]}</th><th class="title">${["Value","Value","Value","Wert"][locale]}</th>
+    <th class="title">${["Attribute","Attributo","Attribute","Attribut"][locale]}</th><th class="title">${["Value","Valore","Value","Wert"][locale]}</th>
 
   </tr>
 
@@ -41,7 +41,7 @@
 					                              
                 </tr>
         </#if>
-    </#list>Cff - Reaktionskapazität 
+    </#list>
     <#if mixed>
     <th>${["Processed Value - Social","Valore Elaborazione - Sociale","Valore Elaborazione - Sociale","Wertentwicklung - Anthropologisches"][locale]}</th><td>${rischio1}</td>
     </tr><tr>
