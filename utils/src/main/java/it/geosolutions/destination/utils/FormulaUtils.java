@@ -46,7 +46,7 @@ public class FormulaUtils {
     public static final String notHumanTargetsList = "10,11,12,13,14,15,16";
     
     /** humanTargetsList */
-    public static final String humanTargetsList = "1,2,4,5,6,7";
+    public static final String humanTargetsList = "1,2,4,5,6,7,8";
     
     private static Pattern searchTargetConditional = Pattern.compile(
             "#([^#]*?)#\\*%bersaglio\\(([0-9]+)\\)%", Pattern.CASE_INSENSITIVE);
@@ -187,24 +187,24 @@ public class FormulaUtils {
             calculateFormulaValues(conn, level, processing, formulaDescriptor, ids,
                     fk_partner, materials, scenarios, entities, severeness,
                     fpfield, sql, extendedSchema ? "rischio_sociale" : "rischio1",
-                    "1,2,4,5,6,7", null, features, precision, null, null, null,
+                    humanTargetsList, null, features, precision, null, null, null,
                     null, null);
         } else if (isAllNotHumanTargets(target)) {
             calculateFormulaValues(conn, level, processing, formulaDescriptor, ids,
                     fk_partner, materials, scenarios, entities, severeness,
                     fpfield, sql, extendedSchema ? "rischio_ambientale"
-                            : "rischio1", "10,11,12,13,14,15,16", null, features,
+                            : "rischio1", notHumanTargetsList, null, features,
                     precision, null, null, null, null, null);
         } else if (isAllTargets(target)) {
             calculateFormulaValues(conn, level, processing, formulaDescriptor, ids,
                     fk_partner, materials, scenarios, entities, severeness,
                     fpfield, sql, extendedSchema ? "rischio_sociale" : "rischio1",
-                    "1,2,4,5,6,7", null, features, precision, null, null, null,
+                    humanTargetsList, null, features, precision, null, null, null,
                     null, null);
             calculateFormulaValues(conn, level, processing, formulaDescriptor, ids,
                     fk_partner, materials, scenarios, entities, severeness,
                     fpfield, sql, extendedSchema ? "rischio_ambientale"
-                            : "rischio2", "10,11,12,13,14,15,16", null, features,
+                            : "rischio2", notHumanTargetsList, null, features,
                     precision, null, null, null, null, null);
         }
     }
@@ -562,24 +562,24 @@ public class FormulaUtils {
             calculateFormulaValues(conn, level, processing, formulaDescriptor,
                     id_geo_arco + "", fk_partner, materials, scenarios, entities,
                     severeness, fpfield, sql, extendedSchema ? "rischio_sociale"
-                            : "rischio1", "1,2,4,5,6,7", changedTargets, features,
+                            : "rischio1", humanTargetsList, changedTargets, features,
                     precision, cff, psc, padr, pis, damageValues);
         } else if (isAllNotHumanTargets(target)) {
             calculateFormulaValues(conn, level, processing, formulaDescriptor,
                     id_geo_arco + "", fk_partner, materials, scenarios, entities,
                     severeness, fpfield, sql, extendedSchema ? "rischio_ambientale"
-                            : "rischio1", "10,11,12,13,14,15,16", changedTargets,
+                            : "rischio1", notHumanTargetsList, changedTargets,
                     features, precision, cff, psc, padr, pis, damageValues);
         } else if (isAllTargets(target)) {
             calculateFormulaValues(conn, level, processing, formulaDescriptor,
                     id_geo_arco + "", fk_partner, materials, scenarios, entities,
                     severeness, fpfield, sql, extendedSchema ? "rischio_sociale"
-                            : "rischio1", "1,2,4,5,6,7", changedTargets, features,
+                            : "rischio1", humanTargetsList, changedTargets, features,
                     precision, cff, psc, padr, pis, damageValues);
             calculateFormulaValues(conn, level, processing, formulaDescriptor,
                     id_geo_arco + "", fk_partner, materials, scenarios, entities,
                     severeness, fpfield, sql, extendedSchema ? "rischio_ambientale"
-                            : "rischio2", "10,11,12,13,14,15,16", changedTargets,
+                            : "rischio2", notHumanTargetsList, changedTargets,
                     features, precision, cff, psc, padr, pis, damageValues);
         }
     }
