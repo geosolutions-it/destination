@@ -104,9 +104,9 @@ public class DestinationDownload extends RiskCalculatorBase {
 	static Map<String, String> reverseTargetIdToLayer = new HashMap<String, String>();
 	static Map<String, Integer> targetLayerToId = new HashMap<String, Integer>();
 	static Map<String, String> targetValueField = new HashMap<String, String>();
-	static Map<String, String> allScenarios = new HashMap<String, String>();
-	static Map<String, String> allTargets = new HashMap<String, String>();	
-	static Map<String, String> allSevereness = new HashMap<String, String>();
+	public static Map<String, String> allScenarios = new HashMap<String, String>();
+	public static Map<String, String> allTargets = new HashMap<String, String>();	
+	public static Map<String, String> allSevereness = new HashMap<String, String>();
 	static FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
 	
 	class ChangedTargetsIterator extends WrappingIterator {
@@ -296,7 +296,7 @@ public class DestinationDownload extends RiskCalculatorBase {
 	public DestinationDownload(Catalog catalog, GeoServerDataDirectory dataDirectory) {
 		super(catalog);
 		riskCalculator = new RiskCalculator(catalog);
-		simpleRiskCalculator = new RiskCalculatorSimple(catalog);
+		simpleRiskCalculator = new RiskCalculatorSimple(catalog, dataDirectory);
 		multipleBuffer = new MultipleBuffer();
 		downloadFolder = dataDirectory.root()
 				.getAbsolutePath()
@@ -935,55 +935,9 @@ public class DestinationDownload extends RiskCalculatorBase {
 			String damageArea, String language) throws IOException,
 			SQLException, FileNotFoundException, ParseException {
 		
-		String riskCSVFileName = createUniqueFileName() + ".csv";
-		String fcString = simpleRiskCalculator.execute(storeName, batch, precision, connectionParams, processing, formula, target, materials, scenarios, entities, severeness, fpfield);			
-		JSONParser parser = new JSONParser();
-		JSONObject root = (JSONObject)parser.parse(fcString);
-		JSONArray targets = (JSONArray)root.get("targets");
-		BufferedWriter writer = null;
-		try {
-			writer = new BufferedWriter(new FileWriter(downloadFolder + File.separator + riskCSVFileName));
-			String header = "";
-			if(targets.size() > 1) {
-				header += ",Tipo Bersaglio";
-			}
-			if(((JSONArray)((JSONObject)targets.get(0)).get("scenarios")).size() > 1) {
-				header += ",Incidenti";
-			}
-			if(((JSONArray)((JSONObject)((JSONArray)((JSONObject)targets.get(0)).get("scenarios")).get(0)).get("severeness")).size() > 1) {
-				header += ",Gravità";
-			}
-			writer.write(header.substring(1)+","+formulaDesc+"\n");
-			for(int i = 0; i < targets.size(); i++) {
-				
-				JSONObject targetObj = (JSONObject)targets.get(i);
-				JSONArray scenarioArr = (JSONArray)targetObj.get("scenarios");
-				for(int j = 0; j < scenarioArr.size(); j++) {
-					JSONObject scenarioObj = (JSONObject)scenarioArr.get(j);
-					JSONArray severenessArr = (JSONArray)scenarioObj.get("severeness");
-					for(int k = 0; k < severenessArr.size(); k++) { 
-						String row = "";
-						JSONObject severenessObj = (JSONObject)severenessArr.get(k);
-						if(targets.size() > 1) {
-							row += "," + allTargets.get(targetObj.get("id")+"."+language);
-						}
-						if(scenarioArr.size() > 1) {
-							row += "," + allScenarios.get(scenarioObj.get("id")+"."+language);
-						}
-						if(severenessArr.size() > 1) {
-							row += "," + allSevereness.get(severenessObj.get("id")+"."+language);
-						}
-						writer.write(row.substring(1)+","+((JSONArray)severenessObj.get("risk")).get(0)+"\n");
-					}
-				}				
-			}
-			
-		} finally {
-			if(writer != null) {
-				writer.close();
-			}
-		}
-		return riskCSVFileName;
+		
+		return  simpleRiskCalculator.execute(storeName, batch, precision, connectionParams, processing, formula, target, materials, scenarios, entities, severeness, fpfield, true, language);			
+		
 	}
 
 	/**

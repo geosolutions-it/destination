@@ -19,12 +19,16 @@ package it.geosolutions.process.gs;
 import it.geosolutions.destination.utils.Formula;
 import it.geosolutions.destination.utils.FormulaUtils;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import net.sf.json.JSONArray;
@@ -32,6 +36,7 @@ import net.sf.json.JSONObject;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.config.GeoServerDataDirectory;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.jdbc.JDBCDataStore;
@@ -39,6 +44,8 @@ import org.geotools.process.factory.DescribeParameter;
 import org.geotools.process.factory.DescribeProcess;
 import org.geotools.process.factory.DescribeResult;
 import org.geotools.util.logging.Logging;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  * WPS Process for no roads depending formula calculations.
@@ -50,11 +57,19 @@ import org.geotools.util.logging.Logging;
 public class RiskCalculatorSimple extends RiskCalculatorBase {
 	private static final Logger LOGGER = Logging.getLogger(RiskCalculatorSimple.class);
 
+	private String downloadFolder;
+	
 	/**
 	 * @param catalog
 	 */
-	public RiskCalculatorSimple(Catalog catalog) {
-		super(catalog);		
+	public RiskCalculatorSimple(Catalog catalog, GeoServerDataDirectory dataDirectory) {
+		super(catalog);
+		downloadFolder = dataDirectory.root()
+                        .getAbsolutePath()
+                        + File.separator
+                        + "www"
+                        + File.separator
+                        + "downloads";
 	}
 	
 	@DescribeResult(description = "Risk calculus result")
@@ -70,8 +85,15 @@ public class RiskCalculatorSimple extends RiskCalculatorBase {
 			@DescribeParameter(name = "scenarios", description = "ids of the scenarios to use in calculation") String scenarios,
 			@DescribeParameter(name = "entities", description = "ids of the entities to use in calculation") String entities,
 			@DescribeParameter(name = "severeness", description = "ids of the severeness to use in calculation") String severeness,
-			@DescribeParameter(name = "fp", description = "fields to use for fp calculation", min = 0) String fpfield
+			@DescribeParameter(name = "fp", description = "fields to use for fp calculation", min = 0) String fpfield,
+			@DescribeParameter(name = "download", description = "produce downloadable file", min = 0) boolean download,
+			@DescribeParameter(name = "language", description = "optional field containing language to be used in localized data", min = 0) String language
 		) throws IOException, SQLException {
+	    
+    	        // default language if non specified
+                if(language == null) {
+                        language = "it";
+                }
 		// building DataStore connection using Catalog/storeName or connection input parameters
 		JDBCDataStore dataStore = null;
 		if(catalog != null && storeName != null) {
@@ -114,8 +136,16 @@ public class RiskCalculatorSimple extends RiskCalculatorBase {
 			} else {
 				targetsList = new String[] {target +""};				
 			}
-			calculateFormulaForAllTargets(conn, processing, formulaDescriptor, materials, scenarios, entities, severeness, fpfield, targetsList, result, precision);		
-			return result.toString();
+			calculateFormulaForAllTargets(conn, processing, formulaDescriptor, materials, scenarios, entities, severeness, fpfield, targetsList, result, precision);
+			if(download) {
+			    try {
+                                return writeToCsv(language, formulaDescriptor, result.toString());
+                            } catch (ParseException e) {
+                                throw new IOException("Cannot parse result", e);
+                            }
+			} else {
+			    return result.toString();
+			}
 		} finally {				
 			transaction.close();
 			if(conn != null) {
@@ -124,7 +154,56 @@ public class RiskCalculatorSimple extends RiskCalculatorBase {
 		}
 	}
 
-	/**
+	private String writeToCsv(String language, Formula formula, String fcString) throws ParseException, IOException {
+	    String riskCSVFileName = UUID.randomUUID().toString() + ".csv";
+	    JSONParser parser = new JSONParser();
+            JSONObject root = (JSONObject)parser.parse(fcString);
+            JSONArray targets = (JSONArray)root.get("targets");
+            BufferedWriter writer = null;
+            try {
+                    writer = new BufferedWriter(new FileWriter(downloadFolder + File.separator + riskCSVFileName));
+                    String header = "";
+                    if(targets.size() > 1) {
+                            header += ",Tipo Bersaglio";
+                    }
+                    if(((JSONArray)((JSONObject)targets.get(0)).get("scenarios")).size() > 1) {
+                            header += ",Incidenti";
+                    }
+                    if(((JSONArray)((JSONObject)((JSONArray)((JSONObject)targets.get(0)).get("scenarios")).get(0)).get("severeness")).size() > 1) {
+                            header += ",Gravità";
+                    }
+                    writer.write(header.substring(1)+","+formula.getDescription()+"\n");
+                    for(int i = 0; i < targets.size(); i++) {
+                            
+                            JSONObject targetObj = (JSONObject)targets.get(i);
+                            JSONArray scenarioArr = (JSONArray)targetObj.get("scenarios");
+                            for(int j = 0; j < scenarioArr.size(); j++) {
+                                    JSONObject scenarioObj = (JSONObject)scenarioArr.get(j);
+                                    JSONArray severenessArr = (JSONArray)scenarioObj.get("severeness");
+                                    for(int k = 0; k < severenessArr.size(); k++) { 
+                                            String row = "";
+                                            JSONObject severenessObj = (JSONObject)severenessArr.get(k);
+                                            if(targets.size() > 1) {
+                                                    row += "," + DestinationDownload.allTargets.get(targetObj.get("id")+"."+language);
+                                            }
+                                            if(scenarioArr.size() > 1) {
+                                                    row += "," + DestinationDownload.allScenarios.get(scenarioObj.get("id")+"."+language);
+                                            }
+                                            if(severenessArr.size() > 1) {
+                                                    row += "," + DestinationDownload.allSevereness.get(severenessObj.get("id")+"."+language);
+                                            }
+                                            writer.write(row.substring(1)+","+((JSONArray)severenessObj.get("risk")).get(0)+"\n");
+                                    }
+                            }                               
+                    }
+                    return riskCSVFileName;
+            } finally {
+                    if(writer != null) {
+                            writer.close();
+                    }
+            }        }
+
+    /**
 	 * @param result
 	 * @param risk
 	 */
