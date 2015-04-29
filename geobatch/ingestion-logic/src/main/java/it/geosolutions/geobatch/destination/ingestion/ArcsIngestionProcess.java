@@ -75,8 +75,11 @@ public class ArcsIngestionProcess extends InputObject {
 
     public static Properties bersaglio = new Properties();
 
-    //private String gridTypeName = "siig_geo_grid";
+
     private static Map<Integer, String> gridTypeNames = new HashMap<Integer, String>();
+    
+    //private String gridIdName per recuperare le primary key delle tabelle da gestire;
+    private static Map<Integer, String> gridIdNames = new HashMap<Integer, String>();
 
     private String geoTypeName = "siig_geo_ln_arco_X";
 
@@ -131,6 +134,12 @@ public class ArcsIngestionProcess extends InputObject {
         }
         
         gridTypeNames.put(3, "siig_geo_grid_2_clip");
+        gridTypeNames.put(4, "siig_geo_pl_comuni");
+        gridTypeNames.put(5, "siig_geo_pl_province");
+        //le primary Key
+        gridIdNames.put(3, "gid");
+        gridIdNames.put(4, "cod_comune");
+        gridIdNames.put(5, "cod_provincia");
     }
 
     /**
@@ -225,6 +234,7 @@ public class ArcsIngestionProcess extends InputObject {
                 int startErrors = errors;
 
                 // setup input reader
+                //fra --> stabilisce la tabella di ingresso da usare
                 createInputReader(dataStore, Transaction.AUTO_COMMIT, onGrid ? gridTypeNames.get(aggregationLevel) : null);
 
                 Transaction transaction = new DefaultTransaction();
@@ -265,7 +275,7 @@ public class ArcsIngestionProcess extends InputObject {
                     // remove previous data for the given partner
                     Filter removeFilter = filterFactory.equals(
                             filterFactory.property("fk_partner"), filterFactory.literal(partner));
-                    if (aggregationLevel == 3) {
+                    if (aggregationLevel >= 3) {
                         if (onGrid) {
                             removeObjects(new OutputObject[] { dissestoObject, tipobersObject,
                                     tiposostObject, mainGeoObject }, removeFilter);
@@ -463,10 +473,11 @@ public class ArcsIngestionProcess extends InputObject {
             String inputGeometryName = getInputGeometryName(dataStore);
             
             SimpleFeature gridFeature = null;
+            String gridIdName =  gridIdNames.get(aggregationLevel);
             while ((gridFeature = readInput()) != null) {
 
                 int id = nextId();
-                int idTematico = ((BigDecimal) gridFeature.getAttribute("gid")).intValue();
+                int idTematico = getIdTematicoForGrid(gridFeature, gridIdName);
 
                 Geometry cell = (Geometry) gridFeature.getDefaultGeometry();
 
@@ -494,6 +505,27 @@ public class ArcsIngestionProcess extends InputObject {
 
         return errors;
     }
+
+	private int getIdTematicoForGrid(SimpleFeature gridFeature,
+			String gridIdName) {
+		Object primaryKey = gridFeature.getAttribute(gridIdName);
+		
+		int idTematico;
+		if(primaryKey instanceof String){
+			if(gridIdName.equalsIgnoreCase("cod_provincia")){
+				if(((String) primaryKey).startsWith("CH"))
+					idTematico = 10007;
+				else
+					idTematico = Integer.parseInt(primaryKey.toString());	
+			}else{
+				//vuol dire che è la tabella dei comuni
+				idTematico = Integer.parseInt(primaryKey.toString());
+			}
+		}else{
+			idTematico = ((BigDecimal) gridFeature.getAttribute(gridIdName)).intValue();
+		}
+		return idTematico;
+	}
 
     /**
      * @throws IOException
@@ -662,7 +694,7 @@ public class ArcsIngestionProcess extends InputObject {
         if(geo == null && writeEmpty) {
             geo = aggregateGeo;
         }
-        if (geo != null) {
+         if (geo != null) {
             Transaction rowTransaction = new DefaultTransaction();
             setTransaction(outputObjects, rowTransaction);
 
