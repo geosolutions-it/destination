@@ -15,6 +15,7 @@
     <entry key="preparedStatements">false</entry>
     <entry key="jndiReferenceName">java:comp/env/jdbc/destination</entry>
     <entry key="Estimated extends">false</entry>
+    <entry key="Support on the fly geometry simplification">true</entry>
     <entry key="namespace">http://destination.geo-solutions.it</entry>
   </connectionParameters>
   <__default>false</__default>
