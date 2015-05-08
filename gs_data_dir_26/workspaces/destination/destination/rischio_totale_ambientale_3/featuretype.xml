@@ -20,7 +20,7 @@
     AXIS[&quot;Geodetic longitude&quot;, EAST], &#xd;
     AXIS[&quot;Geodetic latitude&quot;, NORTH], &#xd;
     AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]], &#xd;
-  PROJECTION[&quot;Transverse_Mercator&quot;, AUTHORITY[&quot;EPSG&quot;,&quot;9807&quot;]], &#xd;
+  PROJECTION[&quot;Transverse_Mercator&quot;], &#xd;
   PARAMETER[&quot;central_meridian&quot;, 9.0], &#xd;
   PARAMETER[&quot;latitude_of_origin&quot;, 0.0], &#xd;
   PARAMETER[&quot;scale_factor&quot;, 0.9996], &#xd;
@@ -72,7 +72,9 @@ ON&#xd;
     (&#xd;
         siig_p.siig_geo_pl_arco_3.id_geo_arco = siig_p.siig_t_elab_standard_3.id_geo_arco)&#xd;
 &#xd;
-where siig_geo_pl_arco_3.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)</sql>
+where siig_geo_pl_arco_3.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)
+</sql>
+        <escapeSql>false</escapeSql>
         <geometry>
           <name>geometria</name>
           <type>Polygon</type>
@@ -91,4 +93,6 @@ where siig_geo_pl_arco_3.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)</
   </store>
   <maxFeatures>0</maxFeatures>
   <numDecimals>0</numDecimals>
+  <overridingServiceSRS>false</overridingServiceSRS>
+  <circularArcPresent>false</circularArcPresent>
 </featureType>

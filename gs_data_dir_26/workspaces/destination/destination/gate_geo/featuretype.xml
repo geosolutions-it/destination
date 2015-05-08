@@ -20,7 +20,7 @@
     AXIS[&quot;Geodetic longitude&quot;, EAST], &#xd;
     AXIS[&quot;Geodetic latitude&quot;, NORTH], &#xd;
     AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]], &#xd;
-  PROJECTION[&quot;Transverse_Mercator&quot;, AUTHORITY[&quot;EPSG&quot;,&quot;9807&quot;]], &#xd;
+  PROJECTION[&quot;Transverse_Mercator&quot;], &#xd;
   PARAMETER[&quot;central_meridian&quot;, 9.0], &#xd;
   PARAMETER[&quot;latitude_of_origin&quot;, 0.0], &#xd;
   PARAMETER[&quot;scale_factor&quot;, 0.9996], &#xd;
@@ -70,7 +70,9 @@ data_fine_validita,&#xd;
 concessionaria_sito,&#xd;
 nr_corsie_carreggiata&#xd;
 from siig_gate_geo_gate&#xd;
-where data_cancellazione is null and geometria is not null</sql>
+where data_cancellazione is null and geometria is not null
+</sql>
+        <escapeSql>false</escapeSql>
         <keyColumn>id_gate</keyColumn>
         <geometry>
           <name>geometria</name>
@@ -85,4 +87,6 @@ where data_cancellazione is null and geometria is not null</sql>
   </store>
   <maxFeatures>0</maxFeatures>
   <numDecimals>0</numDecimals>
+  <overridingServiceSRS>false</overridingServiceSRS>
+  <circularArcPresent>false</circularArcPresent>
 </featureType>

@@ -49,12 +49,12 @@
         <enabled>false</enabled>
       </dimensionInfo>
     </entry>
-    <entry key="cachingEnabled">false</entry>
     <entry key="elevation">
       <dimensionInfo>
         <enabled>false</enabled>
       </dimensionInfo>
     </entry>
+    <entry key="cachingEnabled">false</entry>
     <entry key="JDBC_VIRTUAL_TABLE">
       <virtualTable>
         <name>siig_geo_obu_line</name>
@@ -65,7 +65,9 @@ FROM siig_geo_obu &#xd;
 where data_creazione BETWEEN &apos;%start_date%&apos; and &apos;%end_date%&apos;&#xd;
 ORDER BY tipo, semirimorchio,data_creazione) as obu&#xd;
 WHERE obu.semirimorchio=&apos;%semirimorchio%&apos;&#xd;
-GROUP BY obu.semirimorchio</sql>
+GROUP BY obu.semirimorchio
+</sql>
+        <escapeSql>false</escapeSql>
         <geometry>
           <name>the_geom</name>
           <type>LineString</type>
@@ -94,4 +96,6 @@ GROUP BY obu.semirimorchio</sql>
   </store>
   <maxFeatures>0</maxFeatures>
   <numDecimals>0</numDecimals>
+  <overridingServiceSRS>false</overridingServiceSRS>
+  <circularArcPresent>false</circularArcPresent>
 </featureType>

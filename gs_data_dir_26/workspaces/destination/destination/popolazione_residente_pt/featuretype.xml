@@ -20,7 +20,7 @@
     AXIS[&quot;Geodetic longitude&quot;, EAST], &#xd;
     AXIS[&quot;Geodetic latitude&quot;, NORTH], &#xd;
     AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]], &#xd;
-  PROJECTION[&quot;Transverse_Mercator&quot;, AUTHORITY[&quot;EPSG&quot;,&quot;9807&quot;]], &#xd;
+  PROJECTION[&quot;Transverse_Mercator&quot;], &#xd;
   PARAMETER[&quot;central_meridian&quot;, 9.0], &#xd;
   PARAMETER[&quot;latitude_of_origin&quot;, 0.0], &#xd;
   PARAMETER[&quot;scale_factor&quot;, 0.9996], &#xd;
@@ -74,7 +74,9 @@ SELECT v_geo_popolazione_residente_pt.*&#xd;
 FROM&#xd;
    v_geo_popolazione_residente_pt&#xd;
     where &#xd;
-st_intersects(geometria,ST_GeomFromText(&apos;%wkt%&apos;,32632))</sql>
+st_intersects(geometria,ST_GeomFromText(&apos;%wkt%&apos;,32632))
+</sql>
+        <escapeSql>false</escapeSql>
         <keyColumn>fk_bersaglio_umano_pt</keyColumn>
         <geometry>
           <name>geometria</name>
@@ -104,4 +106,6 @@ st_intersects(geometria,ST_GeomFromText(&apos;%wkt%&apos;,32632))</sql>
   </store>
   <maxFeatures>0</maxFeatures>
   <numDecimals>0</numDecimals>
+  <overridingServiceSRS>false</overridingServiceSRS>
+  <circularArcPresent>false</circularArcPresent>
 </featureType>

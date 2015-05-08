@@ -20,7 +20,7 @@
     AXIS[&quot;Geodetic longitude&quot;, EAST], &#xd;
     AXIS[&quot;Geodetic latitude&quot;, NORTH], &#xd;
     AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]], &#xd;
-  PROJECTION[&quot;Transverse_Mercator&quot;, AUTHORITY[&quot;EPSG&quot;,&quot;9807&quot;]], &#xd;
+  PROJECTION[&quot;Transverse_Mercator&quot;], &#xd;
   PARAMETER[&quot;central_meridian&quot;, 9.0], &#xd;
   PARAMETER[&quot;latitude_of_origin&quot;, 0.0], &#xd;
   PARAMETER[&quot;scale_factor&quot;, 0.9996], &#xd;
@@ -74,7 +74,9 @@ inner join siig_r_arco_1_sostanza on siig_geo_ln_arco_1.id_geo_arco = siig_r_arc
 inner join siig_t_sostanza on siig_r_arco_1_sostanza.id_sostanza = siig_t_sostanza.id_sostanza&#xd;
 where siig_geo_ln_arco_1.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)&#xd;
 group by siig_geo_ln_arco_1.id_geo_arco) as padrtable  on arco.id_geo_arco=padrtable.id_geo_arco&#xd;
-where arco.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)</sql>
+where arco.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)
+</sql>
+        <escapeSql>false</escapeSql>
         <geometry>
           <name>geometria</name>
           <type>MultiLineString</type>
@@ -93,4 +95,6 @@ where arco.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)</sql>
   </store>
   <maxFeatures>0</maxFeatures>
   <numDecimals>0</numDecimals>
+  <overridingServiceSRS>false</overridingServiceSRS>
+  <circularArcPresent>false</circularArcPresent>
 </featureType>

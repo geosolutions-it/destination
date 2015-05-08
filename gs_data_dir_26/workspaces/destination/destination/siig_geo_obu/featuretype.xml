@@ -51,16 +51,18 @@
         <presentation>CONTINUOUS_INTERVAL</presentation>
       </dimensionInfo>
     </entry>
-    <entry key="cachingEnabled">false</entry>
     <entry key="elevation">
       <dimensionInfo>
         <enabled>false</enabled>
       </dimensionInfo>
     </entry>
+    <entry key="cachingEnabled">false</entry>
   </metadata>
   <store class="dataStore">
     <id>DataStoreInfoImpl--3970ff67:13c00cf828a:-7fef</id>
   </store>
   <maxFeatures>0</maxFeatures>
   <numDecimals>0</numDecimals>
+  <overridingServiceSRS>false</overridingServiceSRS>
+  <circularArcPresent>false</circularArcPresent>
 </featureType>
