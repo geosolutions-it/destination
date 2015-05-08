@@ -46,6 +46,10 @@
     siig_mtd_t_formula.descrizione_en,&#xd;
     siig_mtd_t_formula.descrizione_de,&#xd;
     siig_mtd_t_formula.descrizione_fr,&#xd;
+    siig_mtd_t_formula.help_it,&#xd;
+    siig_mtd_t_formula.help_en,&#xd;
+    siig_mtd_t_formula.help_de,&#xd;
+    siig_mtd_t_formula.help_fr,&#xd;
     siig_mtd_t_formula.udm_it,&#xd;
     siig_mtd_t_formula.udm_en,&#xd;
     siig_mtd_t_formula.udm_de,&#xd;
@@ -81,7 +85,9 @@ FROM&#xd;
     siig_mtd_t_formula&#xd;
 INNER JOIN siig_mtd_r_formula_elab on siig_mtd_r_formula_elab.id_formula=siig_mtd_t_formula.id_formula&#xd;
 LEFT OUTER JOIN siig_mtd_t_formula formula_soc on siig_mtd_t_formula.fk_formula_soc = formula_soc.id_formula&#xd;
-LEFT OUTER JOIN siig_mtd_t_formula formula_env on siig_mtd_t_formula.fk_formula_env = formula_env.id_formula</sql>
+LEFT OUTER JOIN siig_mtd_t_formula formula_env on siig_mtd_t_formula.fk_formula_env = formula_env.id_formula
+</sql>
+        <escapeSql>false</escapeSql>
       </virtualTable>
     </entry>
   </metadata>
@@ -90,4 +96,6 @@ LEFT OUTER JOIN siig_mtd_t_formula formula_env on siig_mtd_t_formula.fk_formula_
   </store>
   <maxFeatures>0</maxFeatures>
   <numDecimals>0</numDecimals>
+  <overridingServiceSRS>false</overridingServiceSRS>
+  <circularArcPresent>false</circularArcPresent>
 </featureType>
