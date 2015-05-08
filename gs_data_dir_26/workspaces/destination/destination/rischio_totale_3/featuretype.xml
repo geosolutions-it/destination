@@ -71,10 +71,12 @@ INNER JOIN&#xd;
 ON&#xd;
     (&#xd;
         siig_p.siig_geo_pl_arco_3.id_geo_arco = siig_p.siig_t_elab_standard_3.id_geo_arco)&#xd;
-where siig_geo_pl_arco_3.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)</sql>
+where siig_geo_pl_arco_3.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)
+</sql>
+        <escapeSql>false</escapeSql>
         <geometry>
           <name>geometria</name>
-          <type>Polygon</type>
+          <type>MultiPolygon</type>
           <srid>32632</srid>
         </geometry>
         <parameter>
@@ -90,4 +92,6 @@ where siig_geo_pl_arco_3.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)</
   </store>
   <maxFeatures>0</maxFeatures>
   <numDecimals>0</numDecimals>
+  <overridingServiceSRS>false</overridingServiceSRS>
+  <circularArcPresent>false</circularArcPresent>
 </featureType>
