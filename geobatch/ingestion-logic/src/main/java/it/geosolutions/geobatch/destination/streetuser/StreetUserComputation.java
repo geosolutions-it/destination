@@ -253,7 +253,9 @@ public class StreetUserComputation extends InputObject {
 					FeatureIterator<SimpleFeature> inputIteratorArc = null;
 					try {
 						inputIteratorArc = inputReaderArc.getFeatures(inputQueryArc).features();
+						boolean arcsFound = false;
 						while(inputIteratorArc.hasNext()) {
+						        arcsFound = true;
 							SimpleFeature sfArc = inputIteratorArc.next();
 							Integer idGeoArco = getAttributeAsInt(sfArc.getAttribute("id_geo_arco"));
 							Geometry geometryArc = (Geometry) sfArc.getDefaultGeometry();
@@ -292,6 +294,15 @@ public class StreetUserComputation extends InputObject {
 									}
 								}
 							}
+						}
+						if(!arcsFound) {
+						    for(StreetScenario scenario : scenari) {
+						        Map<Integer, StreetUserResult> cellMap = new HashMap<Integer, StreetUserResult>();
+						        for(int idDistanza : distanze) {
+						            cellMap.put(idDistanza, new StreetUserResult(idGeoCell, idDistanza, scenario.getIdScenario(), 0.0, 0.0));
+						        }
+						        cellResults.put(scenario.getIdScenario(), cellMap);
+						    }
 						}
 						
 					} catch(Exception e) {
