@@ -518,7 +518,7 @@ public class ArcsIngestionProcess extends InputObject {
 				else
 					idTematico = Integer.parseInt(primaryKey.toString());	
 			}else{
-				//vuol dire che è la tabella dei comuni
+				//vuol dire che e la tabella dei comuni
 				idTematico = Integer.parseInt(primaryKey.toString());
 			}
 		}else{
