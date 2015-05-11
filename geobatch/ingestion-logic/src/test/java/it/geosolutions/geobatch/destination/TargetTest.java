@@ -107,7 +107,7 @@ public class TargetTest extends DestinationMemoryTest{
 	public void test_BU_AIND() throws IOException {
 		TargetIngestionProcess targetIngestion = createProcess("BZ_BU-AIND_C_20130903_01");
 		targetIngestion.importTarget(null, false);		
-		checkFeature("siig_geo_bersaglio_umano_pt", 5);
+		checkFeature("siig_geo_bersaglio_umano_pl", 5);
 		checkFeature("siig_t_bersaglio_umano", 5);
 	}
 
@@ -115,7 +115,7 @@ public class TargetTest extends DestinationMemoryTest{
 	public void test_BU_ASAN() throws IOException {
 		TargetIngestionProcess targetIngestion = createProcess("BZ_BU-ASAN_C_20130606_01");
 		targetIngestion.importTarget(null, false);		
-		checkFeature("siig_geo_bersaglio_umano_pt", 5);
+		checkFeature("siig_geo_bersaglio_umano_pl", 5);
 		checkFeature("siig_t_bersaglio_umano", 5);
 	}
 
@@ -123,7 +123,7 @@ public class TargetTest extends DestinationMemoryTest{
 	public void test_BU_ASCOL() throws IOException {
 		TargetIngestionProcess targetIngestion = createProcess("BZ_BU-ASCOL_C_20130531_01");
 		targetIngestion.importTarget(null, false);		
-		checkFeature("siig_geo_bersaglio_umano_pt", 5);
+		checkFeature("siig_geo_bersaglio_umano_pl", 5);
 		checkFeature("siig_t_bersaglio_umano", 5);
 	}
 
@@ -131,7 +131,7 @@ public class TargetTest extends DestinationMemoryTest{
 	public void test_BU_PRES() throws IOException {
 		TargetIngestionProcess targetIngestion = createProcess("BZ_BU-PRES_C_20130911_01");
 		targetIngestion.importTarget(null, false);		
-		checkFeature("siig_geo_bersaglio_umano_pt", 5);
+		checkFeature("siig_geo_bersaglio_umano_pl", 5);
 		checkFeature("siig_t_bersaglio_umano", 5);
 	}
 
