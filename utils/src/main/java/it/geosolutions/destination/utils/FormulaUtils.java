@@ -337,7 +337,7 @@ public class FormulaUtils {
         }
     
         // replace aggregated level
-        sql = sql.replace("siig_geo_ln_arco_3", "siig_geo_pl_arco_3");
+        sql = replaceAggregationLevel(sql);
     
         // PIS: simulation or not
         sql = replacePis(sql, pis);
@@ -407,6 +407,13 @@ public class FormulaUtils {
             }
     
         }
+    }
+
+    private static String replaceAggregationLevel(String sql) {
+        sql = sql.replace("siig_geo_ln_arco_3", "siig_geo_pl_arco_3");
+        sql = sql.replace("siig_geo_ln_arco_4", "siig_geo_pl_arco_4");
+        sql = sql.replace("siig_geo_ln_arco_5", "siig_geo_pl_arco_5");
+        return sql;
     }
     
     /**
