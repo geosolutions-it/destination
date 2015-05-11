@@ -24,7 +24,7 @@
         </ogc:PropertyIsLessThanOrEqualTo>
         
    </ogc:Filter>
-     <MaxScaleDenominator>500000</MaxScaleDenominator>
+     <MaxScaleDenominator>150000</MaxScaleDenominator>
      <MinScaleDenominator>17070</MinScaleDenominator>
    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
      <Stroke>
@@ -60,7 +60,7 @@
         
      </ogc:And>
    </ogc:Filter>
-     <MaxScaleDenominator>500000</MaxScaleDenominator>
+     <MaxScaleDenominator>150000</MaxScaleDenominator>
      <MinScaleDenominator>17070</MinScaleDenominator>
    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
      <Stroke>
@@ -87,7 +87,7 @@
         </ogc:PropertyIsGreaterThanOrEqualTo>
         
    </ogc:Filter>
-     <MaxScaleDenominator>500000</MaxScaleDenominator>
+     <MaxScaleDenominator>150000</MaxScaleDenominator>
      <MinScaleDenominator>17070</MinScaleDenominator>
    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
      <Stroke>

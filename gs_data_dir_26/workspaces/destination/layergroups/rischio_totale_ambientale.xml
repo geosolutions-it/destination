@@ -1,20 +1,26 @@
 <layerGroup>
   <id>LayerGroupInfoImpl-7108c48e:13d2049d06d:-7fe1</id>
   <name>rischio_totale_ambientale</name>
+  <mode>SINGLE</mode>
+  <title>rischio_totale_ambientale</title>
+  <abstractTxt>rischio_totale_ambientale</abstractTxt>
   <workspace>
     <id>WorkspaceInfoImpl--570ae188:124761b8d78:-7ffb</id>
   </workspace>
-  <layers>
-    <layer>
+  <publishables>
+    <published type="layer">
       <id>LayerInfoImpl-7108c48e:13d2049d06d:-7ffd</id>
-    </layer>
-    <layer>
+    </published>
+    <published type="layer">
       <id>LayerInfoImpl-7108c48e:13d2049d06d:-7fe5</id>
-    </layer>
-    <layer>
+    </published>
+    <published type="layer">
       <id>LayerInfoImpl-7108c48e:13d2049d06d:-7d31</id>
-    </layer>
-  </layers>
+    </published>
+    <published type="layer">
+      <id>LayerInfoImpl-2acd846f:14d42f4ffd2:65</id>
+    </published>
+  </publishables>
   <styles>
     <style>
       <id>StyleInfoImpl-60c7ceb8:13dd951fd01:1261</id>
@@ -24,6 +30,9 @@
     </style>
     <style>
       <id>StyleInfoImpl-60c7ceb8:13dd951fd01:1263</id>
+    </style>
+    <style>
+      <id>StyleInfoImpl-2acd846f:14d42f4ffd2:-bd4</id>
     </style>
   </styles>
   <bounds>
