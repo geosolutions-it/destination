@@ -170,7 +170,7 @@ public class StreetUserComputation extends InputObject {
 		if(aggregationLevel == 1 || aggregationLevel == 2){
 			executeArc(aggregationLevel, dropInput, closePhase, newProcess);
 		}
-		if(aggregationLevel == 3){
+		if(aggregationLevel >= 3){
 			executeCell(aggregationLevel, dropInput, closePhase, newProcess);
 		}
 		
@@ -243,8 +243,8 @@ public class StreetUserComputation extends InputObject {
 					Integer idGeoCell = getAttributeAsInt(sf.getAttribute("id_geo_arco"));
 					Geometry geometry = (Geometry) sf.getDefaultGeometry();
 					
-					FeatureStore<SimpleFeatureType, SimpleFeature> inputReaderArc = FeatureLoaderUtils.createFeatureSource(dataStore, Transaction.AUTO_COMMIT,"siig_geo_ln_arco_" + aggregationLevel);
-					Query inputQueryArc = new Query("siig_geo_ln_arco_" + aggregationLevel);
+					FeatureStore<SimpleFeatureType, SimpleFeature> inputReaderArc = FeatureLoaderUtils.createFeatureSource(dataStore, Transaction.AUTO_COMMIT,"siig_geo_ln_arco_" + getLinearAggregationLevel(aggregationLevel));
+					Query inputQueryArc = new Query("siig_geo_ln_arco_" + getLinearAggregationLevel(aggregationLevel));
 					inputQueryArc.setFilter(filterFactory.and(
 							filterFactory.equals(filterFactory.property("fk_partner"),filterFactory.literal(partner)),
 							filterFactory.intersects(filterFactory.property("geometria"), filterFactory.literal(geometry))
@@ -672,8 +672,8 @@ public class StreetUserComputation extends InputObject {
 		FeatureIterator<SimpleFeature> inputIterator = null;
 		try {
 			
-			FeatureStore<SimpleFeatureType, SimpleFeature> inputReader =FeatureLoaderUtils.createFeatureSource(dataStore, Transaction.AUTO_COMMIT,"siig_geo_ln_arco_" + aggregationLevel);
-			Query inputQuery = new Query("siig_geo_ln_arco_" + aggregationLevel);
+			FeatureStore<SimpleFeatureType, SimpleFeature> inputReader =FeatureLoaderUtils.createFeatureSource(dataStore, Transaction.AUTO_COMMIT,"siig_geo_ln_arco_" + getLinearAggregationLevel(aggregationLevel));
+			Query inputQuery = new Query("siig_geo_ln_arco_" + getLinearAggregationLevel(aggregationLevel));
 			inputQuery.setFilter(filterFactory.and(
 					filterFactory.equals(filterFactory.property("fk_partner"),filterFactory.literal(partner)),
 					filterFactory.dwithin(filterFactory.property("geometria"), filterFactory.literal(geometry), (double)maxDistance, "m")
@@ -744,8 +744,8 @@ public class StreetUserComputation extends InputObject {
 		try {
 			FeatureStore<SimpleFeatureType, SimpleFeature> inputReader = FeatureLoaderUtils
 					.createFeatureSource(dataStore, Transaction.AUTO_COMMIT,
-							"siig_r_tipovei_geoarco" + aggregationLevel);
-			Query inputQuery = new Query("siig_r_tipovei_geoarco" + aggregationLevel);
+							"siig_r_tipovei_geoarco" + getLinearAggregationLevel(aggregationLevel));
+			Query inputQuery = new Query("siig_r_tipovei_geoarco" + getLinearAggregationLevel(aggregationLevel));
 			inputQuery.setFilter(
 					filterFactory.equals(filterFactory.property("fk_partner"),filterFactory.literal(partner))
 			);
@@ -823,7 +823,14 @@ public class StreetUserComputation extends InputObject {
 		}
 	}*/
 
-	protected Map<Integer, VehicleType> fetchVehicleTypeInfo() throws IOException {
+	private int getLinearAggregationLevel(int aggregationLevel) {
+            
+            return Math.min(aggregationLevel, 3);
+        }
+
+
+
+    protected Map<Integer, VehicleType> fetchVehicleTypeInfo() throws IOException {
 		Map<Integer, VehicleType> result = new HashMap<Integer, VehicleType>();
 		FeatureIterator<SimpleFeature> inputIterator = null;
 		try {
