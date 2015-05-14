@@ -23,14 +23,20 @@
                 
                 
                 <#assign odd = !odd>
-                    <#if attribute.name == 'rischio'>
-                        <#assign tot=attribute.value>
+                    <#if attribute.name == 'rischio_sociale'>
+                        <#assign sociale=attribute.value>
                     </#if>
-                                                 
+					<#if attribute.name == 'rischio_ambientale'>
+                        <#assign ambientale=attribute.value>
+                    </#if>
+                                                
                 </tr>
         </#if>
-    </#list>
-    <th>${["Risk","Rischio","Rischio","Risiko"][locale]}</th><td>${tot}</td>
+    </#list>	
+    <th>${["Social Risk","Rischio Sociale","Rischio Sociale","Anthropologischen Risiken"][locale]}</th><td>${sociale}</td>
+	</tr>
+	<tr>
+	<th>${["Environmental Risk","Rischio Ambientale","Rischio Ambientale","Umweltrisiken"][locale]}</th><td>${ambientale}</td>
     </tr>
 
 </table>
