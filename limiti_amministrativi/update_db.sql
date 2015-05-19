@@ -415,20 +415,20 @@ CREATE TABLE
     (
         id_geo_arco NUMERIC(9,0) NOT NULL,
         id_distanza NUMERIC(4,0) NOT NULL,
-        nr_pers_scuole NUMERIC(7,0),
-        nr_pers_ospedali NUMERIC(7,0),
-        nr_pers_distrib NUMERIC(7,0),
-        nr_pers_residenti NUMERIC(7,0),
-        nr_pers_servizi NUMERIC(7,0),
-        nr_turisti_medi NUMERIC(7,0),
-        nr_turisti_max NUMERIC(7,0),
-        mq_aree_protette NUMERIC(10,2),
-        mq_aree_agricole NUMERIC(10,2),
-        mq_aree_boscate NUMERIC(10,2),
-        mq_beni_culturali NUMERIC(10,2),
-        mq_zone_urbanizzate NUMERIC(10,2),
-        mq_acque_superficiali NUMERIC(12,0),
-        mq_acque_sotterranee NUMERIC(12,0),
+        nr_pers_scuole NUMERIC(10,0),
+        nr_pers_ospedali NUMERIC(10,0),
+        nr_pers_distrib NUMERIC(10,0),
+        nr_pers_residenti NUMERIC(10,0),
+        nr_pers_servizi NUMERIC(10,0),
+        nr_turisti_medi NUMERIC(10,0),
+        nr_turisti_max NUMERIC(10,0),
+        mq_aree_protette NUMERIC(15,2),
+        mq_aree_agricole NUMERIC(15,2),
+        mq_aree_boscate NUMERIC(15,2),
+        mq_beni_culturali NUMERIC(15,2),
+        mq_zone_urbanizzate NUMERIC(15,2),
+        mq_acque_superficiali NUMERIC(15,0),
+        mq_acque_sotterranee NUMERIC(15,0),
         fk_partner CHARACTER VARYING(5),
         flag INTEGER,
         CONSTRAINT pk_siig_t_vulnerabilita_5 PRIMARY KEY (id_geo_arco, id_distanza),
@@ -455,6 +455,16 @@ ON
     (
         fk_partner
     );
+    
+    
+
+ALTER TABLE siig_t_vulnerabilita_3 ALTER COLUMN nr_pers_scuole TYPE numeric(10,0);
+ALTER TABLE siig_t_vulnerabilita_3 ALTER COLUMN nr_pers_ospedali TYPE numeric(10,0);
+ALTER TABLE siig_t_vulnerabilita_3 ALTER COLUMN nr_pers_distrib TYPE numeric(10,0);
+ALTER TABLE siig_t_vulnerabilita_3 ALTER COLUMN nr_pers_residenti TYPE numeric(10,0);
+ALTER TABLE siig_t_vulnerabilita_3 ALTER COLUMN nr_pers_servizi TYPE numeric(10,0);
+ALTER TABLE siig_t_vulnerabilita_3 ALTER COLUMN nr_turisti_medi TYPE numeric(10,0);
+ALTER TABLE siig_t_vulnerabilita_3 ALTER COLUMN nr_turisti_max TYPE numeric(10,0);
     
 CREATE TABLE
     siig_r_scen_vuln_4
