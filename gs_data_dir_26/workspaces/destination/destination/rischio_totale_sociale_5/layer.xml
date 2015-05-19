@@ -1,0 +1,16 @@
+<layer>
+  <name>rischio_totale_sociale_5</name>
+  <id>LayerInfoImpl-409dffc9:14d6cf47a21:-51e0</id>
+  <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl--657814a0:14d6ce942ee:-8000</id>
+  </defaultStyle>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl-409dffc9:14d6cf47a21:-51e1</id>
+  </resource>
+  <queryable>true</queryable>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+</layer>

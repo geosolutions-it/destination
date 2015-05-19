@@ -1,0 +1,15 @@
+<layer>
+  <name>rischio_totale_ambientale_5</name>
+  <id>LayerInfoImpl--657814a0:14d6ce942ee:-7ffc</id>
+  <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl--657814a0:14d6ce942ee:-8000</id>
+  </defaultStyle>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl--657814a0:14d6ce942ee:-7ffd</id>
+  </resource>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+</layer>

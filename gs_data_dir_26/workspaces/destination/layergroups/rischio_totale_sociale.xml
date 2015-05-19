@@ -20,6 +20,9 @@
     <published type="layer">
       <id>LayerInfoImpl-2acd846f:14d42f4ffd2:-bcf</id>
     </published>
+    <published type="layer">
+      <id>LayerInfoImpl-409dffc9:14d6cf47a21:-51e0</id>
+    </published>
   </publishables>
   <styles>
     <style>
@@ -33,6 +36,9 @@
     </style>
     <style>
       <id>StyleInfoImpl-2acd846f:14d42f4ffd2:-bd4</id>
+    </style>
+    <style>
+      <id>StyleInfoImpl--657814a0:14d6ce942ee:-8000</id>
     </style>
   </styles>
   <bounds>
