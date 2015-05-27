@@ -170,7 +170,7 @@ public class StreetUserComputation extends InputObject {
 		if(aggregationLevel == 1 || aggregationLevel == 2){
 			executeArc(aggregationLevel, dropInput, closePhase, newProcess);
 		}
-		if(aggregationLevel == 3){
+		if(aggregationLevel >= 3){
 			executeCell(aggregationLevel, dropInput, closePhase, newProcess);
 		}
 		
@@ -225,7 +225,6 @@ public class StreetUserComputation extends InputObject {
 
 			SimpleFeatureStore featureStore = (SimpleFeatureStore) this.dataStore.getFeatureSource(this.siig_r_scen_vuln_X_type);
 			
-
 			FeatureStore<SimpleFeatureType, SimpleFeature> inputReader = FeatureLoaderUtils.createFeatureSource(dataStore, transaction,"siig_geo_pl_arco_" + aggregationLevel);
 			Query inputQuery = new Query("siig_geo_pl_arco_" + aggregationLevel);
 			inputQuery.setFilter(filterFactory.equals(filterFactory.property("fk_partner"),filterFactory.literal(partner)));
@@ -243,8 +242,12 @@ public class StreetUserComputation extends InputObject {
 					Integer idGeoCell = getAttributeAsInt(sf.getAttribute("id_geo_arco"));
 					Geometry geometry = (Geometry) sf.getDefaultGeometry();
 					
-					FeatureStore<SimpleFeatureType, SimpleFeature> inputReaderArc = FeatureLoaderUtils.createFeatureSource(dataStore, Transaction.AUTO_COMMIT,"siig_geo_ln_arco_" + aggregationLevel);
-					Query inputQueryArc = new Query("siig_geo_ln_arco_" + aggregationLevel);
+					String nomeTabella = getTableNameFromAggregationLevel(aggregationLevel);
+					
+					FeatureStore<SimpleFeatureType, SimpleFeature> inputReaderArc = FeatureLoaderUtils.createFeatureSource(dataStore, Transaction.AUTO_COMMIT,/*"siig_geo_ln_arco_" + aggregationLevel*/nomeTabella);
+
+					Query inputQueryArc = getQueryFromAggregationLevel(aggregationLevel);
+					
 					inputQueryArc.setFilter(filterFactory.and(
 							filterFactory.equals(filterFactory.property("fk_partner"),filterFactory.literal(partner)),
 							filterFactory.intersects(filterFactory.property("geometria"), filterFactory.literal(geometry))
@@ -255,6 +258,7 @@ public class StreetUserComputation extends InputObject {
 						inputIteratorArc = inputReaderArc.getFeatures(inputQueryArc).features();
 						while(inputIteratorArc.hasNext()) {
 							SimpleFeature sfArc = inputIteratorArc.next();
+
 							Integer idGeoArco = getAttributeAsInt(sfArc.getAttribute("id_geo_arco"));
 							Geometry geometryArc = (Geometry) sfArc.getDefaultGeometry();
 							
@@ -264,6 +268,7 @@ public class StreetUserComputation extends InputObject {
 							for(int distanza : distanze) {
 								List<StreetInfo> distanceCandidates = new ArrayList<StreetInfo>();
 								for(StreetInfo candidate : candidates) {
+
 									if(candidate.getEffectiveGeometry().isWithinDistance(geometryArc, distanza)) {
 										candidate.resetVehiclesData();
 										distanceCandidates.add(candidate);
@@ -272,15 +277,20 @@ public class StreetUserComputation extends InputObject {
 								Map<Integer, StreetUserResult> arcResults = computeArcoDistanza(
 										idGeoArco, geometry, distanza, distanceCandidates, scenari,
 										aggregationLevel);
-								
+
 								for(Integer scenarioId : arcResults.keySet()){
+									
 									StreetUserResult rArc = arcResults.get(scenarioId);
+									
 									Map<Integer, StreetUserResult> rCellMap = cellResults.get(scenarioId);
+									
+									
 									if(rCellMap==null){
 										rCellMap = new HashMap<Integer, StreetUserResult>();
 										cellResults.put(scenarioId, rCellMap);
 									}
 									StreetUserResult rCell = rCellMap.get(distanza);
+									
 									if(rCell==null){
 										rCell = new StreetUserResult(idGeoArco, distanza, scenarioId, rArc.getUtentiSede(), rArc.getUtentiBersaglio());
 										rCellMap.put(distanza, rCell);
@@ -446,7 +456,6 @@ public class StreetUserComputation extends InputObject {
 
 				SimpleFeatureStore featureStore = (SimpleFeatureStore) this.dataStore
 						.getFeatureSource(this.siig_r_scen_vuln_X_type);
-				//
 
 				while(inputIterator.hasNext()) {
 					SimpleFeature sf = inputIterator.next();
@@ -660,9 +669,11 @@ public class StreetUserComputation extends InputObject {
 		List<StreetInfo> streetsInfo = new ArrayList<StreetInfo>();
 		FeatureIterator<SimpleFeature> inputIterator = null;
 		try {
+			String nomeTabella = getTableNameFromAggregationLevel(aggregationLevel); 
+			FeatureStore<SimpleFeatureType, SimpleFeature> inputReader =FeatureLoaderUtils.createFeatureSource(dataStore, Transaction.AUTO_COMMIT,/*"siig_geo_ln_arco_" + aggregationLevel*/nomeTabella);
+
+			Query inputQuery = getQueryFromAggregationLevel(aggregationLevel);
 			
-			FeatureStore<SimpleFeatureType, SimpleFeature> inputReader =FeatureLoaderUtils.createFeatureSource(dataStore, Transaction.AUTO_COMMIT,"siig_geo_ln_arco_" + aggregationLevel);
-			Query inputQuery = new Query("siig_geo_ln_arco_" + aggregationLevel);
 			inputQuery.setFilter(filterFactory.and(
 					filterFactory.equals(filterFactory.property("fk_partner"),filterFactory.literal(partner)),
 					filterFactory.dwithin(filterFactory.property("geometria"), filterFactory.literal(geometry), (double)maxDistance, "m")
@@ -676,8 +687,10 @@ public class StreetUserComputation extends InputObject {
 				Integer nCorsie = getAttributeAsInt(sf.getAttribute("nr_corsie"));
 				Double storage = computeVeicleStorage(intersection.getLength(),nCorsie);
 				StreetInfo si = new StreetInfo(sf,intersection,isOriginStreet,storage);
-				for(StreetVeicle vehicle : vehicles.get(streetId)) {
-					si.addVeicleType(vehicle);
+				if(vehicles!=null && vehicles.size()>0){
+					for(StreetVeicle vehicle : vehicles.get(streetId)) {
+						si.addVeicleType(vehicle);
+					}
 				}
 				
 				streetsInfo.add(si);
@@ -862,6 +875,27 @@ public class StreetUserComputation extends InputObject {
 
 	public void setRemoveFeatures(boolean removeFeatures) {
 		this.removeFeatures = removeFeatures;
+	}
+	
+	
+	private Query getQueryFromAggregationLevel(int aggregationLevel){
+		Query inputQueryArc = new Query();
+		if(aggregationLevel >3){
+			inputQueryArc = new Query("siig_geo_pl_arco_" + aggregationLevel);
+		}else{
+			inputQueryArc = new Query("siig_geo_ln_arco_" + aggregationLevel);
+		}
+		return inputQueryArc;
+	}
+	
+	private String getTableNameFromAggregationLevel(int aggregationLevel){
+		String nomeTabella = null;
+		if(aggregationLevel >3){
+			nomeTabella ="siig_geo_pl_arco_" + aggregationLevel;
+		}else{
+			nomeTabella = "siig_geo_ln_arco_" + aggregationLevel;
+		}
+		return nomeTabella;
 	}
 
 	private int getAttributeAsInt(Object value){

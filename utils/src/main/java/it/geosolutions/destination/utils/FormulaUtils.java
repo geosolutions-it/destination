@@ -337,8 +337,15 @@ public class FormulaUtils {
         }
     
         // replace aggregated level
-        sql = sql.replace("siig_geo_ln_arco_3", "siig_geo_pl_arco_3");
-    
+        if(level>3){
+        	 if(level==4)
+        		 sql = sql.replace("siig_geo_ln_arco_4", "siig_geo_pl_arco_4"); 
+        	 if(level==5)
+        		 sql = sql.replace("siig_geo_ln_arco_5", "siig_geo_pl_arco_5"); 
+        }else{
+        	 sql = sql.replace("siig_geo_ln_arco_3", "siig_geo_pl_arco_3");
+        }
+        
         // PIS: simulation or not
         sql = replacePis(sql, pis);
     
