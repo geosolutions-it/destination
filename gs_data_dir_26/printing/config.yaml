@@ -39,6 +39,8 @@ hosts:
     host: 127.0.0.1
     # Allow to all hosts
     mask: 0.0.0.0
+    
+headers: ["Authorization", "Shib-Iride-IdentitaDigitale"]
    
 layouts:
   #===========================================================================
