@@ -557,10 +557,14 @@ public class RiskCalculator extends RiskCalculatorBase {
                     .getType().getBinding());
             tb.add("geometria", features.getSchema().getGeometryDescriptor().getType().getBinding(), features.getSchema()
                     .getGeometryDescriptor().getCoordinateReferenceSystem());
-    
+            
             if (extendedSchema) {
-                tb.add("rischio_sociale", Double.class);
-                tb.add("rischio_ambientale", Double.class);
+                if(FormulaUtils.isAllTargets(target)) {
+                    tb.add("elab_sociale", Double.class);
+                    tb.add("elab_ambientale", Double.class);
+                } else {
+                    tb.add("elaborazione", Double.class);
+                }
                 tb.add("nr_corsie", Integer.class);
                 tb.add("lunghezza", Integer.class);
                 tb.add("nr_incidenti", Integer.class);
@@ -572,7 +576,7 @@ public class RiskCalculator extends RiskCalculatorBase {
             // defined in GeoServer
             // catalog
             tb.setName(new NameImpl(features.getSchema().getName()
-                    .getNamespaceURI(), "risk"));
+                    .getNamespaceURI(), extendedSchema ? "elaborazione" : "risk"));
             SimpleFeatureType ft = tb.buildFeatureType();
     
             // feature level (1, 2, 3)
@@ -627,11 +631,15 @@ public class RiskCalculator extends RiskCalculatorBase {
                                 .doubleValue();
                     }
                     fb.add(risk[0]);
-                    fb.add(risk[1]);
                     if (extendedSchema) {
+                        if(FormulaUtils.isAllTargets(target)) {
+                            fb.add(risk[1]);
+                        }
                         fb.add((Number) feature.getAttribute("nr_corsie"));
                         fb.add((Number) feature.getAttribute("lunghezza"));
                         fb.add((Number) feature.getAttribute("nr_incidenti"));
+                    } else {
+                        fb.add(risk[1]);
                     }
                     temp.put(id.intValue(), fb.buildFeature(id + ""));
 

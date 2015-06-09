@@ -133,6 +133,13 @@ public class FormulaUtils {
         if (typeName.contains("3") || typeName.contains("grid")) {
             return 3;
         }
+        
+        if(typeName.contains("4")) {
+            return 4;
+        }
+        if(typeName.contains("5")) {
+            return 5;
+        }
         return 0;
     }
     
@@ -179,31 +186,30 @@ public class FormulaUtils {
                     severeness,
                     fpfield,
                     sql,
-                    extendedSchema ? ("rischio_" + (checkTarget(target,
-                            humanTargetsList) ? "sociale" : "ambientale"))
+                    extendedSchema ? "elaborazione"
                             : "rischio1", target + "", null, features, precision,
                     null, null, null, null, null);
         } else if (isAllHumanTargets(target)) {
             calculateFormulaValues(conn, level, processing, formulaDescriptor, ids,
                     fk_partner, materials, scenarios, entities, severeness,
-                    fpfield, sql, extendedSchema ? "rischio_sociale" : "rischio1",
+                    fpfield, sql, extendedSchema ? "elaborazione" : "rischio1",
                     humanTargetsList, null, features, precision, null, null, null,
                     null, null);
         } else if (isAllNotHumanTargets(target)) {
             calculateFormulaValues(conn, level, processing, formulaDescriptor, ids,
                     fk_partner, materials, scenarios, entities, severeness,
-                    fpfield, sql, extendedSchema ? "rischio_ambientale"
+                    fpfield, sql, extendedSchema ? "elaborazione"
                             : "rischio1", notHumanTargetsList, null, features,
                     precision, null, null, null, null, null);
         } else if (isAllTargets(target)) {
             calculateFormulaValues(conn, level, processing, formulaDescriptor, ids,
                     fk_partner, materials, scenarios, entities, severeness,
-                    fpfield, sql, extendedSchema ? "rischio_sociale" : "rischio1",
+                    fpfield, sql, extendedSchema ? "elab_sociale" : "rischio1",
                     humanTargetsList, null, features, precision, null, null, null,
                     null, null);
             calculateFormulaValues(conn, level, processing, formulaDescriptor, ids,
                     fk_partner, materials, scenarios, entities, severeness,
-                    fpfield, sql, extendedSchema ? "rischio_ambientale"
+                    fpfield, sql, extendedSchema ? "elab_ambientale"
                             : "rischio2", notHumanTargetsList, null, features,
                     precision, null, null, null, null, null);
         }
@@ -561,31 +567,30 @@ public class FormulaUtils {
                     severeness,
                     fpfield,
                     sql,
-                    extendedSchema ? ("rischio_" + (checkTarget(target,
-                            humanTargetsList) ? "sociale" : "ambientale"))
+                    extendedSchema ? "elaborazione"
                             : "rischio1", target + "", changedTargets, features,
                     precision, cff, psc, padr, pis, damageValues);
         } else if (isAllHumanTargets(target)) {
             calculateFormulaValues(conn, level, processing, formulaDescriptor,
                     id_geo_arco + "", fk_partner, materials, scenarios, entities,
-                    severeness, fpfield, sql, extendedSchema ? "rischio_sociale"
+                    severeness, fpfield, sql, extendedSchema ? "elaborazione"
                             : "rischio1", humanTargetsList, changedTargets, features,
                     precision, cff, psc, padr, pis, damageValues);
         } else if (isAllNotHumanTargets(target)) {
             calculateFormulaValues(conn, level, processing, formulaDescriptor,
                     id_geo_arco + "", fk_partner, materials, scenarios, entities,
-                    severeness, fpfield, sql, extendedSchema ? "rischio_ambientale"
+                    severeness, fpfield, sql, extendedSchema ? "elaborazione"
                             : "rischio1", notHumanTargetsList, changedTargets,
                     features, precision, cff, psc, padr, pis, damageValues);
         } else if (isAllTargets(target)) {
             calculateFormulaValues(conn, level, processing, formulaDescriptor,
                     id_geo_arco + "", fk_partner, materials, scenarios, entities,
-                    severeness, fpfield, sql, extendedSchema ? "rischio_sociale"
+                    severeness, fpfield, sql, extendedSchema ? "elab_sociale"
                             : "rischio1", humanTargetsList, changedTargets, features,
                     precision, cff, psc, padr, pis, damageValues);
             calculateFormulaValues(conn, level, processing, formulaDescriptor,
                     id_geo_arco + "", fk_partner, materials, scenarios, entities,
-                    severeness, fpfield, sql, extendedSchema ? "rischio_ambientale"
+                    severeness, fpfield, sql, extendedSchema ? "elab_ambientale"
                             : "rischio2", notHumanTargetsList, changedTargets,
                     features, precision, cff, psc, padr, pis, damageValues);
         }

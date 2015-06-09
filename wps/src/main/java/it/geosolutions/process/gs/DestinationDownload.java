@@ -657,37 +657,39 @@ public class DestinationDownload extends RiskCalculatorBase {
 		
 		for(final String targetId : targetList.split(",")) {
 			String targetTypeName = targetIdToLayer.get(targetId);
-			SimpleFeatureSource featureSource = dataStore
-					.getFeatureSource(targetTypeName);
-			Query query = new Query(targetTypeName, ff.intersects(ff.property("geometria"), ff.literal(buffer)));
-			SimpleFeatureCollection targetCollection = featureSource.getFeatures(query);
-			final SimpleFeatureCollection originalCollection = targetCollection;
-			if(simulationTargets.size() > 0) {
-				final SimpleFeatureBuilder builder = new SimpleFeatureBuilder(targetCollection.getSchema());
-				targetCollection = new DecoratingSimpleFeatureCollection(targetCollection) {
-					
-				    /*
-				    
-					@Override
-				    public void close(Iterator<SimpleFeature> close) {
-				        ((ChangedTargetsIterator)close).close();				     
-				    }*/
-				
-					@Override
-					public SimpleFeatureIterator features() {						
-						return new ChangedTargetsFeatureIterator(originalCollection.features(), simulationTargets, newTargets, targetId, builder);
-					}
-					/*
-					@Override
-					public Iterator iterator() {							
-						return new ChangedTargetsIterator(features());
-					}
-					*/
-					
-					
-				};
+			if(targetTypeName != null) {
+        			SimpleFeatureSource featureSource = dataStore
+        					.getFeatureSource(targetTypeName);
+        			Query query = new Query(targetTypeName, ff.intersects(ff.property("geometria"), ff.literal(buffer)));
+        			SimpleFeatureCollection targetCollection = featureSource.getFeatures(query);
+        			final SimpleFeatureCollection originalCollection = targetCollection;
+        			if(simulationTargets.size() > 0 || newTargets.size() > 0) {
+        				final SimpleFeatureBuilder builder = new SimpleFeatureBuilder(targetCollection.getSchema());
+        				targetCollection = new DecoratingSimpleFeatureCollection(targetCollection) {
+        					
+        				    /*
+        				    
+        					@Override
+        				    public void close(Iterator<SimpleFeature> close) {
+        				        ((ChangedTargetsIterator)close).close();				     
+        				    }*/
+        				
+        					@Override
+        					public SimpleFeatureIterator features() {						
+        						return new ChangedTargetsFeatureIterator(originalCollection.features(), simulationTargets, newTargets, targetId, builder);
+        					}
+        					/*
+        					@Override
+        					public Iterator iterator() {							
+        						return new ChangedTargetsIterator(features());
+        					}
+        					*/
+        					
+        					
+        				};
+        			}
+        			finalZipFileNames.add(createTargetShapefile(targetCollection));
 			}
-			finalZipFileNames.add(createTargetShapefile(targetCollection));
 		}
 	}
 
