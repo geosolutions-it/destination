@@ -100,7 +100,7 @@ CREATE TABLE
         id_geo_arco NUMERIC(9,0) NOT NULL,
         id_dissesto CHARACTER VARYING(20) NOT NULL,
         fk_partner CHARACTER VARYING(5),
-        CONSTRAINT pk_siig_r_arco_4_dissesto PRIMARY KEY (id_geo_arco, id_dissesto),
+        CONSTRAINT pk_siig_r_arco_4_dissesto PRIMARY KEY (id_dissesto, id_geo_arco),
         CONSTRAINT fk_siig_d_dissesto_04 FOREIGN KEY (id_dissesto) REFERENCES
         siig_p.siig_d_dissesto (id_dissesto),
         CONSTRAINT siig_r_arco_4_dissesto_id_geo_arco_fkey FOREIGN KEY (id_geo_arco) REFERENCES
@@ -133,7 +133,7 @@ CREATE TABLE
         id_geo_arco NUMERIC(9,0) NOT NULL,
         id_dissesto CHARACTER VARYING(20) NOT NULL,
         fk_partner CHARACTER VARYING(5),
-        CONSTRAINT pk_siig_r_arco_5_dissesto PRIMARY KEY (id_geo_arco, id_dissesto),
+        CONSTRAINT pk_siig_r_arco_5_dissesto PRIMARY KEY (id_dissesto, id_geo_arco),
         CONSTRAINT fk_siig_d_dissesto_05 FOREIGN KEY (id_dissesto) REFERENCES
         siig_p.siig_d_dissesto (id_dissesto),
         CONSTRAINT siig_r_arco_5_dissesto_id_geo_arco_fkey FOREIGN KEY (id_geo_arco) REFERENCES
