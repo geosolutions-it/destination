@@ -24,7 +24,7 @@
         </ogc:PropertyIsLessThanOrEqualTo>
 
    </ogc:Filter>
-     <MinScaleDenominator>2500000</MinScaleDenominator>     
+     <MinScaleDenominator>5000000</MinScaleDenominator>     
    <PolygonSymbolizer>
    <Fill>
      <CssParameter name="fill">#14F200</CssParameter>
@@ -59,7 +59,7 @@
         
      </ogc:And>
    </ogc:Filter>
-     <MinScaleDenominator>2500000</MinScaleDenominator>
+     <MinScaleDenominator>5000000</MinScaleDenominator>
    <PolygonSymbolizer>
    <Fill>
      <CssParameter name="fill">#FFFB00</CssParameter>
@@ -84,7 +84,7 @@
           </ogc:Function>
         </ogc:PropertyIsGreaterThanOrEqualTo>
    </ogc:Filter>
-     <MinScaleDenominator>2500000</MinScaleDenominator>
+     <MinScaleDenominator>5000000</MinScaleDenominator>
    <PolygonSymbolizer>
    <Fill>
      <CssParameter name="fill">#FF0000</CssParameter>

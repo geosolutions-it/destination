@@ -1,0 +1,15 @@
+<layer>
+  <name>siig_geo_pl_arco_4</name>
+  <id>LayerInfoImpl--69e88b16:14dd35d1996:-7066</id>
+  <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl--304b338b:13f9e44fe32:-7fed</id>
+  </defaultStyle>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl--69e88b16:14dd35d1996:-7067</id>
+  </resource>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+</layer>
