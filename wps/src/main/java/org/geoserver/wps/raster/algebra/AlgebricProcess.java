@@ -48,7 +48,7 @@ public class AlgebricProcess implements GSProcess {
     public GridCoverage2D execute(
 
             // Input unused parameter
-            @DescribeParameter(name = "data", description = "Input features") SimpleFeatureCollection obsFeatures,
+            @DescribeParameter(name = "data", description = "Input coverage") GridCoverage2D inputCoverage,
             // Input Rasters
             @DescribeParameter(name = "coverages", description = "Input coverage names") String coverageString,
             // Operation to execute

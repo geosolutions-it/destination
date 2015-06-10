@@ -1,14 +1,13 @@
 <layer>
   <name>vulnerabili_ambientali</name>
-  <id>LayerInfoImpl-5dc16118:1429a1b3126:-4d1a</id>
-  <type>VECTOR</type>
+  <id>LayerInfoImpl-3db7e2b1:14ddcdab5df:-7ffc</id>
+  <type>RASTER</type>
   <defaultStyle>
     <id>StyleInfoImpl--66c7c330:14294089085:-7ff5</id>
   </defaultStyle>
-  <resource class="featureType">
-    <id>FeatureTypeInfoImpl-5dc16118:1429a1b3126:-4d1b</id>
+  <resource class="coverage">
+    <id>CoverageInfoImpl-3db7e2b1:14ddcdab5df:-7ffd</id>
   </resource>
-  <enabled>true</enabled>
   <queryable>false</queryable>
   <attribution>
     <logoWidth>0</logoWidth>
