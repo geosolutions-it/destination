@@ -33,6 +33,7 @@ import java.util.logging.Logger;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
@@ -44,7 +45,6 @@ import org.geotools.process.factory.DescribeParameter;
 import org.geotools.process.factory.DescribeProcess;
 import org.geotools.process.factory.DescribeResult;
 import org.geotools.util.logging.Logging;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 /**
@@ -156,8 +156,8 @@ public class RiskCalculatorSimple extends RiskCalculatorBase {
 
 	private String writeToCsv(String language, Formula formula, String fcString) throws ParseException, IOException {
 	    String riskCSVFileName = UUID.randomUUID().toString() + ".csv";
-	    JSONParser parser = new JSONParser();
-            JSONObject root = (JSONObject)parser.parse(fcString);
+	    
+            JSONObject root = (JSONObject)JSONSerializer.toJSON(fcString);
             JSONArray targets = (JSONArray)root.get("targets");
             BufferedWriter writer = null;
             try {

@@ -415,10 +415,10 @@ public class DestinationDownload extends RiskCalculatorBase {
 							scenarios, entities, severeness, fpfield, changedTargets, cff,
 							psc, padr, pis, distances, damageArea, language));
 					
-					String riskShapeFileName = createUniqueFileName() + ".zip";							
+					//String riskShapeFileName = createUniqueFileName() + ".zip";							
 					
 					// original arcs with no risk
-					finalZipFileNames.add(writeToShapeFile(riskShapeFileName, features));
+					//finalZipFileNames.add(writeToShapeFile(riskShapeFileName, features));
 					
 				}
 				
