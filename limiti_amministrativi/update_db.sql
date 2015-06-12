@@ -738,17 +738,38 @@ CREATE VIEW
     (
         "id_geo_arco",
         "partner_it",
+        "partner_en",
+        "partner_fr",
+        "partner_de",
         "tipo_densita_veicolare_leggeri_pesanti_it",
+        "tipo_densita_veicolare_leggeri_pesanti_en",
+        "tipo_densita_veicolare_leggeri_pesanti_fr",
+        "tipo_densita_veicolare_leggeri_pesanti_de",
         "densita_veicolare",
         "tipo_velocita_media_leggeri_pesanti_it",
+        "tipo_velocita_media_leggeri_pesanti_en",
+        "tipo_velocita_media_leggeri_pesanti_fr",
+        "tipo_velocita_media_leggeri_pesanti_de",
         "velocita_media",
         "fl_nr_corsie",
+        "fl_nr_corsie_it",
+        "fl_nr_corsie_en",
+        "fl_nr_corsie_fr",
+        "fl_nr_corsie_de",
         "nr_corsie",
         "flg_nr_incidenti",
+        "flg_nr_incidenti_it",
+        "flg_nr_incidenti_en",
+        "flg_nr_incidenti_fr",
+        "flg_nr_incidenti_de",
         "nr_incidenti",
         "nr_incidenti_elab",
         "lunghezza",
         "elenco_dissesti",
+        "elenco_dissesti_it",
+        "elenco_dissesti_en",
+        "elenco_dissesti_fr",
+        "elenco_dissesti_de",
         "geometria",
         "cod_provincia",
         "cod_comune"
@@ -756,6 +777,9 @@ CREATE VIEW
 SELECT
     siig_geo_ln_arco_1.id_geo_arco,
     siig_d_partner.partner_it,
+    siig_d_partner.partner_en,
+    siig_d_partner.partner_fr,
+    siig_d_partner.partner_de,
     (z_cat(
         CASE
             WHEN ((siig_r_tipovei_geoarco1.flg_densita_veicolare)::text = 'S'::text)
@@ -765,7 +789,37 @@ SELECT
             WHEN ((siig_r_tipovei_geoarco1.flg_densita_veicolare)::text = 'M'::text)
             THEN 'MODELLIZZATA'::text
             ELSE NULL::text
-        END))::CHARACTER VARYING(50)                   AS tipo_densita_veicolare_leggeri_pesanti_it,
+        END))::CHARACTER VARYING(50) AS tipo_densita_veicolare_leggeri_pesanti_it,
+    (z_cat(
+        CASE
+            WHEN ((siig_r_tipovei_geoarco1.flg_densita_veicolare)::text = 'S'::text)
+            THEN 'ESTIMATED'::text
+            WHEN ((siig_r_tipovei_geoarco1.flg_densita_veicolare)::text = 'C'::text)
+            THEN 'CALCULATED'::text
+            WHEN ((siig_r_tipovei_geoarco1.flg_densita_veicolare)::text = 'M'::text)
+            THEN 'MODELED'::text
+            ELSE NULL::text
+        END))::CHARACTER VARYING(50) AS tipo_densita_veicolare_leggeri_pesanti_en,
+    (z_cat(
+        CASE
+            WHEN ((siig_r_tipovei_geoarco1.flg_densita_veicolare)::text = 'S'::text)
+            THEN 'Estimation'::text
+            WHEN ((siig_r_tipovei_geoarco1.flg_densita_veicolare)::text = 'C'::text)
+            THEN 'calculé'::text
+            WHEN ((siig_r_tipovei_geoarco1.flg_densita_veicolare)::text = 'M'::text)
+            THEN 'modélisé'::text
+            ELSE NULL::text
+        END))::CHARACTER VARYING(50) AS tipo_densita_veicolare_leggeri_pesanti_fr,
+    (z_cat(
+        CASE
+            WHEN ((siig_r_tipovei_geoarco1.flg_densita_veicolare)::text = 'S'::text)
+            THEN 'geschätzt wird'::text
+            WHEN ((siig_r_tipovei_geoarco1.flg_densita_veicolare)::text = 'C'::text)
+            THEN 'berechnet'::text
+            WHEN ((siig_r_tipovei_geoarco1.flg_densita_veicolare)::text = 'M'::text)
+            THEN 'modelliert'::text
+            ELSE NULL::text
+        END))::CHARACTER VARYING(50)                   AS tipo_densita_veicolare_leggeri_pesanti_de,
     (z_cat(siig_r_tipovei_geoarco1.densita_veicolare))::CHARACTER VARYING(50) AS densita_veicolare,
     (z_cat(
         CASE
@@ -776,7 +830,37 @@ SELECT
             WHEN ((siig_r_tipovei_geoarco1.velocita_media)::text = 'M'::text)
             THEN 'MODELLIZZATA'::text
             ELSE NULL::text
-        END))::CHARACTER VARYING(50)                      AS tipo_velocita_media_leggeri_pesanti_it,
+        END))::CHARACTER VARYING(50) AS tipo_velocita_media_leggeri_pesanti_it,
+    (z_cat(
+        CASE
+            WHEN ((siig_r_tipovei_geoarco1.velocita_media)::text = 'S'::text)
+            THEN 'ESTIMATED'::text
+            WHEN ((siig_r_tipovei_geoarco1.velocita_media)::text = 'C'::text)
+            THEN 'CALCULATED'::text
+            WHEN ((siig_r_tipovei_geoarco1.velocita_media)::text = 'M'::text)
+            THEN 'MODELED'::text
+            ELSE NULL::text
+        END))::CHARACTER VARYING(50) AS tipo_velocita_media_leggeri_pesanti_en,
+    (z_cat(
+        CASE
+            WHEN ((siig_r_tipovei_geoarco1.velocita_media)::text = 'S'::text)
+            THEN 'Estimation'::text
+            WHEN ((siig_r_tipovei_geoarco1.velocita_media)::text = 'C'::text)
+            THEN 'calculé'::text
+            WHEN ((siig_r_tipovei_geoarco1.velocita_media)::text = 'M'::text)
+            THEN 'modélisé'::text
+            ELSE NULL::text
+        END))::CHARACTER VARYING(50) AS tipo_velocita_media_leggeri_pesanti_fr,
+    (z_cat(
+        CASE
+            WHEN ((siig_r_tipovei_geoarco1.velocita_media)::text = 'S'::text)
+            THEN 'geschätzt wird'::text
+            WHEN ((siig_r_tipovei_geoarco1.velocita_media)::text = 'C'::text)
+            THEN 'berechnet'::text
+            WHEN ((siig_r_tipovei_geoarco1.velocita_media)::text = 'M'::text)
+            THEN 'modelliert'::text
+            ELSE NULL::text
+        END))::CHARACTER VARYING(50)                      AS tipo_velocita_media_leggeri_pesanti_de,
     (z_cat(siig_r_tipovei_geoarco1.velocita_media))::CHARACTER VARYING(50) AS velocita_media,
     CASE
         WHEN ((siig_geo_ln_arco_1.flg_nr_corsie)::text = 'S'::text)
@@ -787,6 +871,42 @@ SELECT
         THEN 'MODELLIZZATO'::text
         ELSE NULL::text
     END AS fl_nr_corsie,
+    CASE
+        WHEN ((siig_geo_ln_arco_1.flg_nr_corsie)::text = 'S'::text)
+        THEN 'STIMATO'::text
+        WHEN ((siig_geo_ln_arco_1.flg_nr_corsie)::text = 'C'::text)
+        THEN 'CALCOLATO'::text
+        WHEN ((siig_geo_ln_arco_1.flg_nr_corsie)::text = 'M'::text)
+        THEN 'MODELLIZZATO'::text
+        ELSE NULL::text
+    END AS fl_nr_corsie_it,
+    CASE
+        WHEN ((siig_geo_ln_arco_1.flg_nr_corsie)::text = 'S'::text)
+        THEN 'ESTIMATED'::text
+        WHEN ((siig_geo_ln_arco_1.flg_nr_corsie)::text = 'C'::text)
+        THEN 'CALCULATED'::text
+        WHEN ((siig_geo_ln_arco_1.flg_nr_corsie)::text = 'M'::text)
+        THEN 'MODELED'::text
+        ELSE NULL::text
+    END AS fl_nr_corsie_en,
+    CASE
+        WHEN ((siig_geo_ln_arco_1.flg_nr_corsie)::text = 'S'::text)
+        THEN 'Estimation'::text
+        WHEN ((siig_geo_ln_arco_1.flg_nr_corsie)::text = 'C'::text)
+        THEN 'calculé'::text
+        WHEN ((siig_geo_ln_arco_1.flg_nr_corsie)::text = 'M'::text)
+        THEN 'modélisé'::text
+        ELSE NULL::text
+    END AS fl_nr_corsie_fr,
+    CASE
+        WHEN ((siig_geo_ln_arco_1.flg_nr_corsie)::text = 'S'::text)
+        THEN 'geschätzt wird'::text
+        WHEN ((siig_geo_ln_arco_1.flg_nr_corsie)::text = 'C'::text)
+        THEN 'berechnet'::text
+        WHEN ((siig_geo_ln_arco_1.flg_nr_corsie)::text = 'M'::text)
+        THEN 'modelliert'::text
+        ELSE NULL::text
+    END AS fl_nr_corsie_de,
     siig_geo_ln_arco_1.nr_corsie,
     CASE
         WHEN ((siig_geo_ln_arco_1.flg_nr_incidenti)::text = 'S'::text)
@@ -797,10 +917,50 @@ SELECT
         THEN 'MODELLIZZATO'::text
         ELSE NULL::text
     END AS flg_nr_incidenti,
+    CASE
+        WHEN ((siig_geo_ln_arco_1.flg_nr_incidenti)::text = 'S'::text)
+        THEN 'STIMATO'::text
+        WHEN ((siig_geo_ln_arco_1.flg_nr_incidenti)::text = 'C'::text)
+        THEN 'CALCOLATO'::text
+        WHEN ((siig_geo_ln_arco_1.flg_nr_incidenti)::text = 'M'::text)
+        THEN 'MODELLIZZATO'::text
+        ELSE NULL::text
+    END AS flg_nr_incidenti_it,
+    CASE
+        WHEN ((siig_geo_ln_arco_1.flg_nr_incidenti)::text = 'S'::text)
+        THEN 'ESTIMATED'::text
+        WHEN ((siig_geo_ln_arco_1.flg_nr_incidenti)::text = 'C'::text)
+        THEN 'CALCULATED'::text
+        WHEN ((siig_geo_ln_arco_1.flg_nr_incidenti)::text = 'M'::text)
+        THEN 'MODELED'::text
+        ELSE NULL::text
+    END AS flg_nr_incidenti_en,
+    CASE
+        WHEN ((siig_geo_ln_arco_1.flg_nr_incidenti)::text = 'S'::text)
+        THEN 'Estimation'::text
+        WHEN ((siig_geo_ln_arco_1.flg_nr_incidenti)::text = 'C'::text)
+        THEN 'calculé'::text
+        WHEN ((siig_geo_ln_arco_1.flg_nr_incidenti)::text = 'M'::text)
+        THEN 'modélisé'::text
+        ELSE NULL::text
+    END AS flg_nr_incidenti_fr,
+    CASE
+        WHEN ((siig_geo_ln_arco_1.flg_nr_incidenti)::text = 'S'::text)
+        THEN 'geschätzt wird'::text
+        WHEN ((siig_geo_ln_arco_1.flg_nr_incidenti)::text = 'C'::text)
+        THEN 'berechnet'::text
+        WHEN ((siig_geo_ln_arco_1.flg_nr_incidenti)::text = 'M'::text)
+        THEN 'modelliert'::text
+        ELSE NULL::text
+    END AS flg_nr_incidenti_de,
     siig_geo_ln_arco_1.nr_incidenti,
     siig_geo_ln_arco_1.nr_incidenti_elab,
     siig_geo_ln_arco_1.lunghezza,
     z_cat(siig_d_dissesto.descrizione_it) AS elenco_dissesti,
+    z_cat(siig_d_dissesto.descrizione_it) AS elenco_dissesti_it,
+    z_cat(siig_d_dissesto.descrizione_en) AS elenco_dissesti_en,
+    z_cat(siig_d_dissesto.descrizione_fr) AS elenco_dissesti_fr,
+    z_cat(siig_d_dissesto.descrizione_de) AS elenco_dissesti_de,
     siig_geo_ln_arco_1.geometria,
     siig_geo_ln_arco_1.cod_provincia,
     siig_geo_ln_arco_1.cod_comune
@@ -831,6 +991,9 @@ GROUP BY
     siig_geo_ln_arco_1.geometria,
     siig_geo_ln_arco_1.lunghezza,
     siig_d_partner.partner_it,
+    siig_d_partner.partner_en,
+    siig_d_partner.partner_fr,
+    siig_d_partner.partner_de,
     siig_geo_ln_arco_1.nr_corsie,
     siig_geo_ln_arco_1.flg_nr_corsie,
     siig_geo_ln_arco_1.flg_nr_incidenti,
@@ -840,21 +1003,43 @@ ORDER BY
     siig_geo_ln_arco_1.id_geo_arco;
 
 DROP VIEW v_geo_grafo_ln_2;
-CREATE VIEW  "v_geo_grafo_ln_2"
+CREATE VIEW
+    "v_geo_grafo_ln_2"
     (
         "id_geo_arco",
         "partner_it",
+        "partner_en",
+        "partner_fr",
+        "partner_de",
         "tipo_densita_veicolare_leggeri_pesanti_it",
+        "tipo_densita_veicolare_leggeri_pesanti_en",
+        "tipo_densita_veicolare_leggeri_pesanti_fr",
+        "tipo_densita_veicolare_leggeri_pesanti_de",
         "densita_veicolare",
         "tipo_velocita_media_leggeri_pesanti_it",
+        "tipo_velocita_media_leggeri_pesanti_en",
+        "tipo_velocita_media_leggeri_pesanti_fr",
+        "tipo_velocita_media_leggeri_pesanti_de",
         "velocita_media",
         "fl_nr_corsie",
+        "fl_nr_corsie_it",
+        "fl_nr_corsie_en",
+        "fl_nr_corsie_fr",
+        "fl_nr_corsie_de",
         "nr_corsie",
         "flg_nr_incidenti",
+        "flg_nr_incidenti_it",
+        "flg_nr_incidenti_en",
+        "flg_nr_incidenti_fr",
+        "flg_nr_incidenti_de",
         "nr_incidenti",
         "nr_incidenti_elab",
         "lunghezza",
         "elenco_dissesti",
+        "elenco_dissesti_it",
+        "elenco_dissesti_en",
+        "elenco_dissesti_fr",
+        "elenco_dissesti_de",
         "geometria",
         "cod_provincia",
         "cod_comune"
@@ -862,6 +1047,9 @@ CREATE VIEW  "v_geo_grafo_ln_2"
 SELECT
     siig_geo_ln_arco_2.id_geo_arco,
     siig_d_partner.partner_it,
+    siig_d_partner.partner_en,
+    siig_d_partner.partner_fr,
+    siig_d_partner.partner_de,
     (z_cat(
         CASE
             WHEN ((siig_r_tipovei_geoarco2.flg_densita_veicolare)::text = 'S'::text)
@@ -871,7 +1059,37 @@ SELECT
             WHEN ((siig_r_tipovei_geoarco2.flg_densita_veicolare)::text = 'M'::text)
             THEN 'MODELLIZZATA'::text
             ELSE NULL::text
-        END))::CHARACTER VARYING(50)                   AS tipo_densita_veicolare_leggeri_pesanti_it,
+        END))::CHARACTER VARYING(50) AS tipo_densita_veicolare_leggeri_pesanti_it,
+    (z_cat(
+        CASE
+            WHEN ((siig_r_tipovei_geoarco2.flg_densita_veicolare)::text = 'S'::text)
+            THEN 'ESTIMATED'::text
+            WHEN ((siig_r_tipovei_geoarco2.flg_densita_veicolare)::text = 'C'::text)
+            THEN 'CALCULATED'::text
+            WHEN ((siig_r_tipovei_geoarco2.flg_densita_veicolare)::text = 'M'::text)
+            THEN 'MODELED'::text
+            ELSE NULL::text
+        END))::CHARACTER VARYING(50) AS tipo_densita_veicolare_leggeri_pesanti_en,
+    (z_cat(
+        CASE
+            WHEN ((siig_r_tipovei_geoarco2.flg_densita_veicolare)::text = 'S'::text)
+            THEN 'Estimation'::text
+            WHEN ((siig_r_tipovei_geoarco2.flg_densita_veicolare)::text = 'C'::text)
+            THEN 'calculé'::text
+            WHEN ((siig_r_tipovei_geoarco2.flg_densita_veicolare)::text = 'M'::text)
+            THEN 'modélisé'::text
+            ELSE NULL::text
+        END))::CHARACTER VARYING(50) AS tipo_densita_veicolare_leggeri_pesanti_fr,
+    (z_cat(
+        CASE
+            WHEN ((siig_r_tipovei_geoarco2.flg_densita_veicolare)::text = 'S'::text)
+            THEN 'geschätzt wird'::text
+            WHEN ((siig_r_tipovei_geoarco2.flg_densita_veicolare)::text = 'C'::text)
+            THEN 'berechnet'::text
+            WHEN ((siig_r_tipovei_geoarco2.flg_densita_veicolare)::text = 'M'::text)
+            THEN 'modelliert'::text
+            ELSE NULL::text
+        END))::CHARACTER VARYING(50)                   AS tipo_densita_veicolare_leggeri_pesanti_de,
     (z_cat(siig_r_tipovei_geoarco2.densita_veicolare))::CHARACTER VARYING(50) AS densita_veicolare,
     (z_cat(
         CASE
@@ -882,7 +1100,37 @@ SELECT
             WHEN ((siig_r_tipovei_geoarco2.velocita_media)::text = 'M'::text)
             THEN 'MODELLIZZATA'::text
             ELSE NULL::text
-        END))::CHARACTER VARYING(50)                      AS tipo_velocita_media_leggeri_pesanti_it,
+        END))::CHARACTER VARYING(50) AS tipo_velocita_media_leggeri_pesanti_it,
+    (z_cat(
+        CASE
+            WHEN ((siig_r_tipovei_geoarco2.velocita_media)::text = 'S'::text)
+            THEN 'ESTIMATED'::text
+            WHEN ((siig_r_tipovei_geoarco2.velocita_media)::text = 'C'::text)
+            THEN 'CALCULATED'::text
+            WHEN ((siig_r_tipovei_geoarco2.velocita_media)::text = 'M'::text)
+            THEN 'MODELED'::text
+            ELSE NULL::text
+        END))::CHARACTER VARYING(50) AS tipo_velocita_media_leggeri_pesanti_en,
+    (z_cat(
+        CASE
+            WHEN ((siig_r_tipovei_geoarco2.velocita_media)::text = 'S'::text)
+            THEN 'Estimation'::text
+            WHEN ((siig_r_tipovei_geoarco2.velocita_media)::text = 'C'::text)
+            THEN 'calculé'::text
+            WHEN ((siig_r_tipovei_geoarco2.velocita_media)::text = 'M'::text)
+            THEN 'modélisé'::text
+            ELSE NULL::text
+        END))::CHARACTER VARYING(50) AS tipo_velocita_media_leggeri_pesanti_fr,
+    (z_cat(
+        CASE
+            WHEN ((siig_r_tipovei_geoarco2.velocita_media)::text = 'S'::text)
+            THEN 'geschätzt wird'::text
+            WHEN ((siig_r_tipovei_geoarco2.velocita_media)::text = 'C'::text)
+            THEN 'berechnet'::text
+            WHEN ((siig_r_tipovei_geoarco2.velocita_media)::text = 'M'::text)
+            THEN 'modelliert'::text
+            ELSE NULL::text
+        END))::CHARACTER VARYING(50)                      AS tipo_velocita_media_leggeri_pesanti_de,
     (z_cat(siig_r_tipovei_geoarco2.velocita_media))::CHARACTER VARYING(50) AS velocita_media,
     CASE
         WHEN ((siig_geo_ln_arco_2.flg_nr_corsie)::text = 'S'::text)
@@ -893,6 +1141,42 @@ SELECT
         THEN 'MODELLIZZATO'::text
         ELSE NULL::text
     END AS fl_nr_corsie,
+    CASE
+        WHEN ((siig_geo_ln_arco_2.flg_nr_corsie)::text = 'S'::text)
+        THEN 'STIMATO'::text
+        WHEN ((siig_geo_ln_arco_2.flg_nr_corsie)::text = 'C'::text)
+        THEN 'CALCOLATO'::text
+        WHEN ((siig_geo_ln_arco_2.flg_nr_corsie)::text = 'M'::text)
+        THEN 'MODELLIZZATO'::text
+        ELSE NULL::text
+    END AS fl_nr_corsie_it,
+    CASE
+        WHEN ((siig_geo_ln_arco_2.flg_nr_corsie)::text = 'S'::text)
+        THEN 'ESTIMATED'::text
+        WHEN ((siig_geo_ln_arco_2.flg_nr_corsie)::text = 'C'::text)
+        THEN 'CALCULATED'::text
+        WHEN ((siig_geo_ln_arco_2.flg_nr_corsie)::text = 'M'::text)
+        THEN 'MODELED'::text
+        ELSE NULL::text
+    END AS fl_nr_corsie_en,
+    CASE
+        WHEN ((siig_geo_ln_arco_2.flg_nr_corsie)::text = 'S'::text)
+        THEN 'Estimation'::text
+        WHEN ((siig_geo_ln_arco_2.flg_nr_corsie)::text = 'C'::text)
+        THEN 'calculé'::text
+        WHEN ((siig_geo_ln_arco_2.flg_nr_corsie)::text = 'M'::text)
+        THEN 'modélisé'::text
+        ELSE NULL::text
+    END AS fl_nr_corsie_fr,
+    CASE
+        WHEN ((siig_geo_ln_arco_2.flg_nr_corsie)::text = 'S'::text)
+        THEN 'geschätzt wird'::text
+        WHEN ((siig_geo_ln_arco_2.flg_nr_corsie)::text = 'C'::text)
+        THEN 'berechnet'::text
+        WHEN ((siig_geo_ln_arco_2.flg_nr_corsie)::text = 'M'::text)
+        THEN 'modelliert'::text
+        ELSE NULL::text
+    END AS fl_nr_corsie_de,
     siig_geo_ln_arco_2.nr_corsie,
     CASE
         WHEN ((siig_geo_ln_arco_2.flg_nr_incidenti)::text = 'S'::text)
@@ -903,10 +1187,50 @@ SELECT
         THEN 'MODELLIZZATO'::text
         ELSE NULL::text
     END AS flg_nr_incidenti,
+    CASE
+        WHEN ((siig_geo_ln_arco_2.flg_nr_incidenti)::text = 'S'::text)
+        THEN 'STIMATO'::text
+        WHEN ((siig_geo_ln_arco_2.flg_nr_incidenti)::text = 'C'::text)
+        THEN 'CALCOLATO'::text
+        WHEN ((siig_geo_ln_arco_2.flg_nr_incidenti)::text = 'M'::text)
+        THEN 'MODELLIZZATO'::text
+        ELSE NULL::text
+    END AS flg_nr_incidenti_it,
+    CASE
+        WHEN ((siig_geo_ln_arco_2.flg_nr_incidenti)::text = 'S'::text)
+        THEN 'ESTIMATED'::text
+        WHEN ((siig_geo_ln_arco_2.flg_nr_incidenti)::text = 'C'::text)
+        THEN 'CALCULATED'::text
+        WHEN ((siig_geo_ln_arco_2.flg_nr_incidenti)::text = 'M'::text)
+        THEN 'MODELED'::text
+        ELSE NULL::text
+    END AS flg_nr_incidenti_en,
+    CASE
+        WHEN ((siig_geo_ln_arco_2.flg_nr_incidenti)::text = 'S'::text)
+        THEN 'Estimation'::text
+        WHEN ((siig_geo_ln_arco_2.flg_nr_incidenti)::text = 'C'::text)
+        THEN 'calculé'::text
+        WHEN ((siig_geo_ln_arco_2.flg_nr_incidenti)::text = 'M'::text)
+        THEN 'modélisé'::text
+        ELSE NULL::text
+    END AS flg_nr_incidenti_fr,
+    CASE
+        WHEN ((siig_geo_ln_arco_2.flg_nr_incidenti)::text = 'S'::text)
+        THEN 'geschätzt wird'::text
+        WHEN ((siig_geo_ln_arco_2.flg_nr_incidenti)::text = 'C'::text)
+        THEN 'berechnet'::text
+        WHEN ((siig_geo_ln_arco_2.flg_nr_incidenti)::text = 'M'::text)
+        THEN 'modelliert'::text
+        ELSE NULL::text
+    END AS flg_nr_incidenti_de,
     siig_geo_ln_arco_2.nr_incidenti,
     siig_geo_ln_arco_2.nr_incidenti_elab,
     siig_geo_ln_arco_2.lunghezza,
     z_cat(siig_d_dissesto.descrizione_it) AS elenco_dissesti,
+    z_cat(siig_d_dissesto.descrizione_it) AS elenco_dissesti_it,
+    z_cat(siig_d_dissesto.descrizione_en) AS elenco_dissesti_en,
+    z_cat(siig_d_dissesto.descrizione_fr) AS elenco_dissesti_fr,
+    z_cat(siig_d_dissesto.descrizione_de) AS elenco_dissesti_de,
     siig_geo_ln_arco_2.geometria,
     siig_geo_ln_arco_2.cod_provincia,
     siig_geo_ln_arco_2.cod_comune
@@ -937,6 +1261,9 @@ GROUP BY
     siig_geo_ln_arco_2.geometria,
     siig_geo_ln_arco_2.lunghezza,
     siig_d_partner.partner_it,
+    siig_d_partner.partner_en,
+    siig_d_partner.partner_fr,
+    siig_d_partner.partner_de,
     siig_geo_ln_arco_2.nr_corsie,
     siig_geo_ln_arco_2.flg_nr_corsie,
     siig_geo_ln_arco_2.flg_nr_incidenti,
@@ -944,6 +1271,275 @@ GROUP BY
     siig_geo_ln_arco_2.nr_incidenti_elab
 ORDER BY
     siig_geo_ln_arco_2.id_geo_arco;
+    
+CREATE VIEW
+    "v_geo_grafo_ln_3"
+    (
+        "id_geo_arco",
+        "partner_it",
+        "partner_en",
+        "partner_fr",
+        "partner_de",
+        "tipo_densita_veicolare_leggeri_pesanti_it",
+        "tipo_densita_veicolare_leggeri_pesanti_en",
+        "tipo_densita_veicolare_leggeri_pesanti_fr",
+        "tipo_densita_veicolare_leggeri_pesanti_de",
+        "densita_veicolare",
+        "tipo_velocita_media_leggeri_pesanti_it",
+        "tipo_velocita_media_leggeri_pesanti_en",
+        "tipo_velocita_media_leggeri_pesanti_fr",
+        "tipo_velocita_media_leggeri_pesanti_de",
+        "velocita_media",
+        "fl_nr_corsie",
+        "fl_nr_corsie_it",
+        "fl_nr_corsie_en",
+        "fl_nr_corsie_fr",
+        "fl_nr_corsie_de",
+        "nr_corsie",
+        "flg_nr_incidenti",
+        "flg_nr_incidenti_it",
+        "flg_nr_incidenti_en",
+        "flg_nr_incidenti_fr",
+        "flg_nr_incidenti_de",
+        "nr_incidenti",
+        "nr_incidenti_elab",
+        "lunghezza",
+        "elenco_dissesti",
+        "elenco_dissesti_it",
+        "elenco_dissesti_en",
+        "elenco_dissesti_fr",
+        "elenco_dissesti_de",
+        "geometria",
+        "cod_provincia",
+        "cod_comune"
+    ) AS
+SELECT
+    siig_geo_ln_arco_3.id_geo_arco,
+    siig_d_partner.partner_it,
+    siig_d_partner.partner_en,
+    siig_d_partner.partner_fr,
+    siig_d_partner.partner_de,
+    (z_cat(
+        CASE
+            WHEN ((siig_r_tipovei_geoarco3.flg_densita_veicolare)::text = 'S'::text)
+            THEN 'STIMATA'::text
+            WHEN ((siig_r_tipovei_geoarco3.flg_densita_veicolare)::text = 'C'::text)
+            THEN 'CALCOLATA'::text
+            WHEN ((siig_r_tipovei_geoarco3.flg_densita_veicolare)::text = 'M'::text)
+            THEN 'MODELLIZZATA'::text
+            ELSE NULL::text
+        END))::CHARACTER VARYING(50) AS tipo_densita_veicolare_leggeri_pesanti_it,
+    (z_cat(
+        CASE
+            WHEN ((siig_r_tipovei_geoarco3.flg_densita_veicolare)::text = 'S'::text)
+            THEN 'ESTIMATED'::text
+            WHEN ((siig_r_tipovei_geoarco3.flg_densita_veicolare)::text = 'C'::text)
+            THEN 'CALCULATED'::text
+            WHEN ((siig_r_tipovei_geoarco3.flg_densita_veicolare)::text = 'M'::text)
+            THEN 'MODELED'::text
+            ELSE NULL::text
+        END))::CHARACTER VARYING(50) AS tipo_densita_veicolare_leggeri_pesanti_en,
+    (z_cat(
+        CASE
+            WHEN ((siig_r_tipovei_geoarco3.flg_densita_veicolare)::text = 'S'::text)
+            THEN 'Estimation'::text
+            WHEN ((siig_r_tipovei_geoarco3.flg_densita_veicolare)::text = 'C'::text)
+            THEN 'calculé'::text
+            WHEN ((siig_r_tipovei_geoarco3.flg_densita_veicolare)::text = 'M'::text)
+            THEN 'modélisé'::text
+            ELSE NULL::text
+        END))::CHARACTER VARYING(50) AS tipo_densita_veicolare_leggeri_pesanti_fr,
+    (z_cat(
+        CASE
+            WHEN ((siig_r_tipovei_geoarco3.flg_densita_veicolare)::text = 'S'::text)
+            THEN 'geschätzt wird'::text
+            WHEN ((siig_r_tipovei_geoarco3.flg_densita_veicolare)::text = 'C'::text)
+            THEN 'berechnet'::text
+            WHEN ((siig_r_tipovei_geoarco3.flg_densita_veicolare)::text = 'M'::text)
+            THEN 'modelliert'::text
+            ELSE NULL::text
+        END))::CHARACTER VARYING(50)                   AS tipo_densita_veicolare_leggeri_pesanti_de,
+    (z_cat(siig_r_tipovei_geoarco3.densita_veicolare))::CHARACTER VARYING(50) AS densita_veicolare,
+    (z_cat(
+        CASE
+            WHEN ((siig_r_tipovei_geoarco3.velocita_media)::text = 'S'::text)
+            THEN 'STIMATA'::text
+            WHEN ((siig_r_tipovei_geoarco3.velocita_media)::text = 'C'::text)
+            THEN 'CALCOLATA'::text
+            WHEN ((siig_r_tipovei_geoarco3.velocita_media)::text = 'M'::text)
+            THEN 'MODELLIZZATA'::text
+            ELSE NULL::text
+        END))::CHARACTER VARYING(50) AS tipo_velocita_media_leggeri_pesanti_it,
+    (z_cat(
+        CASE
+            WHEN ((siig_r_tipovei_geoarco3.velocita_media)::text = 'S'::text)
+            THEN 'ESTIMATED'::text
+            WHEN ((siig_r_tipovei_geoarco3.velocita_media)::text = 'C'::text)
+            THEN 'CALCULATED'::text
+            WHEN ((siig_r_tipovei_geoarco3.velocita_media)::text = 'M'::text)
+            THEN 'MODELED'::text
+            ELSE NULL::text
+        END))::CHARACTER VARYING(50) AS tipo_velocita_media_leggeri_pesanti_en,
+    (z_cat(
+        CASE
+            WHEN ((siig_r_tipovei_geoarco3.velocita_media)::text = 'S'::text)
+            THEN 'Estimation'::text
+            WHEN ((siig_r_tipovei_geoarco3.velocita_media)::text = 'C'::text)
+            THEN 'calculé'::text
+            WHEN ((siig_r_tipovei_geoarco3.velocita_media)::text = 'M'::text)
+            THEN 'modélisé'::text
+            ELSE NULL::text
+        END))::CHARACTER VARYING(50) AS tipo_velocita_media_leggeri_pesanti_fr,
+    (z_cat(
+        CASE
+            WHEN ((siig_r_tipovei_geoarco3.velocita_media)::text = 'S'::text)
+            THEN 'geschätzt wird'::text
+            WHEN ((siig_r_tipovei_geoarco3.velocita_media)::text = 'C'::text)
+            THEN 'berechnet'::text
+            WHEN ((siig_r_tipovei_geoarco3.velocita_media)::text = 'M'::text)
+            THEN 'modelliert'::text
+            ELSE NULL::text
+        END))::CHARACTER VARYING(50)                      AS tipo_velocita_media_leggeri_pesanti_de,
+    (z_cat(siig_r_tipovei_geoarco3.velocita_media))::CHARACTER VARYING(50) AS velocita_media,
+    CASE
+        WHEN ((siig_geo_ln_arco_3.flg_nr_corsie)::text = 'S'::text)
+        THEN 'STIMATO'::text
+        WHEN ((siig_geo_ln_arco_3.flg_nr_corsie)::text = 'C'::text)
+        THEN 'CALCOLATO'::text
+        WHEN ((siig_geo_ln_arco_3.flg_nr_corsie)::text = 'M'::text)
+        THEN 'MODELLIZZATO'::text
+        ELSE NULL::text
+    END AS fl_nr_corsie,
+    CASE
+        WHEN ((siig_geo_ln_arco_3.flg_nr_corsie)::text = 'S'::text)
+        THEN 'STIMATO'::text
+        WHEN ((siig_geo_ln_arco_3.flg_nr_corsie)::text = 'C'::text)
+        THEN 'CALCOLATO'::text
+        WHEN ((siig_geo_ln_arco_3.flg_nr_corsie)::text = 'M'::text)
+        THEN 'MODELLIZZATO'::text
+        ELSE NULL::text
+    END AS fl_nr_corsie_it,
+    CASE
+        WHEN ((siig_geo_ln_arco_3.flg_nr_corsie)::text = 'S'::text)
+        THEN 'ESTIMATED'::text
+        WHEN ((siig_geo_ln_arco_3.flg_nr_corsie)::text = 'C'::text)
+        THEN 'CALCULATED'::text
+        WHEN ((siig_geo_ln_arco_3.flg_nr_corsie)::text = 'M'::text)
+        THEN 'MODELED'::text
+        ELSE NULL::text
+    END AS fl_nr_corsie_en,
+    CASE
+        WHEN ((siig_geo_ln_arco_3.flg_nr_corsie)::text = 'S'::text)
+        THEN 'Estimation'::text
+        WHEN ((siig_geo_ln_arco_3.flg_nr_corsie)::text = 'C'::text)
+        THEN 'calculé'::text
+        WHEN ((siig_geo_ln_arco_3.flg_nr_corsie)::text = 'M'::text)
+        THEN 'modélisé'::text
+        ELSE NULL::text
+    END AS fl_nr_corsie_fr,
+    CASE
+        WHEN ((siig_geo_ln_arco_3.flg_nr_corsie)::text = 'S'::text)
+        THEN 'geschätzt wird'::text
+        WHEN ((siig_geo_ln_arco_3.flg_nr_corsie)::text = 'C'::text)
+        THEN 'berechnet'::text
+        WHEN ((siig_geo_ln_arco_3.flg_nr_corsie)::text = 'M'::text)
+        THEN 'modelliert'::text
+        ELSE NULL::text
+    END AS fl_nr_corsie_de,
+    siig_geo_ln_arco_3.nr_corsie,
+    CASE
+        WHEN ((siig_geo_ln_arco_3.flg_nr_incidenti)::text = 'S'::text)
+        THEN 'STIMATO'::text
+        WHEN ((siig_geo_ln_arco_3.flg_nr_incidenti)::text = 'C'::text)
+        THEN 'CALCOLATO'::text
+        WHEN ((siig_geo_ln_arco_3.flg_nr_incidenti)::text = 'M'::text)
+        THEN 'MODELLIZZATO'::text
+        ELSE NULL::text
+    END AS flg_nr_incidenti,
+    CASE
+        WHEN ((siig_geo_ln_arco_3.flg_nr_incidenti)::text = 'S'::text)
+        THEN 'STIMATO'::text
+        WHEN ((siig_geo_ln_arco_3.flg_nr_incidenti)::text = 'C'::text)
+        THEN 'CALCOLATO'::text
+        WHEN ((siig_geo_ln_arco_3.flg_nr_incidenti)::text = 'M'::text)
+        THEN 'MODELLIZZATO'::text
+        ELSE NULL::text
+    END AS flg_nr_incidenti_it,
+    CASE
+        WHEN ((siig_geo_ln_arco_3.flg_nr_incidenti)::text = 'S'::text)
+        THEN 'ESTIMATED'::text
+        WHEN ((siig_geo_ln_arco_3.flg_nr_incidenti)::text = 'C'::text)
+        THEN 'CALCULATED'::text
+        WHEN ((siig_geo_ln_arco_3.flg_nr_incidenti)::text = 'M'::text)
+        THEN 'MODELED'::text
+        ELSE NULL::text
+    END AS flg_nr_incidenti_en,
+    CASE
+        WHEN ((siig_geo_ln_arco_3.flg_nr_incidenti)::text = 'S'::text)
+        THEN 'Estimation'::text
+        WHEN ((siig_geo_ln_arco_3.flg_nr_incidenti)::text = 'C'::text)
+        THEN 'calculé'::text
+        WHEN ((siig_geo_ln_arco_3.flg_nr_incidenti)::text = 'M'::text)
+        THEN 'modélisé'::text
+        ELSE NULL::text
+    END AS flg_nr_incidenti_fr,
+    CASE
+        WHEN ((siig_geo_ln_arco_3.flg_nr_incidenti)::text = 'S'::text)
+        THEN 'geschätzt wird'::text
+        WHEN ((siig_geo_ln_arco_3.flg_nr_incidenti)::text = 'C'::text)
+        THEN 'berechnet'::text
+        WHEN ((siig_geo_ln_arco_3.flg_nr_incidenti)::text = 'M'::text)
+        THEN 'modelliert'::text
+        ELSE NULL::text
+    END AS flg_nr_incidenti_de,
+    siig_geo_ln_arco_3.nr_incidenti,
+    siig_geo_ln_arco_3.nr_incidenti_elab,
+    siig_geo_ln_arco_3.lunghezza,
+    z_cat(siig_d_dissesto.descrizione_it) AS elenco_dissesti,
+    z_cat(siig_d_dissesto.descrizione_it) AS elenco_dissesti_it,
+    z_cat(siig_d_dissesto.descrizione_en) AS elenco_dissesti_en,
+    z_cat(siig_d_dissesto.descrizione_fr) AS elenco_dissesti_fr,
+    z_cat(siig_d_dissesto.descrizione_de) AS elenco_dissesti_de,
+    siig_geo_ln_arco_3.geometria,
+    siig_geo_ln_arco_3.cod_provincia,
+    siig_geo_ln_arco_3.cod_comune
+FROM
+    (((siig_d_partner
+LEFT JOIN
+    siig_geo_ln_arco_3
+ON
+    (((
+                siig_d_partner.id_partner)::text = (siig_geo_ln_arco_3.fk_partner)::text)))
+LEFT JOIN
+    (siig_d_dissesto
+LEFT JOIN
+    siig_r_arco_3_dissesto
+ON
+    (((
+                siig_d_dissesto.id_dissesto)::text = (siig_r_arco_3_dissesto.id_dissesto)::text)))
+ON
+    ((
+            siig_geo_ln_arco_3.id_geo_arco = siig_r_arco_3_dissesto.id_geo_arco)))
+LEFT JOIN
+    siig_r_tipovei_geoarco3
+ON
+    ((
+            siig_geo_ln_arco_3.id_geo_arco = siig_r_tipovei_geoarco3.id_geo_arco)))
+GROUP BY
+    siig_geo_ln_arco_3.id_geo_arco,
+    siig_geo_ln_arco_3.geometria,
+    siig_geo_ln_arco_3.lunghezza,
+    siig_d_partner.partner_it,
+    siig_d_partner.partner_en,
+    siig_d_partner.partner_fr,
+    siig_d_partner.partner_de,
+    siig_geo_ln_arco_3.nr_corsie,
+    siig_geo_ln_arco_3.flg_nr_corsie,
+    siig_geo_ln_arco_3.flg_nr_incidenti,
+    siig_geo_ln_arco_3.nr_incidenti,
+    siig_geo_ln_arco_3.nr_incidenti_elab
+ORDER BY
+    siig_geo_ln_arco_3.id_geo_arco;
     
 alter table siig_p.siig_geo_pl_comuni add column fk_partner character varying(5);
  
