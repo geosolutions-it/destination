@@ -33,4 +33,8 @@
     <bean id="algebricProcess" class="org.geoserver.wps.raster.algebra.AlgebricProcess">
         <constructor-arg ref="catalog" />
     </bean>
+    
+    <bean id="transformedRasterLayerIdentifier" class="it.geosolutions.wms.featureinfo.TransformedRasterLayerIdentifier">
+      <constructor-arg ref="wms"/>
+    </bean>
 </beans>

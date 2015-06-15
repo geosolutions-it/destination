@@ -118,6 +118,12 @@
             <version>${gs.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.geoserver</groupId>
+            <artifactId>gs-wms</artifactId>
+            <version>${gs.version}</version>
+            <scope>provided</scope>
+        </dependency>
         
         <!-- JAI - ext -->
         <dependency>
