@@ -89,7 +89,7 @@
           <Title>Addetti industria e servizi
             <Localized lang="it">Addetti industria e servizi</Localized>
             <Localized lang="en">Industry and Service Employees</Localized>
-            <Localized lang="fr">Industrie et employés de services</Localized>
+            <Localized lang="fr">Industrie et employÃ©s de services</Localized>
             <Localized lang="de">Industrie und Dienstleistungen</Localized>
           </Title>
           <Filter>
