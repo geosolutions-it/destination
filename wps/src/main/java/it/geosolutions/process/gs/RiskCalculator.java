@@ -684,7 +684,11 @@ public class RiskCalculator extends RiskCalculatorBase {
                                             if (targetInfo.isRemoved()) {
                                                 value = -value;
                                             }
-                                            distancesMap.put(distance, value);
+                                            double currentValue = 0.0;
+                                            if(distancesMap.containsKey(distance)) {
+                                                currentValue = distancesMap.get(distance);
+                                            }
+                                            distancesMap.put(distance, currentValue + value);
                                         }
                                     }
                                 }
