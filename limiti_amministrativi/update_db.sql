@@ -813,7 +813,7 @@ SELECT
     (z_cat(
         CASE
             WHEN ((siig_r_tipovei_geoarco1.flg_densita_veicolare)::text = 'S'::text)
-            THEN 'geschätzt wird'::text
+            THEN 'geschätzt'::text
             WHEN ((siig_r_tipovei_geoarco1.flg_densita_veicolare)::text = 'C'::text)
             THEN 'berechnet'::text
             WHEN ((siig_r_tipovei_geoarco1.flg_densita_veicolare)::text = 'M'::text)
@@ -854,7 +854,7 @@ SELECT
     (z_cat(
         CASE
             WHEN ((siig_r_tipovei_geoarco1.velocita_media)::text = 'S'::text)
-            THEN 'geschätzt wird'::text
+            THEN 'geschätzt'::text
             WHEN ((siig_r_tipovei_geoarco1.velocita_media)::text = 'C'::text)
             THEN 'berechnet'::text
             WHEN ((siig_r_tipovei_geoarco1.velocita_media)::text = 'M'::text)
@@ -900,7 +900,7 @@ SELECT
     END AS fl_nr_corsie_fr,
     CASE
         WHEN ((siig_geo_ln_arco_1.flg_nr_corsie)::text = 'S'::text)
-        THEN 'geschätzt wird'::text
+        THEN 'geschätzt'::text
         WHEN ((siig_geo_ln_arco_1.flg_nr_corsie)::text = 'C'::text)
         THEN 'berechnet'::text
         WHEN ((siig_geo_ln_arco_1.flg_nr_corsie)::text = 'M'::text)
@@ -946,7 +946,7 @@ SELECT
     END AS flg_nr_incidenti_fr,
     CASE
         WHEN ((siig_geo_ln_arco_1.flg_nr_incidenti)::text = 'S'::text)
-        THEN 'geschätzt wird'::text
+        THEN 'geschätzt'::text
         WHEN ((siig_geo_ln_arco_1.flg_nr_incidenti)::text = 'C'::text)
         THEN 'berechnet'::text
         WHEN ((siig_geo_ln_arco_1.flg_nr_incidenti)::text = 'M'::text)
@@ -1083,7 +1083,7 @@ SELECT
     (z_cat(
         CASE
             WHEN ((siig_r_tipovei_geoarco2.flg_densita_veicolare)::text = 'S'::text)
-            THEN 'geschätzt wird'::text
+            THEN 'geschätzt'::text
             WHEN ((siig_r_tipovei_geoarco2.flg_densita_veicolare)::text = 'C'::text)
             THEN 'berechnet'::text
             WHEN ((siig_r_tipovei_geoarco2.flg_densita_veicolare)::text = 'M'::text)
@@ -1124,7 +1124,7 @@ SELECT
     (z_cat(
         CASE
             WHEN ((siig_r_tipovei_geoarco2.velocita_media)::text = 'S'::text)
-            THEN 'geschätzt wird'::text
+            THEN 'geschätzt'::text
             WHEN ((siig_r_tipovei_geoarco2.velocita_media)::text = 'C'::text)
             THEN 'berechnet'::text
             WHEN ((siig_r_tipovei_geoarco2.velocita_media)::text = 'M'::text)
@@ -1170,7 +1170,7 @@ SELECT
     END AS fl_nr_corsie_fr,
     CASE
         WHEN ((siig_geo_ln_arco_2.flg_nr_corsie)::text = 'S'::text)
-        THEN 'geschätzt wird'::text
+        THEN 'geschätzt'::text
         WHEN ((siig_geo_ln_arco_2.flg_nr_corsie)::text = 'C'::text)
         THEN 'berechnet'::text
         WHEN ((siig_geo_ln_arco_2.flg_nr_corsie)::text = 'M'::text)
@@ -1216,7 +1216,7 @@ SELECT
     END AS flg_nr_incidenti_fr,
     CASE
         WHEN ((siig_geo_ln_arco_2.flg_nr_incidenti)::text = 'S'::text)
-        THEN 'geschätzt wird'::text
+        THEN 'geschätzt'::text
         WHEN ((siig_geo_ln_arco_2.flg_nr_incidenti)::text = 'C'::text)
         THEN 'berechnet'::text
         WHEN ((siig_geo_ln_arco_2.flg_nr_incidenti)::text = 'M'::text)
@@ -1352,7 +1352,7 @@ SELECT
     (z_cat(
         CASE
             WHEN ((siig_r_tipovei_geoarco3.flg_densita_veicolare)::text = 'S'::text)
-            THEN 'geschätzt wird'::text
+            THEN 'geschätzt'::text
             WHEN ((siig_r_tipovei_geoarco3.flg_densita_veicolare)::text = 'C'::text)
             THEN 'berechnet'::text
             WHEN ((siig_r_tipovei_geoarco3.flg_densita_veicolare)::text = 'M'::text)
@@ -1393,7 +1393,7 @@ SELECT
     (z_cat(
         CASE
             WHEN ((siig_r_tipovei_geoarco3.velocita_media)::text = 'S'::text)
-            THEN 'geschätzt wird'::text
+            THEN 'geschätzt'::text
             WHEN ((siig_r_tipovei_geoarco3.velocita_media)::text = 'C'::text)
             THEN 'berechnet'::text
             WHEN ((siig_r_tipovei_geoarco3.velocita_media)::text = 'M'::text)
@@ -1439,7 +1439,7 @@ SELECT
     END AS fl_nr_corsie_fr,
     CASE
         WHEN ((siig_geo_ln_arco_3.flg_nr_corsie)::text = 'S'::text)
-        THEN 'geschätzt wird'::text
+        THEN 'geschätzt'::text
         WHEN ((siig_geo_ln_arco_3.flg_nr_corsie)::text = 'C'::text)
         THEN 'berechnet'::text
         WHEN ((siig_geo_ln_arco_3.flg_nr_corsie)::text = 'M'::text)
@@ -1485,7 +1485,7 @@ SELECT
     END AS flg_nr_incidenti_fr,
     CASE
         WHEN ((siig_geo_ln_arco_3.flg_nr_incidenti)::text = 'S'::text)
-        THEN 'geschätzt wird'::text
+        THEN 'geschätzt'::text
         WHEN ((siig_geo_ln_arco_3.flg_nr_incidenti)::text = 'C'::text)
         THEN 'berechnet'::text
         WHEN ((siig_geo_ln_arco_3.flg_nr_incidenti)::text = 'M'::text)
