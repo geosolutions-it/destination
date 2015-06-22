@@ -18,7 +18,12 @@
         <Rule>
           <MaxScaleDenominator>17070</MaxScaleDenominator>
           <Name>rule1</Name>
-          <Title>Grafo Stradale</Title>
+          <Title>Grafo Stradale
+            <Localized lang="it">Grafo Stradale</Localized>
+            <Localized lang="en">Roads Graph</Localized>
+            <Localized lang="fr">Graphique de la route</Localized>
+            <Localized lang="de">Straﬂennetz</Localized>
+          </Title>
           <Abstract>A solid blue line with a 1 pixel width</Abstract>
           <LineSymbolizer>
             <Stroke>
