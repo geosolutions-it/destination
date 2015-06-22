@@ -63,11 +63,19 @@
 fk_partner,&#xd;
 fk_server,&#xd;
 descrizione,&#xd;
+descrizione_it,&#xd;
+descrizione_en,&#xd;
+descrizione_fr,&#xd;
+descrizione_de,&#xd;
 collocazione,&#xd;
 geometria,&#xd;
 data_inizio_validita,&#xd;
 data_fine_validita,&#xd;
 concessionaria_sito,&#xd;
+concessionaria_sito_it,&#xd;
+concessionaria_sito_en,&#xd;
+concessionaria_sito_fr,&#xd;
+concessionaria_sito_de,&#xd;
 nr_corsie_carreggiata&#xd;
 from siig_gate_geo_gate&#xd;
 where data_cancellazione is null and geometria is not null</sql>
