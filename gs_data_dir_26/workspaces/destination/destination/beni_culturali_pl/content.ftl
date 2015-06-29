@@ -39,7 +39,7 @@
         </#if>
     </#list>
 	<th>${["Type","Tipologia","Tipologia","Typologie"][locale]}</th><td>${["Cultural Sites","Beni culturali","Beni culturali","Kulturerbe"][locale]}</td> 
-    </tr>
+
 
 </table>
 <hr />

@@ -52,7 +52,7 @@
         </#if>
     </#list>
 	<th>${["Type","Tipologia","Tipologia","Typologie"][locale]}</th><td>${["Surface Waters","Acque superficiali","Acque superficiali","Acque superficiali"][locale]}</td> 
-    </tr>
+
 
 </table>
 <hr />

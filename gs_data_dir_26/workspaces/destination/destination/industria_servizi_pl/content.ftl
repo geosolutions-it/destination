@@ -43,7 +43,7 @@
         </#if>
     </#list>
 	<th>${["Type","Tipologia","Tipologia","Typologie"][locale]}</th><td>${["Industry and Services Users/Employees","Utenti/Addetti industria e servizi","Utenti/Addetti industria e servizi","Industrie und Dienstleistungen"][locale]}</td> 
-    </tr>
+
 
 </table>
 <hr />

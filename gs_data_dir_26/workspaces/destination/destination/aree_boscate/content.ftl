@@ -38,7 +38,7 @@
         </#if>
     </#list>
 	<th>${["Type","Tipologia","Tipologia","Typologie"][locale]}</th><td>${["Forest Areas","Aree boscate","Aree boscate","Waldflächen"][locale]}</td> 
-    </tr>
+
 
 </table>
 <hr />

@@ -33,7 +33,7 @@
         </#if>
     </#list>
     <th>${["Risk","Rischio","Rischio","Risiko"][locale]}</th><td>${tot}</td>
-    </tr>
+
 
 </table>
 <hr />

@@ -49,7 +49,7 @@
     <#else>
     <th>${["Processed Value","Valore Elaborazione","Valore Elaborazione","Wertentwicklung"][locale]}</th><td>${rischio1}</td>
 	</#if>
-    </tr>
+
 </table>
 <hr />
 </#list>

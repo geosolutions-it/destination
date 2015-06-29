@@ -50,7 +50,7 @@
         </#if>
     </#list>
 	<th>${["Type","Tipologia","Tipologia","Typologie"][locale]}</th><td>${["Supermarket Users/Employees","Utenti/Addetti centri commerciali","Utenti/Addetti centri commerciali","Utenti/Addetti centri commerciali"][locale]}</td> 
-    </tr>
+
 
 </table>
 <hr />
