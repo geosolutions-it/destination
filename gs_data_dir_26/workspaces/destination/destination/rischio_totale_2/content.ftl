@@ -12,17 +12,11 @@
 
   </tr>
 
-<#assign odd = false>
     <#list feature.attributes as attribute>
         <#if !attribute.isGeometry>
-         <#if odd>
-         <tr class="odd">
-         <#else>
-                <tr>
-                </#if>
                 
                 
-                <#assign odd = !odd>
+                
                     <#if attribute.name == 'rischio_sociale'>
                         <#assign sociale=attribute.value>
                     </#if>
@@ -32,9 +26,9 @@
                     <#if attribute.name == 'lunghezza'>
                         <#assign length=attribute.value>
                     </#if>                                 
-                </tr>
         </#if>
     </#list>
+    <tr class="odd">
     <th>${["Social Risk","Rischio Sociale","Rischio Sociale","Anthropologischen Risiken"][locale]}</th><td>${sociale}</td>
 	</tr>
 	<tr>

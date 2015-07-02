@@ -223,7 +223,7 @@
         </#list>
         <th>${["Type","Tipologia","Tipologia","Typologie"][locale]}</th><td>${["Supermarket Users/Employees","Utenti/Addetti centri commerciali","Utenti/Addetti centri commerciali","Einkaufszentren und Großmärkte"][locale]}</td> 
     </#if>
-    </tr>
+
 </table>
 <hr />
 </#list>

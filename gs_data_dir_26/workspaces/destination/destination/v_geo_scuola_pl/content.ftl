@@ -48,7 +48,7 @@
         </#if>
     </#list>
 
-    </tr>
+
 
 </table>
 <hr />

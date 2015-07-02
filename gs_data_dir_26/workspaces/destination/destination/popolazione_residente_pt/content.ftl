@@ -36,7 +36,7 @@
         </#if>
     </#list>
 	<th>${["Type","Tipologia","Tipologia","Typologie"][locale]}</th><td>${["Resident People","Popolazione residente","Popolazione residente","Popolazione residente"][locale]}</td> 
-    </tr>
+
 
 </table>
 <hr />

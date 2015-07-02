@@ -13,14 +13,14 @@
 
   </tr>
 
-<#assign odd = false>
+    <#assign odd = false>
     <#list feature.attributes as attribute>
-        <#if !attribute.isGeometry>
+       <#if !attribute.isGeometry>
          <#if odd>
-         <tr class="odd">
+            <tr class="odd">
          <#else>
-                <tr>
-                </#if>  
+            <tr>
+         </#if>  
 
                 <#assign odd = !odd>
 					<#if attribute.name == 'denominazione_' + request.ENV.LOCALE>
@@ -35,11 +35,10 @@
 					<#if attribute.name == 'partner_' + request.ENV.LOCALE>
 						<th>${["Partner","Partner","Partner","Partner"][locale]}</th><td>${attribute.value}</td> 
                     </#if>
-                </tr>
-        </#if>
+            </tr>
+       </#if>
     </#list>
 	<th>${["Type","Tipologia","Tipologia","Typologie"][locale]}</th><td>${["Underground Waters","Acque sotterranee","Acque sotterranee","Tiefbrunnen"][locale]}</td> 
-    </tr>
 
 </table>
 <hr />
