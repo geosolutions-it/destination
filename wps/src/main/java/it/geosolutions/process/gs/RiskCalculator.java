@@ -188,6 +188,7 @@ public class RiskCalculator extends RiskCalculatorBase {
             @DescribeParameter(name = "formula", description = "id of the formula to calculate") int formula,
             @DescribeParameter(name = "target", description = "id of the target/s to use in calculation") int target,
             @DescribeParameter(name = "materials", description = "ids of the materials to use in calculation") String materials,
+            @DescribeParameter(name = "kemler", description = "id of the specific material, 0 if materials needs to be used") String kemler,
             @DescribeParameter(name = "scenarios", description = "ids of the scenarios to use in calculation") String scenarios,
             @DescribeParameter(name = "entities", description = "ids of the entities to use in calculation") String entities,
             @DescribeParameter(name = "severeness", description = "ids of the severeness to use in calculation") String severeness,
@@ -264,7 +265,7 @@ public class RiskCalculator extends RiskCalculatorBase {
                 loadDistances(distancesList, distances);
             }
             return calculateRisk(features, dataStore, storeName, precision,
-                    connectionParams, processing, formula, target, materials,
+                    connectionParams, processing, formula, target, materials, kemler,
                     scenarios, entities, severeness, fpfield, 1, true, null, null,
                     simulationTargets, cffs, pscs, padrs, piss, distancesList,
                     extendedSchema, level);
@@ -278,7 +279,7 @@ public class RiskCalculator extends RiskCalculatorBase {
                 Map<Integer, Double> damageValues = calculateDamageValues(
                         dataStore, damageAreaGeometry, target, crs);
                 return calculateRisk(features, dataStore, storeName, precision,
-                        connectionParams, processing, formula, target, materials,
+                        connectionParams, processing, formula, target, materials, kemler,
                         scenarios, entities, severeness, fpfield, 1, false,
                         damageAreaGeometry, damageValues, null, null, null, null,
                         null, null, extendedSchema, level);
@@ -293,7 +294,7 @@ public class RiskCalculator extends RiskCalculatorBase {
             }
     
             return calculateRisk(features, dataStore, storeName, precision,
-                    connectionParams, processing, formula, target, materials,
+                    connectionParams, processing, formula, target, materials, kemler,
                     scenarios, entities, severeness, fpfield, batch, false, null,
                     null, null, null, null, null, null, null, extendedSchema, level);
     
@@ -530,7 +531,7 @@ public class RiskCalculator extends RiskCalculatorBase {
     private SimpleFeatureCollection calculateRisk(SimpleFeatureCollection features,
             JDBCDataStore dataStore, String storeName, Integer precision,
             String connectionParams, int processing, int formula, int target,
-            String materials, String scenarios, String entities, String severeness,
+            String materials, String kemler, String scenarios, String entities, String severeness,
             String fpfield, int batch, boolean simulation, Geometry damageArea,
             Map<Integer, Double> damageValues, List<TargetInfo> changedTargets,
             Map<Integer, Map<Integer, Double>> cffs, List<String> psc,
@@ -585,7 +586,7 @@ public class RiskCalculator extends RiskCalculatorBase {
             }
     
             LOGGER.fine("Doing formula calculus with the following parameters: Processing=" + processing +
-                    ",Formula=" + formula + ",Target=" + target + ",Substances=" + materials + ",Scenarios=" +
+                    ",Formula=" + formula + ",Target=" + target + ",Substances=" + materials + ",Kemler=" + kemler + ",Scenarios=" +
                     scenarios + ",Entities=" + entities + ",Level=" + level);
             
             Formula formulaDescriptor = Formula.load(conn, processing, formula,
@@ -699,7 +700,7 @@ public class RiskCalculator extends RiskCalculatorBase {
                                 .calculateSimulationFormulaValuesOnSingleArc(
                                         conn, level, processing,
                                         formulaDescriptor, id.intValue(),
-                                        fk_partner, materials, scenarios,
+                                        fk_partner, materials, kemler, scenarios,
                                         entities, severeness, fpfield, target,
                                         simulationTargets, temp, precision,
                                         cff, psc, padr, pis, null,
@@ -716,7 +717,7 @@ public class RiskCalculator extends RiskCalculatorBase {
                                     .calculateSimulationFormulaValuesOnSingleArc(
                                             conn, level, processing,
                                             formulaDescriptor, id.intValue(),
-                                            fk_partner, materials, scenarios,
+                                            fk_partner, materials, kemler, scenarios,
                                             entities, severeness, fpfield,
                                             target, null, temp, precision,
                                             null, null, null, null,
@@ -733,7 +734,7 @@ public class RiskCalculator extends RiskCalculatorBase {
                             FormulaUtils.calculateFormulaValues(conn, level,
                                     processing, formulaDescriptor, ids
                                             .toString().substring(1),
-                                    fk_partner, materials, scenarios, entities,
+                                    fk_partner, materials, kemler, scenarios, entities,
                                     severeness, fpfield, target, temp,
                                     precision, extendedSchema);
                             result.addAll(temp.values());
@@ -749,7 +750,7 @@ public class RiskCalculator extends RiskCalculatorBase {
                     LOGGER.fine("Calculating remaining items");
                     FormulaUtils.calculateFormulaValues(conn, level,
                             processing, formulaDescriptor, ids.toString()
-                                    .substring(1), fk_partner, materials,
+                                    .substring(1), fk_partner, materials, kemler, 
                             scenarios, entities, severeness, fpfield, target,
                             temp, precision, extendedSchema);
                     

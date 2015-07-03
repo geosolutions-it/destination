@@ -82,6 +82,7 @@ public class RiskCalculatorSimple extends RiskCalculatorBase {
 			@DescribeParameter(name = "formula", description = "id of the formula to calculate") int formula,
 			@DescribeParameter(name = "target", description = "id of the target/s to use in calculation") int target,
 			@DescribeParameter(name = "materials", description = "ids of the materials to use in calculation") String materials,
+			@DescribeParameter(name = "kemler", description = "id of the specific material, 0 if materials needs to be used") String kemler,
 			@DescribeParameter(name = "scenarios", description = "ids of the scenarios to use in calculation") String scenarios,
 			@DescribeParameter(name = "entities", description = "ids of the entities to use in calculation") String entities,
 			@DescribeParameter(name = "severeness", description = "ids of the severeness to use in calculation") String severeness,
@@ -136,7 +137,7 @@ public class RiskCalculatorSimple extends RiskCalculatorBase {
 			} else {
 				targetsList = new String[] {target +""};				
 			}
-			calculateFormulaForAllTargets(conn, processing, formulaDescriptor, materials, scenarios, entities, severeness, fpfield, targetsList, result, precision);
+			calculateFormulaForAllTargets(conn, processing, formulaDescriptor, materials, kemler, scenarios, entities, severeness, fpfield, targetsList, result, precision);
 			if(download) {
 			    try {
                                 return writeToCsv(language, formulaDescriptor, result.toString());
@@ -227,7 +228,7 @@ public class RiskCalculatorSimple extends RiskCalculatorBase {
 	 * @throws NumberFormatException 
 	 */
 	private void calculateFormulaForAllTargets(Connection conn, int processing,
-			Formula formulaDescriptor, String materials, String scenarios,
+			Formula formulaDescriptor, String materials, String kemler, String scenarios,
 			String entities, String severeness, String fpfield, String[] targets, JSONObject result, int precision) throws NumberFormatException, SQLException {
 		JSONArray targetsArray = new JSONArray();
 		
@@ -238,11 +239,11 @@ public class RiskCalculatorSimple extends RiskCalculatorBase {
 			
 			if(!formulaDescriptor.aggregateScenarios()) {										
 					calculateFormulaForAllScenarios(conn, processing, formulaDescriptor,
-							materials, scenarios.split(","), entities,
+							materials, kemler, scenarios.split(","), entities,
 							severeness, fpfield, targetId, targetObj, precision);								
 			} else {
 				calculateFormulaForAllScenarios(conn, processing, formulaDescriptor,
-						materials, new String[] {scenarios}, entities,
+						materials, kemler, new String[] {scenarios}, entities,
 						severeness, fpfield, targetId, targetObj, precision);			
 				//fillRisk(targetObj, getRisk(conn, 0, formulaDescriptor, materials, scenarios, entities, severeness, targetId));
 			}
@@ -264,7 +265,7 @@ public class RiskCalculatorSimple extends RiskCalculatorBase {
 	 * @throws SQLException 
 	 */
 	private void calculateFormulaForAllScenarios(Connection conn, int processing,
-			Formula formulaDescriptor, String materials, String[] scenarios,
+			Formula formulaDescriptor, String materials, String kemler, String[] scenarios,
 			String entities, String severeness, String fpfield, int targetId, JSONObject result, int precision) throws SQLException {
 		JSONArray scenariosArray = new JSONArray();
 		
@@ -273,11 +274,11 @@ public class RiskCalculatorSimple extends RiskCalculatorBase {
 			scenarioObj.accumulate("id", scenario);			
 			if(!formulaDescriptor.aggregateSevereness()) {
 				calculateFormulaAllSevereness(conn, processing, formulaDescriptor,
-						materials, scenario, entities,
+						materials, kemler, scenario, entities,
 						severeness.split(","), fpfield, targetId, scenarioObj, precision);		
 			} else {
 				calculateFormulaAllSevereness(conn, processing, formulaDescriptor,
-						materials, scenario, entities,
+						materials, kemler, scenario, entities,
 						new String[] {severeness}, fpfield, targetId, scenarioObj, precision);
 			}
 			//fillRisk(scenarioObj, getRisk(conn, 0, formulaDescriptor, materials, scenario, entities, severeness, targetId));
@@ -288,7 +289,7 @@ public class RiskCalculatorSimple extends RiskCalculatorBase {
 	}
 	
 	private void calculateFormulaAllSevereness(Connection conn, int processing,
-			Formula formulaDescriptor, String materials, String scenario,
+			Formula formulaDescriptor, String materials, String kemler, String scenario,
 			String entities, String[] severeness, String fpfield, int targetId, JSONObject result, int precision) throws SQLException {
 		JSONArray severenessArray = new JSONArray();
 		
@@ -298,7 +299,7 @@ public class RiskCalculatorSimple extends RiskCalculatorBase {
 			severenessObj.accumulate("id", sev);			
 			
 			fillRisk(severenessObj, FormulaUtils.calculateFormulaValues(conn,
-					0, processing, formulaDescriptor, fk_partner, materials, scenario, entities, sev, fpfield,
+					0, processing, formulaDescriptor, fk_partner, materials, kemler, scenario, entities, sev, fpfield,
 					targetId, null, precision));
 			severenessArray.add(severenessObj);
 		}

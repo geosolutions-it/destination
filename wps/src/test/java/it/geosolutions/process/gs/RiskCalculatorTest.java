@@ -112,7 +112,7 @@ public class RiskCalculatorTest extends TestCase {
 			try {
 				riskCalculator.execute(null,
 						dataStoreName, null, null, null, STANDARD_PROCESSING, /* cff */
-						2, ALL_TARGETS, ALL_MATERIALS, ALL_SCENARIOS,
+						2, ALL_TARGETS, ALL_MATERIALS, "0", ALL_SCENARIOS,
 						ALL_ENTITIES, ALL_SEVERENESS, FP_SCEN_CENTRALE, null,
 						null, null, null, null, null, null, false, null, null);
 			} catch (ProcessException e) {
@@ -128,7 +128,7 @@ public class RiskCalculatorTest extends TestCase {
 			try {
 				riskCalculator.execute(getSampleData(1, 1),
 						dataStoreName, null, null, null, STANDARD_PROCESSING, 
-						1000, ALL_TARGETS, ALL_MATERIALS, ALL_SCENARIOS,
+						1000, ALL_TARGETS, ALL_MATERIALS, "0", ALL_SCENARIOS,
 						ALL_ENTITIES, ALL_SEVERENESS, FP_SCEN_CENTRALE, null,
 						null, null, null, null, null, null, false, null, null);
 			} catch (ProcessException e) {
@@ -146,7 +146,7 @@ public class RiskCalculatorTest extends TestCase {
 			try {
 				iter = riskCalculator.execute(getSampleData(1, 1),
 						dataStoreName, null, null, null, STANDARD_PROCESSING, /* cff */
-						2, ALL_TARGETS, ALL_MATERIALS, ALL_SCENARIOS,
+						2, ALL_TARGETS, ALL_MATERIALS, "0", ALL_SCENARIOS,
 						ALL_ENTITIES, ALL_SEVERENESS, FP_SCEN_CENTRALE, null,
 						null, null, null, null, null, null, false, null, null).features();
 				while(iter.hasNext()) {
@@ -172,7 +172,7 @@ public class RiskCalculatorTest extends TestCase {
 			try {
 				iter = riskCalculator.execute(getSampleData(1, 1),
 						dataStoreName, null, null, null, SIMULATION_PROCESSING, /* E */
-						32, ALL_TARGETS, ALL_MATERIALS, ALL_SCENARIOS,
+						32, ALL_TARGETS, ALL_MATERIALS, "0", ALL_SCENARIOS,
 						ALL_ENTITIES, ALL_SEVERENESS, FP_SCEN_CENTRALE, "1,3000.2,POLYGON((1 1,5 1,5 5,1 5,1 1))",
 						null, null, null, null, "8,25,125,250,500,780", null, false, null, null).features();
 				while(iter.hasNext()) {
@@ -200,7 +200,7 @@ public class RiskCalculatorTest extends TestCase {
 			try {
 				iter = riskCalculator.execute(getSampleData(1, 1),
 						dataStoreName, null, null, null, SIMULATION_PROCESSING, /* E */
-						32, ALL_TARGETS, ALL_MATERIALS, ALL_SCENARIOS,
+						32, ALL_TARGETS, ALL_MATERIALS, "0", ALL_SCENARIOS,
 						ALL_ENTITIES, ALL_SEVERENESS, FP_SCEN_CENTRALE, "-1,3000.2,POLYGON((1 1,5 1,5 5,1 5,1 1))",
 						null, null, null, null, "8,25,125,250,500,780", null, false, null, null).features();
 				while(iter.hasNext()) {
@@ -228,7 +228,7 @@ public class RiskCalculatorTest extends TestCase {
 			try {
 				iter = riskCalculator.execute(getSampleData(1, 1),
 						dataStoreName, null, null, null, SIMULATION_PROCESSING, /* Magnitudo Ambientale */
-						14, ALL_TARGETS, ALL_MATERIALS, "1",
+						14, ALL_TARGETS, ALL_MATERIALS, "0", "1",
 						ALL_ENTITIES, ALL_SEVERENESS, FP_SCEN_CENTRALE, "13,3000.2,POLYGON((1 1,5 1,5 5,1 5,1 1))",
 						null, null, null, null, "8,25,125,250,500,780", null, false, null, null).features();
 				while(iter.hasNext()) {
@@ -256,7 +256,7 @@ public class RiskCalculatorTest extends TestCase {
 			try {
 				iter = riskCalculator.execute(getSampleData(1, 1),
 						dataStoreName, null, null, null, SIMULATION_PROCESSING, /* Magnitudo Antropica */
-						13, ALL_TARGETS, ALL_MATERIALS, "1",
+						13, ALL_TARGETS, ALL_MATERIALS, "0", "1",
 						ALL_ENTITIES, ALL_SEVERENESS, FP_SCEN_CENTRALE, "1,3000.2,POLYGON((1 1,5 1,5 5,1 5,1 1))",
 						null, null, null, null, "8,25,125,250,500,780", null, false, null, null).features();
 				while(iter.hasNext()) {

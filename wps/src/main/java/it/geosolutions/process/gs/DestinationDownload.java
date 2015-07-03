@@ -317,6 +317,7 @@ public class DestinationDownload extends RiskCalculatorBase {
 			@DescribeParameter(name = "formula", description = "id of the formula to calculate") int formula,
 			@DescribeParameter(name = "target", description = "id of the target/s to use in calculation") int target,
 			@DescribeParameter(name = "materials", description = "ids of the materials to use in calculation") String materials,
+			@DescribeParameter(name = "kemler", description = "id of the specific material, 0 if materials needs to be used") String kemler,
 			@DescribeParameter(name = "scenarios", description = "ids of the scenarios to use in calculation") String scenarios,
 			@DescribeParameter(name = "entities", description = "ids of the entities to use in calculation") String entities,
 			@DescribeParameter(name = "severeness", description = "ids of the severeness to use in calculation") String severeness,
@@ -405,13 +406,13 @@ public class DestinationDownload extends RiskCalculatorBase {
 				if(formulaDescriptor.useArcs()) {
 					// arcs with risk columns
 					finalZipFileNames.add(createRiskShapefile(features, storeName, batch, precision,
-							connectionParams, processing, formula, target, materials,
+							connectionParams, processing, formula, target, materials, kemler,
 							scenarios, entities, severeness, fpfield, changedTargets, cff,
 							psc, padr, pis, distances, damageArea, crs));
 				} else {
 					// tabular data in CSV format
 					finalZipFileNames.add(createSimpleRiskShapefile(features, storeName, batch, precision,
-							connectionParams, processing, formula, formulaDesc, target, materials,
+							connectionParams, processing, formula, formulaDesc, target, materials, kemler, 
 							scenarios, entities, severeness, fpfield, changedTargets, cff,
 							psc, padr, pis, distances, damageArea, language));
 					
@@ -878,7 +879,7 @@ public class DestinationDownload extends RiskCalculatorBase {
 	private String createRiskShapefile(SimpleFeatureCollection features,
 			String storeName, Integer batch, Integer precision,
 			String connectionParams, int processing, int formula, int target,
-			String materials, String scenarios, String entities,
+			String materials, String kemler, String scenarios, String entities,
 			String severeness, String fpfield, String changedTargets,
 			String cff, String psc, String padr, String pis, String distances,
 			String damageArea, String crs) throws IOException,
@@ -887,7 +888,7 @@ public class DestinationDownload extends RiskCalculatorBase {
 		String riskShapeFileName = createUniqueFileName() + ".zip";
 		SimpleFeatureCollection fc = riskCalculator.execute(features,
 				storeName, batch, precision, connectionParams, processing,
-				formula, target, materials, scenarios, entities, severeness,
+				formula, target, materials, kemler, scenarios, entities, severeness,
 				fpfield, changedTargets, cff, psc, padr, pis, distances,
 				damageArea, true, crs, null /* TODO: implement level */);			
 		
@@ -931,14 +932,14 @@ public class DestinationDownload extends RiskCalculatorBase {
 	private String createSimpleRiskShapefile(SimpleFeatureCollection features,
 			String storeName, Integer batch, Integer precision,
 			String connectionParams, int processing, int formula, String formulaDesc, int target,
-			String materials, String scenarios, String entities,
+			String materials, String kemler, String scenarios, String entities,
 			String severeness, String fpfield, String changedTargets,
 			String cff, String psc, String padr, String pis, String distances,
 			String damageArea, String language) throws IOException,
 			SQLException, FileNotFoundException, ParseException {
 		
 		
-		return  simpleRiskCalculator.execute(storeName, batch, precision, connectionParams, processing, formula, target, materials, scenarios, entities, severeness, fpfield, true, language);			
+		return  simpleRiskCalculator.execute(storeName, batch, precision, connectionParams, processing, formula, target, materials, kemler, scenarios, entities, severeness, fpfield, true, language);			
 		
 	}
 

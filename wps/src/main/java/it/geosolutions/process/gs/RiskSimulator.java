@@ -75,6 +75,7 @@ public class RiskSimulator extends RiskCalculatorBase {
 			@DescribeParameter(name = "formula", description = "id of the formula to calculate") int formula,
 			@DescribeParameter(name = "target", description = "id of the target/s to use in calculation") int target,
 			@DescribeParameter(name = "materials", description = "ids of the materials to use in calculation") String materials,
+			@DescribeParameter(name = "kemler", description = "id of the specific material, 0 if materials needs to be used") String kemler,
 			@DescribeParameter(name = "scenarios", description = "ids of the scenarios to use in calculation") String scenarios,
 			@DescribeParameter(name = "entities", description = "ids of the entities to use in calculation") String entities,
 			@DescribeParameter(name = "severeness", description = "ids of the severeness to use in calculation") String severeness,
@@ -178,7 +179,7 @@ public class RiskSimulator extends RiskCalculatorBase {
 						temp.put(id.intValue(), fb.buildFeature(id + ""));
 						FormulaUtils.calculateSimulationFormulaValuesOnSingleArc(
 								conn, level, processing, formulaDescriptor, id.intValue(), fk_partner,
-								materials, scenarios, entities, severeness, fpfield, target, null, 
+								materials, kemler, scenarios, entities, severeness, fpfield, target, null, 
 								temp, precision,
 								null, psc, null, null, null, false);								
 						result.addAll(temp.values());

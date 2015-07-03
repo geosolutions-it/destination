@@ -80,7 +80,7 @@ public class FormulaCalculator {
                         temp.put(id, featureBuilder.buildFeature(id+""));
                         featureBuilder.reset();
         	    }
-        	    FormulaUtils.calculateFormulaValues(c,1,1,formula,StringUtils.join(batch.iterator(), ","),"","9","1,2,3,4,5,6,7,8,9,10,11,12,13,14","1","5","fp_scen_centrale",99,temp,15,false);
+        	    FormulaUtils.calculateFormulaValues(c,1,1,formula,StringUtils.join(batch.iterator(), ","),"","9","0","1,2,3,4,5,6,7,8,9,10,11,12,13,14","1","5","fp_scen_centrale",99,temp,15,false);
         	    for(Number id : temp.keySet()) {
         	        SimpleFeature feature = temp.get(id);
         	        writer.println(id+","+feature.getAttribute("rischio1")+","+feature.getAttribute("rischio2"));

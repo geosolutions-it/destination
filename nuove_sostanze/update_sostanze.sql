@@ -107,3 +107,58 @@ update siig_t_sostanza set fk_classe_adr=3,fk_stato_fisico=3,fk_tipo_contenitore
 update siig_t_sostanza set fk_classe_adr=3,fk_stato_fisico=3,fk_tipo_contenitore=2,fk_tipo_trasporto=2 where id_sostanza=146;
 update siig_t_sostanza set fk_classe_adr=3,fk_stato_fisico=3,fk_tipo_contenitore=2,fk_tipo_trasporto=2 where id_sostanza=147;
 update siig_t_sostanza set fk_classe_adr=6,fk_stato_fisico=3,fk_tipo_contenitore=2,fk_tipo_trasporto=2 where id_sostanza=148;
+
+insert into siig_r_arco_1_sostanza(id_geo_arco,id_sostanza,padr,fk_partner)
+select id_geo_arco, s2.id_sostanza,padr ,s1.fk_partner
+from siig_r_arco_1_sostanza s1
+inner join siig_t_sostanza s2 on s1.id_sostanza = s2.fk_modello and s2.fk_modello <> s2.id_sostanza;
+
+insert into siig_r_arco_2_sostanza(id_geo_arco,id_sostanza,padr,fk_partner)
+select id_geo_arco, s2.id_sostanza,padr ,s1.fk_partner
+from siig_r_arco_2_sostanza s1
+inner join siig_t_sostanza s2 on s1.id_sostanza = s2.fk_modello and s2.fk_modello <> s2.id_sostanza;
+
+insert into siig_r_arco_3_sostanza(id_geo_arco,id_sostanza,padr,fk_partner)
+select id_geo_arco, s2.id_sostanza,padr ,s1.fk_partner
+from siig_r_arco_3_sostanza s1
+inner join siig_t_sostanza s2 on s1.id_sostanza = s2.fk_modello and s2.fk_modello <> s2.id_sostanza;
+
+insert into siig_r_arco_4_sostanza(id_geo_arco,id_sostanza,padr,fk_partner)
+select id_geo_arco, s2.id_sostanza,padr ,s1.fk_partner
+from siig_r_arco_4_sostanza s1
+inner join siig_t_sostanza s2 on s1.id_sostanza = s2.fk_modello and s2.fk_modello <> s2.id_sostanza;
+
+insert into siig_r_arco_5_sostanza(id_geo_arco,id_sostanza,padr,fk_partner)
+select id_geo_arco, s2.id_sostanza,padr ,s1.fk_partner
+from siig_r_arco_5_sostanza s1
+inner join siig_t_sostanza s2 on s1.id_sostanza = s2.fk_modello and s2.fk_modello <> s2.id_sostanza;
+
+update siig_mtd_t_formula set formula='select sum(psc) from siig_r_scenario_sostanza where id_scenario in (%id_scenario%) and id_sostanza in (%id_sostanza%) and flg_lieve in (%flg_lieve%)' where id_formula=16;
+
+update siig_mtd_t_formula set formula='select id_geo_arco,%simulazione(padr,id_sostanza)% from siig_r_arco_%livello%_sostanza where id_geo_arco in (%id_geo_arco%) and id_sostanza = %kemler%' where id_formula=20;
+
+update siig_mtd_t_formula set formula='(select sum(siig_r_scenario_sostanza.psc * (%formula(107,id_gravita,4,id_scenario,siig_r_scenario_sostanza.id_scenario,flg_lieve,siig_r_scenario_sostanza.flg_lieve)%)) from siig_r_scenario_sostanza  where siig_r_scenario_sostanza.id_sostanza = %id_sostanza% and siig_r_scenario_sostanza.id_scenario in (%id_scenario%) and flg_lieve in (%flg_lieve%))' where id_formula=109;
+update siig_mtd_t_formula set formula='(select sum(siig_r_scenario_sostanza.psc * (%formula(108,id_scenario,siig_r_scenario_sostanza.id_scenario,flg_lieve,siig_r_scenario_sostanza.flg_lieve)%)) from siig_r_scenario_sostanza  where siig_r_scenario_sostanza.id_sostanza = %id_sostanza% and siig_r_scenario_sostanza.id_scenario in (%id_scenario%) and flg_lieve in (%flg_lieve%))' where id_formula=110;
+
+update siig_mtd_t_formula set formula='(select sum(%simulazione(padr,siig_r_arco_%livello%_sostanza.id_sostanza)% * (%formula(109,id_sostanza,siig_r_arco_%livello%_sostanza.fk_modello)%)) from siig_r_arco_%livello%_sostanza where siig_r_arco_%livello%_sostanza.id_geo_arco = siig_geo_ln_arco_%livello%.id_geo_arco and id_sostanza in (%kemler%))' where id_formula=111;
+update siig_mtd_t_formula set formula='(select sum(%simulazione(padr,siig_r_arco_%livello%_sostanza.id_sostanza)% * (%formula(110,id_sostanza,siig_r_arco_%livello%_sostanza.fk_modello)%)) from siig_r_arco_%livello%_sostanza where siig_r_arco_%livello%_sostanza.id_geo_arco = siig_geo_ln_arco_%livello%.id_geo_arco and id_sostanza in (%kemler%))' where id_formula=112;
+
+update siig_mtd_t_formula set formula='select sum(%simulazione(padr,siig_r_arco_%livello%_sostanza.id_sostanza)% * (%formula(16)%)) from siig_r_arco_%livello%_sostanza where id_sostanza in (%kemler%) and  siig_r_arco_%livello%_sostanza.id_geo_arco =  siig_geo_ln_arco_%livello%.id_geo_arco' where id_formula=116;
+
+update siig_mtd_t_formula set formula='select id_geo_arco,%simulazione(padr,id_sostanza)% from siig_r_arco_%livello%_sostanza where id_geo_arco in (%id_geo_arco%) and id_sostanza = %kemler%' where id_formula=129;
+update siig_mtd_t_formula set formula='select sum(psc) from siig_r_scenario_sostanza where id_scenario in (%id_scenario%) and id_sostanza in (%id_sostanza%) and flg_lieve in (%flg_lieve%)' where id_formula=130;
+
+update siig_mtd_t_formula set formula='(select sum(siig_r_scenario_sostanza.psc * ((%formula(140)%)*(%formula(139,id_scenario,siig_r_scenario_sostanza.id_scenario)%)*(%formula(130)%))) from siig_r_scenario_sostanza where siig_r_scenario_sostanza.id_sostanza = %id_sostanza% and siig_r_scenario_sostanza.id_scenario in (%id_scenario%) and flg_lieve in (%flg_lieve%))' where id_formula=137;
+update siig_mtd_t_formula set formula='(select sum(%simulazione(padr,siig_r_arco_%livello%_sostanza.id_sostanza)% * %formula(137,id_sostanza,siig_r_arco_%livello%_sostanza.fk_modello)%) from siig_r_arco_%livello%_sostanza where siig_r_arco_%livello%_sostanza.id_geo_arco = siig_geo_ln_arco_%livello%.id_geo_arco and id_sostanza in (%kemler%))' where id_formula=138;
+
+alter table siig_r_arco_1_sostanza add column fk_modello numeric(3,0);
+alter table siig_r_arco_2_sostanza add column fk_modello numeric(3,0);
+alter table siig_r_arco_3_sostanza add column fk_modello numeric(3,0);
+alter table siig_r_arco_4_sostanza add column fk_modello numeric(3,0);
+alter table siig_r_arco_5_sostanza add column fk_modello numeric(3,0);
+
+update siig_r_arco_1_sostanza set fk_modello = (select fk_modello from siig_t_sostanza where siig_t_sostanza.id_sostanza = siig_r_arco_1_sostanza.id_sostanza);
+update siig_r_arco_2_sostanza set fk_modello = (select fk_modello from siig_t_sostanza where siig_t_sostanza.id_sostanza = siig_r_arco_2_sostanza.id_sostanza);
+update siig_r_arco_3_sostanza set fk_modello = (select fk_modello from siig_t_sostanza where siig_t_sostanza.id_sostanza = siig_r_arco_3_sostanza.id_sostanza);
+update siig_r_arco_4_sostanza set fk_modello = (select fk_modello from siig_t_sostanza where siig_t_sostanza.id_sostanza = siig_r_arco_4_sostanza.id_sostanza);
+update siig_r_arco_5_sostanza set fk_modello = (select fk_modello from siig_t_sostanza where siig_t_sostanza.id_sostanza = siig_r_arco_5_sostanza.id_sostanza);

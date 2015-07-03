@@ -44,6 +44,13 @@
                 </ogc:Function>
               </ogc:Function>
               <ogc:Function name="parameter">
+                <ogc:Literal>kemler</ogc:Literal>
+                <ogc:Function name="env">
+                   <ogc:Literal>kemler</ogc:Literal>
+                   <ogc:Literal>1,4</ogc:Literal>
+                </ogc:Function>
+              </ogc:Function>
+              <ogc:Function name="parameter">
                 <ogc:Literal>scenarios</ogc:Literal>
                 <ogc:Function name="env">
                    <ogc:Literal>scenarios</ogc:Literal>

@@ -165,7 +165,7 @@ public class FormulaUtils {
      */
     public static void calculateFormulaValues(Connection conn, int level,
             int processing, Formula formulaDescriptor, String ids,
-            String fk_partner, String materials, String scenarios, String entities,
+            String fk_partner, String materials,String kemler,  String scenarios, String entities,
             String severeness, String fpfield, int target,
             Map<Number, SimpleFeature> features, int precision,
             boolean extendedSchema) throws SQLException {
@@ -181,6 +181,7 @@ public class FormulaUtils {
                     ids,
                     fk_partner,
                     materials,
+                    kemler,
                     scenarios,
                     entities,
                     severeness,
@@ -191,24 +192,24 @@ public class FormulaUtils {
                     null, null, null, null, null);
         } else if (isAllHumanTargets(target)) {
             calculateFormulaValues(conn, level, processing, formulaDescriptor, ids,
-                    fk_partner, materials, scenarios, entities, severeness,
+                    fk_partner, materials, kemler, scenarios, entities, severeness,
                     fpfield, sql, extendedSchema ? "elaborazione" : "rischio1",
                     humanTargetsList, null, features, precision, null, null, null,
                     null, null);
         } else if (isAllNotHumanTargets(target)) {
             calculateFormulaValues(conn, level, processing, formulaDescriptor, ids,
-                    fk_partner, materials, scenarios, entities, severeness,
+                    fk_partner, materials, kemler, scenarios, entities, severeness,
                     fpfield, sql, extendedSchema ? "elaborazione"
                             : "rischio1", notHumanTargetsList, null, features,
                     precision, null, null, null, null, null);
         } else if (isAllTargets(target)) {
             calculateFormulaValues(conn, level, processing, formulaDescriptor, ids,
-                    fk_partner, materials, scenarios, entities, severeness,
+                    fk_partner, materials, kemler, scenarios, entities, severeness,
                     fpfield, sql, extendedSchema ? "elab_sociale" : "rischio1",
                     humanTargetsList, null, features, precision, null, null, null,
                     null, null);
             calculateFormulaValues(conn, level, processing, formulaDescriptor, ids,
-                    fk_partner, materials, scenarios, entities, severeness,
+                    fk_partner, materials, kemler, scenarios, entities, severeness,
                     fpfield, sql, extendedSchema ? "elab_ambientale"
                             : "rischio2", notHumanTargetsList, null, features,
                     precision, null, null, null, null, null);
@@ -230,7 +231,7 @@ public class FormulaUtils {
      */
     public static Double[] calculateFormulaValues(Connection conn, int level,
             int processing, Formula formulaDescriptor, String fk_partner,
-            String materials, String scenarios, String entities, String severeness,
+            String materials, String kemler, String scenarios, String entities, String severeness,
             String fpfield, int target,
             Map<Integer, Map<Integer, Double>> deletedTargets, int precision)
             throws SQLException {
@@ -240,7 +241,7 @@ public class FormulaUtils {
             if (isSimpleTarget(target) || !formulaDescriptor.useTargets()) {
                 return new Double[] {
                         calculateFormulaValues(conn, level, processing,
-                                formulaDescriptor, "", fk_partner, materials,
+                                formulaDescriptor, "", fk_partner, materials, kemler,
                                 scenarios, entities, severeness, fpfield, sql, "",
                                 target + "", deletedTargets, null, precision, null,
                                 null, null, null, null).doubleValue(), 0.0 };
@@ -248,7 +249,7 @@ public class FormulaUtils {
             } else if (isAllHumanTargets(target)) {
                 return new Double[] {
                         calculateFormulaValues(conn, level, processing,
-                                formulaDescriptor, "", fk_partner, materials,
+                                formulaDescriptor, "", fk_partner, materials, kemler,
                                 scenarios, entities, severeness, fpfield, sql, "",
                                 humanTargetsList, deletedTargets, null, precision,
                                 null, null, null, null, null).doubleValue(), 0.0 };
@@ -256,7 +257,7 @@ public class FormulaUtils {
             } else if (isAllNotHumanTargets(target)) {
                 return new Double[] {
                         calculateFormulaValues(conn, level, processing,
-                                formulaDescriptor, "", fk_partner, materials,
+                                formulaDescriptor, "", fk_partner, materials, kemler,
                                 scenarios, entities, severeness, fpfield, sql, "",
                                 notHumanTargetsList, deletedTargets, null,
                                 precision, null, null, null, null, null)
@@ -264,12 +265,12 @@ public class FormulaUtils {
             } else if (isAllTargets(target)) {
                 return new Double[] {
                         calculateFormulaValues(conn, level, processing,
-                                formulaDescriptor, "", fk_partner, materials,
+                                formulaDescriptor, "", fk_partner, materials, kemler,
                                 scenarios, entities, severeness, fpfield, sql, "",
                                 humanTargetsList, deletedTargets, null, precision,
                                 null, null, null, null, null).doubleValue(),
                         calculateFormulaValues(conn, level, processing,
-                                formulaDescriptor, "", fk_partner, materials,
+                                formulaDescriptor, "", fk_partner, materials, kemler,
                                 scenarios, entities, severeness, fpfield, sql, "",
                                 notHumanTargetsList, deletedTargets, null,
                                 precision, null, null, null, null, null)
@@ -305,7 +306,7 @@ public class FormulaUtils {
      */
     public static Number calculateFormulaValues(Connection conn, int level,
             int processing, Formula formulaDescriptor, String ids,
-            String fk_partner, String materials, String scenarios, String entities,
+            String fk_partner, String materials, String kemler, String scenarios, String entities,
             String severeness, String fpfield, String sql, String field,
             String targets, Map<Integer, Map<Integer, Double>> changedTargets,
             Map<Number, SimpleFeature> features, int precision,
@@ -321,6 +322,7 @@ public class FormulaUtils {
     
         sql = sql.replace("%id_bersaglio%", targets);
         sql = sql.replace("%id_sostanza%", materials);
+        sql = sql.replace("%kemler%", kemler);
         sql = sql.replace("%id_scenario%", scenarios);
         sql = sql.replace("%flg_lieve%", entities);
         sql = sql.replace("%fp_field%", fpfield);
@@ -543,7 +545,7 @@ public class FormulaUtils {
      */
     public static void calculateSimulationFormulaValuesOnSingleArc(Connection conn,
             int level, int processing, Formula formulaDescriptor, int id_geo_arco,
-            String fk_partner, String materials, String scenarios, String entities,
+            String fk_partner, String materials, String kemler, String scenarios, String entities,
             String severeness, String fpfield, int target,
             Map<Integer, Map<Integer, Double>> changedTargets,
             Map<Number, SimpleFeature> features, int precision,
@@ -562,6 +564,7 @@ public class FormulaUtils {
                     id_geo_arco + "",
                     fk_partner,
                     materials,
+                    kemler,
                     scenarios,
                     entities,
                     severeness,
@@ -572,24 +575,24 @@ public class FormulaUtils {
                     precision, cff, psc, padr, pis, damageValues);
         } else if (isAllHumanTargets(target)) {
             calculateFormulaValues(conn, level, processing, formulaDescriptor,
-                    id_geo_arco + "", fk_partner, materials, scenarios, entities,
+                    id_geo_arco + "", fk_partner, materials, kemler, scenarios, entities,
                     severeness, fpfield, sql, extendedSchema ? "elaborazione"
                             : "rischio1", humanTargetsList, changedTargets, features,
                     precision, cff, psc, padr, pis, damageValues);
         } else if (isAllNotHumanTargets(target)) {
             calculateFormulaValues(conn, level, processing, formulaDescriptor,
-                    id_geo_arco + "", fk_partner, materials, scenarios, entities,
+                    id_geo_arco + "", fk_partner, materials, kemler, scenarios, entities,
                     severeness, fpfield, sql, extendedSchema ? "elaborazione"
                             : "rischio1", notHumanTargetsList, changedTargets,
                     features, precision, cff, psc, padr, pis, damageValues);
         } else if (isAllTargets(target)) {
             calculateFormulaValues(conn, level, processing, formulaDescriptor,
-                    id_geo_arco + "", fk_partner, materials, scenarios, entities,
+                    id_geo_arco + "", fk_partner, materials, kemler, scenarios, entities,
                     severeness, fpfield, sql, extendedSchema ? "elab_sociale"
                             : "rischio1", humanTargetsList, changedTargets, features,
                     precision, cff, psc, padr, pis, damageValues);
             calculateFormulaValues(conn, level, processing, formulaDescriptor,
-                    id_geo_arco + "", fk_partner, materials, scenarios, entities,
+                    id_geo_arco + "", fk_partner, materials, kemler, scenarios, entities,
                     severeness, fpfield, sql, extendedSchema ? "elab_ambientale"
                             : "rischio2", notHumanTargetsList, changedTargets,
                     features, precision, cff, psc, padr, pis, damageValues);
