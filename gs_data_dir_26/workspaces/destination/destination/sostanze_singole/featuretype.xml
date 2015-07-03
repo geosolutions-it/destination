@@ -1,0 +1,55 @@
+<featureType>
+  <id>FeatureTypeInfoImpl--2be0660c:14e4ef67899:-a1b</id>
+  <name>sostanze_singole</name>
+  <nativeName>sostanze_singole</nativeName>
+  <namespace>
+    <id>NamespaceInfoImpl--570ae188:124761b8d78:-7ffc</id>
+  </namespace>
+  <title>sostanze_singole</title>
+  <keywords>
+    <string>sostanze_singole</string>
+    <string>features</string>
+  </keywords>
+  <srs>EPSG:4326</srs>
+  <nativeBoundingBox>
+    <minx>-1.0</minx>
+    <maxx>0.0</maxx>
+    <miny>-1.0</miny>
+    <maxy>0.0</maxy>
+  </nativeBoundingBox>
+  <latLonBoundingBox>
+    <minx>-1.0</minx>
+    <maxx>0.0</maxx>
+    <miny>-1.0</miny>
+    <maxy>0.0</maxy>
+    <crs>GEOGCS[&quot;WGS84(DD)&quot;, &#xd;
+  DATUM[&quot;WGS84&quot;, &#xd;
+    SPHEROID[&quot;WGS84&quot;, 6378137.0, 298.257223563]], &#xd;
+  PRIMEM[&quot;Greenwich&quot;, 0.0], &#xd;
+  UNIT[&quot;degree&quot;, 0.017453292519943295], &#xd;
+  AXIS[&quot;Geodetic longitude&quot;, EAST], &#xd;
+  AXIS[&quot;Geodetic latitude&quot;, NORTH]]</crs>
+  </latLonBoundingBox>
+  <projectionPolicy>FORCE_DECLARED</projectionPolicy>
+  <enabled>true</enabled>
+  <metadata>
+    <entry key="JDBC_VIRTUAL_TABLE">
+      <virtualTable>
+        <name>sostanze_singole</name>
+        <sql>select * from siig_d_onu&#xd;
+where exists (select codice_kemler from siig_t_sostanza where siig_t_sostanza.numero_kemler = siig_d_onu.codice_kemler)&#xd;
+and descrizione_onu&lt;&gt;&apos;&apos;
+</sql>
+        <escapeSql>false</escapeSql>
+        <keyColumn>codice_onu</keyColumn>
+      </virtualTable>
+    </entry>
+  </metadata>
+  <store class="dataStore">
+    <id>DataStoreInfoImpl--3970ff67:13c00cf828a:-7fef</id>
+  </store>
+  <maxFeatures>0</maxFeatures>
+  <numDecimals>0</numDecimals>
+  <overridingServiceSRS>false</overridingServiceSRS>
+  <circularArcPresent>false</circularArcPresent>
+</featureType>
