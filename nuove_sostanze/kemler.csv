@@ -1,91 +1,50 @@
 Numero Kemler Pericolo A F O T C N Sostanza/ scenario 
-20 gas asfissiante o che non presenta rischio sussidiario × 3-K 
-22 gas liquefatto refrigerato, asfissiante × 8-K 
-223 gas liquefatto refrigerato, infiammabile × 5-C/5-D/5-E 
-225 gas liquefatto refrigerato, comburente (favorisce l'incendio) × 7-J 
-23 gas infiammabile × 5-C/5-D/5-E 
-238 gas infiammabile, corrosivo × × 5-C/5-D/5-E 
-239 gas infiammabile, che può produrre spontaneamente una reazione violenta × 5-C/5-D/5-E 
-25 gas comburente (favorisce l'incendio) × 2-J 
-26 gas tossico × 4-L 
-263 gas tossico e infiammabile × × 6-C/6-D/6-E/6-L 
-265 gas tossico e comburente (favorisce l'incendio) × × 4-L 
-268 gas tossico e corrosivo × × 4-L 
-28 gas, corrosivo × 
-30 materia liquida infiammabile (punto d’infiammabilità compreso tra 23°C e 60°C) o materia liquida infiammabile o materia solida allo stato fuso avente un punto d’infiammabilità superiore a 60°C, riscaldate ad una temperatura uguale o superiore al suo punto d’infiammabilità, o materia liquida autoriscaldante× 9-F 
-323 materia liquida infiammabile che reagisce con l'acqua, con sviluppo di gas infiammabili × 10-H/10-I 
-X323 materia liquida infiammabile che reagisce pericolosamente con l'acqua con sviluppo di gas infiammabili × 10-H/10-I 
-33 materia liquida molto infiammabile (punto d’infiammabilità inferiore a 23°C) × 10-H/10-I 
-333 materia liquida piroforica × 10-H/10-I X333 materia liquida piroforica che reagisce pericolosamente con l'acqua × 10-H/10-I 
-336 materia liquida molto infiammabile e tossica × × 11-H/11-I/11-M 
-338 materia liquida molto infiammabile e corrosiva × × 10-H/10-I 
-X338 materia liquida molto infiammabile e corrosiva, che reagisce pericolosamente con l'acqua × × 10-H/10-I 
-339 materia liquida molto infiammabile, che può produrre spontaneamente una reazione violenta × 10-H/10-I 
-36 materia liquida infiammabile (punto d’infiammabilità compreso tra 23°C e 60°C), debolmente tossica, o materia liquida autoriscaldante e tossica × × 11-H/11-I/11-M 
-362 materia liquida infiammabile e tossica, che reagisce con l'acqua, con sviluppo di gas infiammabili × × 11-H/11-I/11-M 
-X362 materia liquida infiammabile e tossica, che reagisce pericolosamente con l'acqua, con sviluppo di gas infiammabili × × 11-H/11-I/11-M 
-368 materia liquida infiammabile tossica e corrosiva × × × 11-H/11-I/11-M 
-38 materia liquida infiammabile (punto d’infiammabilità compreso tra 23°C e 60°C), debolmente corrosiva, o materia liquida autoriscaldante e corrosiva × × 9-F 
-382 materia liquida infiammabile e corrosiva, che reagisce con l'acqua, con sviluppo di gas infiammabili × × 10-H/10-I 
-X382 materia liquida infiammabile e corrosiva, che reagisce pericolosamente con l'acqua, con sviluppo di gas infiammabili × × 10-H/10-I 
-39 materia liquida infiammabile, che può produrre spontaneamente una reazione violenta × 10-H/10-I 
-40 materia solida infiammabile o materia autoreattiva o materia autoriscaldante × 
-423 materia solida che reagisce con l'acqua con sviluppo di gas infiammabili, o materia solida infiammabile che reagisce con l’acqua con sviluppo di gas infiammabili, o materia solida autoriscaldante che reagisce con l’acqua con sviluppo di gas infiammabili × 
-X423 materia solida che reagisce pericolosamente con l’acqua con sviluppo di gas infiammabili, o materia solida infiammabile che reagisce pericolosamente con l’acqua con sviluppo di gas infiammabili, o materia solida autoriscaldante che reagisce pericolosamente con l’acqua con sviluppo di gas infiammabili × 
-43 materia solida spontaneamente infiammabile (piroforica) × 
-X432 materia solida spontaneamente infiammabile (piroforica) che reagisce pericolosamente con l’acqua con sviluppo di gas infiammabili × 
-44 materia solida infiammabile che, a temperatura elevata, si trova allo stato fuso × 
-446 materia solida infiammabile e tossica che, a temperatura elevata, si trova allo stato fuso × × 
-46 materia solida infiammabile o autoriscaldante e tossica × × 
-462 materia solida tossica che reagisce con l'acqua con sviluppo di gas infiammabili × × 
-X462 materia solida, che reagisce pericolosamente con l'acqua, con sviluppo di gas tossici × 
-48 materia solida infiammabile o autoriscaldante e corrosiva × × 
-482 materia solida corrosiva, che reagisce con l'acqua, con sviluppo di gas infiammabili × × 
-X482 materia solida, che reagisce pericolosamente con l'acqua, con sviluppo di gas corrosivi × 
-50 materia comburente (favorisce l'incendio) × 2-J 539 perossido organico infiammabile × 11-H 
-55 materia molto comburente (favorisce l'incendio) × 2-J 
-556 materia molto comburente (favorisce l'incendio) e tossica × × 2-J 
-558 materia molto comburente (favorisce l'incendio) e corrosiva × × 2-J 
-559 materia molto comburente (favorisce l'incendio) che può produrre spontaneamente una reazione violenta × 2-J 
-56 materia comburente (favorisce l'incendio) e tossica× × 2-J 
-568 materia comburente (favorisce l'incendio) e tossica e corrosiva × × × 2-J 
-58 materia comburente (favorisce l'incendio) e corrosiva × × 2-J 
-59 materia comburente (favorisce l'incendio) che può produrre spontaneamente una reazione violenta × 2-J 
-60 materia tossica o debolmente tossica × 12-M 
-606 materia infettante 
-623 materia tossica liquida, che reagisce con l'acqua, con sviluppo di gas infiammabili × × 11-H/11-I/11-M 
-63 materia tossica e infiammabile (punto d’infiammabilità compreso tra 23°C e 60°C) × × 12-F/12-G/12-M 
-638 materia tossica e infiammabile (punto d’infiammabilità compreso tra 23°C e 60°C) e corrosiva × × × 12-F/12-G/12-M 
-639 materia tossica e infiammabile (punto d’infiammabilità inferiore o uguale a 60°C), che può produrre spontaneamente una reazione violenta × × 12-F/12-G/12-M 
-64 materia tossica solida, infiammabile o autoriscaldante × × 642 materia tossica solida, che reagisce con l'acqua, con sviluppo di gas infiammabili × × 
-65 materia tossica e comburente (favorisce l'incendio)× × 12-M 66 materia molto tossica × 12-M 
-663 materia molto tossica infiammabile (punto d’infiammabilità inferiore o uguale a 60°C) × × 12-F/12-G/12-M 
-664 materia molto tossica solida, infiammabile o autoriscaldante × × 
-665 materia molto tossica e comburente (favorisce l’incendio) × × 12-M 
-668 materia molto tossica e corrosiva × × 12-M X668 materia altamente tossica, corrosiva, che reagisce pericolosamente con l’acqua × × 12-M 
-669 materia molto tossica, che può produrre spontaneamente una reazione violenta × 12-M 
-68 materia tossica e corrosiva × × 12-M 
-69 materia tossica, o debolmente tossica, che può produrre spontaneamente una reazione violenta × 12-M 
-70 materiale radioattivo 
-78 materiale radioattivo, corrosivo × 
-80 materia corrosiva o debolmente corrosiva × 
-X80 materia corrosiva o debolmente corrosiva, che reagisce pericolosamente con l'acqua × 
-823 materia corrosiva liquida, che reagisce con l'acqua, con sviluppo di gas infiammabili× × 10-H/10-I 
-83 materia corrosiva o debolmente corrosiva e infiammabile (punto d’infiammabilità compreso tra 23°C e 60°C) × × 9-F 
-X83 materia corrosiva o debolmente corrosiva e infiammabile (punto d’infiammabilità compreso tra 23°C e 60°C), che reagisce pericolosamente con l'acqua × × 10-H/10-I
-839 materia corrosiva o debolmente corrosiva e infiammabile (punto d’infiammabilità compreso tra 23°C e 60°C), può produrre spontaneamente una reazione violenta × × 10-H/10-I 
-X839 materia corrosiva o debolmente corrosiva e infiammabile (punto d’infiammabilità compreso tra 23°C e 60°C), può produrre spontaneamente una reazione violenta, e che reagisce pericolosamente con l'acqua × × 10-H/10-I 
-84 materia corrosiva solida, infiammabile o autoriscaldante × × 
-842 materia corrosiva solida, che reagisce con l'acqua, con sviluppo di gas infiammabili × × 
-85 materia corrosiva o debolmente corrosiva e comburente (favorisce l'incendio) × × 
-856 materia corrosiva o debolmente corrosiva e comburente (favorisce l'incendio) e tossica × × × 
-86 materia corrosiva o debolmente corrosiva e tossica × × 
-88 materia molto corrosiva × X88 materia molto corrosiva che reagisce pericolosamente con l'acqua × 
-883 materia molto corrosiva e infiammabile (punto d’infiammabilità compreso tra 23°C e 60°C) × × 
-884 materia molto corrosiva solida, infiammabile o autoriscaldante × × 
-885 materia molto corrosiva e comburente (favorisce l'incendio) × × 
-886 materia molto corrosiva e tossica × × 
-X886 materia molto corrosiva e tossica che reagisce pericolosamente con l'acqua × × 
-89 materia corrosiva o presentante un grado minore di corrosività, che può produrre spontaneamente una reazione violenta × 
-90 materia pericolosa per l'ambiente, materie pericolose diverse × 12-N 
-99 materie pericolose diverse trasportate a caldo
+223 gas liquefatto refrigerato, infiammabile 5
+238 gas infiammabile, corrosivo 5
+239 gas infiammabile, che può produrre spontaneamente una reazione violenta 5
+26 gas tossico 4
+265 gas tossico e comburente (favorisce l'incendio) 4
+323 materia liquida infiammabile che reagisce con l'acqua, con sviluppo di gas infiammabili 10
+X323 materia liquida infiammabile che reagisce pericolosamente con l'acqua con sviluppo di gas infiammabili 10
+333 materia liquida piroforica 10
+X333 materia liquida piroforica che reagisce pericolosamente con l'acqua 10
+338 materia liquida molto infiammabile e corrosiva 10
+X338 materia liquida molto infiammabile e corrosiva, che reagisce pericolosamente con l'acqua 10
+339 materia liquida molto infiammabile, che può produrre spontaneamente una reazione violenta 10
+36 materia liquida infiammabile (punto d’infiammabilità compreso tra 23°C e 60°C), debolmente tossica, o materia liquida autoriscaldante e tossica 11
+362 materia liquida infiammabile e tossica, che reagisce con l'acqua, con sviluppo di gas infiammabili 11
+X362 materia liquida infiammabile e tossica, che reagisce pericolosamente con l'acqua, con sviluppo di gas infiammabili 11
+368 materia liquida infiammabile tossica e corrosiva 11
+38 materia liquida infiammabile (punto d’infiammabilità compreso tra 23°C e 60°C), debolmente corrosiva, o materia liquida autoriscaldante e corrosiva 9
+382 materia liquida infiammabile e corrosiva, che reagisce con l'acqua, con sviluppo di gas infiammabili 10
+X382 materia liquida infiammabile e corrosiva, che reagisce pericolosamente con l'acqua, con sviluppo di gas infiammabili 10
+39 materia liquida infiammabile, che può produrre spontaneamente una reazione violenta 10
+50 materia comburente (favorisce l'incendio) 2
+539 perossido organico infiammabile 11
+55 materia molto comburente (favorisce l'incendio) 2
+556 materia molto comburente (favorisce l'incendio) e tossica 2
+558 materia molto comburente (favorisce l'incendio) e corrosiva 2
+559 materia molto comburente (favorisce l'incendio) che può produrre spontaneamente una reazione violenta 2
+56 materia comburente (favorisce l'incendio) e tossica× 2
+568 materia comburente (favorisce l'incendio) e tossica e corrosiva 2
+58 materia comburente (favorisce l'incendio) e corrosiva 2
+59 materia comburente (favorisce l'incendio) che può produrre spontaneamente una reazione violenta 2
+60 materia tossica o debolmente tossica 12
+623 materia tossica liquida, che reagisce con l'acqua, con sviluppo di gas infiammabili 11
+638 materia tossica e infiammabile (punto d’infiammabilità compreso tra 23°C e 60°C) e corrosiva 12
+639 materia tossica e infiammabile (punto d’infiammabilità inferiore o uguale a 60°C), che può produrre spontaneamente una reazione violenta 12
+65 materia tossica e comburente (favorisce l'incendio)× 12
+66 materia molto tossica 12
+663 materia molto tossica infiammabile (punto d’infiammabilità inferiore o uguale a 60°C) 12
+665 materia molto tossica e comburente (favorisce l’incendio) 12
+668 materia molto tossica e corrosiva 12
+X668 materia altamente tossica, corrosiva, che reagisce pericolosamente con l’acqua 12
+669 materia molto tossica, che può produrre spontaneamente una reazione violenta 12
+68 materia tossica e corrosiva 12
+69 materia tossica, o debolmente tossica, che può produrre spontaneamente una reazione violenta 12
+823 materia corrosiva liquida, che reagisce con l'acqua, con sviluppo di gas infiammabili× 10
+83 materia corrosiva o debolmente corrosiva e infiammabile (punto d’infiammabilità compreso tra 23°C e 60°C) 9
+X83 materia corrosiva o debolmente corrosiva e infiammabile (punto d’infiammabilità compreso tra 23°C e 60°C), che reagisce pericolosamente con l'acqua 10
+839 materia corrosiva o debolmente corrosiva e infiammabile (punto d’infiammabilità compreso tra 23°C e 60°C), può produrre spontaneamente una reazione violenta 10
+X839 materia corrosiva o debolmente corrosiva e infiammabile (punto d’infiammabilità compreso tra 23°C e 60°C), può produrre spontaneamente una reazione violenta, e che reagisce pericolosamente con l'acqua 10
+90 materia pericolosa per l'ambiente, materie pericolose diverse 12
