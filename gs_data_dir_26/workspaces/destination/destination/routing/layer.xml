@@ -1,0 +1,15 @@
+<layer>
+  <name>routing</name>
+  <id>LayerInfoImpl-70c567b2:14e778a8c87:-7f72</id>
+  <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl--52b6831:14e734fad73:-8000</id>
+  </defaultStyle>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl-70c567b2:14e778a8c87:-7f73</id>
+  </resource>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+</layer>
