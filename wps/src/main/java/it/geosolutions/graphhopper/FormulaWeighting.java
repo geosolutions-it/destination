@@ -29,6 +29,7 @@ public class FormulaWeighting implements Weighting {
     public static final String PARAM_TARGET = "TARGET";
     public static final String PARAM_FIELD = "FIELD";
     public static final String PARAM_MATERIALS = "MATERIALS";
+    public static final String PARAM_KEMLER = "KEMLER";
     public static final String PARAM_SCENARIOS = "SCENARIOS";
     public static final String PARAM_ENTITIES = "ENTITIES";
     public static final String PARAM_SEVERENESS = "SEVERENESS";
@@ -39,6 +40,7 @@ public class FormulaWeighting implements Weighting {
     private static final int DEFAULT_TARGET = 100; // all targets
     private static final String DEFAULT_FIELD = "rischio1";
     private static final String DEFAULT_MATERIALS = "1,2,3,4,5,6,7,8,9,10,11,12"; // all materials
+    public static final String DEFAULT_KEMLER = "0";
     private static final String DEFAULT_SCENARIOS = "1,2,3,4,5,6,7,8,9,10,11,12,13,14"; // all scenarios
     private static final String DEFAULT_ENTITIES = "0,1";
     public static final String DEFAULT_SEVERENESS = "1,2,3,4,5";
@@ -86,6 +88,7 @@ public class FormulaWeighting implements Weighting {
         long edgeId = encoder.getLong(edgeState.getFlags(), EDGE_ID);
         String field = getOrDefault(formulaParams, PARAM_FIELD, DEFAULT_FIELD);
         String materials = getOrDefault(formulaParams, PARAM_MATERIALS, DEFAULT_MATERIALS);
+        String kemler = getOrDefault(formulaParams, PARAM_KEMLER, DEFAULT_KEMLER);
         String scenarios = getOrDefault(formulaParams, PARAM_SCENARIOS, DEFAULT_SCENARIOS);
         String entities = getOrDefault(formulaParams, PARAM_ENTITIES, DEFAULT_ENTITIES);
         String severeness = getOrDefault(formulaParams, PARAM_SEVERENESS, DEFAULT_SEVERENESS);
@@ -96,18 +99,19 @@ public class FormulaWeighting implements Weighting {
         try {
             conn = ds.getConnection();
             Number formulaOutput = FormulaUtils.calculateFormulaValues(conn, 
-                    level, // level
+                    level,
                     1, // processing,
                     formulaDescriptor,
                     "" + edgeId,
                     null, // fk_partner
-                    materials, // materials
-                    scenarios, // scenarios
-                    entities, // entities
-                    severeness, // severeness
-                    fpfield, // fpfield
-                    formulaDescriptor.getSql(), // sql
-                    field, // field
+                    materials,
+                    kemler,
+                    scenarios,
+                    entities,
+                    severeness,
+                    fpfield,
+                    formulaDescriptor.getSql(),
+                    field,
                     "1,2,4,5,6,7,8", // targets
                     null, // changedTargets
                     null, // features
