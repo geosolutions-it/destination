@@ -7,6 +7,11 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
 
+    <bean id="routePlanner" class="it.geosolutions.process.gs.RoutePlannerGH">
+      <constructor-arg index="0" ref="catalog"/>
+      <constructor-arg index="1" ref="dataDirectory"/>
+    </bean>
+
     <bean id="riskCalculator" class="it.geosolutions.process.gs.RiskCalculator">
       <constructor-arg index="0" ref="catalog"/>
     </bean>
