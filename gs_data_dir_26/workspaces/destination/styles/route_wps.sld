@@ -112,10 +112,9 @@
                     <LineSymbolizer
                         uom="http://www.opengeospatial.org/se/units/metre">
                         <Stroke>
-                            <CssParameter name="stroke">#14F200
-                            </CssParameter>
-                            <CssParameter name="stroke-width">12
-                            </CssParameter>
+                            <!--<CssParameter name="stroke">#FF00D8</CssParameter>-->
+                          	<CssParameter name="stroke">#FCFF08</CssParameter>
+                            <CssParameter name="stroke-width">64</CssParameter>
                         </Stroke>
                     </LineSymbolizer>
                     <PointSymbolizer
