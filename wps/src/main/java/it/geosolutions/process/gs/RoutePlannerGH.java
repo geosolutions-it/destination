@@ -4,6 +4,7 @@ import it.geosolutions.destination.utils.FormulaUtils;
 import it.geosolutions.graphhopper.DestinationEncodingManager;
 import it.geosolutions.graphhopper.DestinationGraphHopper;
 import it.geosolutions.graphhopper.FormulaWeighting;
+import it.geosolutions.graphhopper.PrecalculatedRiskWeighting;
 import it.geosolutions.graphhopper.WeightType;
 
 import java.io.File;
@@ -152,10 +153,12 @@ public class RoutePlannerGH extends RiskCalculatorBase {
                 scenarios, entities, severeness, fpfield,  level);
         // weight is dynamically calculated using the user-specified formula params
         WeightType weightType = WeightType.DYNAMIC;
+        //WeightType weightType = WeightType.RISK_SOC;
         DataSource ds = dataStore.getDataSource();
         
         GraphHopper hopper = loadGraph(ds, weightType, formulaParams);
         GHResponse rsp = requestRoute(hopper, startPoint, endPoint, FormulaWeighting.NAME);
+        //GHResponse rsp = requestRoute(hopper, startPoint, endPoint, PrecalculatedRiskWeighting.NAME);
         
         if (rsp.hasErrors()) {
             Throwable cause = rsp.getErrors().get(0);
@@ -199,20 +202,31 @@ public class RoutePlannerGH extends RiskCalculatorBase {
         return formulaParams;
     }
     
-    private GraphHopper loadGraph(DataSource ds, WeightType weightType, Map<String, Object> formulaParams) {
+    private synchronized GraphHopper loadGraph(DataSource ds, WeightType weightType, Map<String, Object> formulaParams) {
+        boolean allowWrites = !graphDirExists(weightType);
+
         File graphStorageDir = createGraphStorageDir(weightType);
-        
+
         GraphHopper hopper = new DestinationGraphHopper(ds, weightType, formulaParams);
         hopper.forServer();
         hopper.setOSMFile("fake.osm");
         hopper.setGraphHopperLocation(graphStorageDir.getAbsolutePath());
         hopper.setEncodingManager(DestinationEncodingManager.createDefault());
+        //hopper.setEncodingManager(new DestinationEncodingManager(DestinationEncodingManager.PRECALC_RISK, 8));
         hopper.setCHEnable(false);
+        hopper.setAllowWrites(allowWrites);
         
         hopper.importOrLoad();
         
         return hopper;
     }
+
+    private boolean graphDirExists(WeightType weightType) {
+        File graphDir = new File(graphHopperBase, "gh-" + weightType);
+
+        return graphDir.exists();
+    }
+
     private File createGraphStorageDir(WeightType weightType) {
         // save graph for later re-use
         File graphDir = new File(graphHopperBase, "gh-" + weightType);

@@ -72,6 +72,10 @@ public class DestinationGraphHopperTest {
             
             // TODO: this assertion fails, probably due to graph simplification?
             //assertEquals(66622, hopper.getGraph().getNodes());
+            LOGGER.info("Graph details: " + hopper.getGraph().toDetailsString());
+            LOGGER.info("# of nodes: " + hopper.getGraph().getNodes());
+            LOGGER.info("# of edges: " + hopper.getGraph().getAllEdges().getCount());
+            LOGGER.info("occupied storage (in bytes): " + hopper.getGraph().getCapacity());
             
             final Double lonFrom = 7.3142;
             final Double lonTo = 7.4729;
