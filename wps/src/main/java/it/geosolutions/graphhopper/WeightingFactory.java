@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import com.graphhopper.routing.util.FlagEncoder;
+import com.graphhopper.routing.util.ShortestWeighting;
 import com.graphhopper.routing.util.Weighting;
 
 public class WeightingFactory {
@@ -40,8 +41,10 @@ public class WeightingFactory {
             case RISK_ENV:
             case NUM_ACC:
                 return new PrecalculatedRiskWeighting(encoder);
-            case DYNAMIC:
+            case FORMULA:
                 return new FormulaWeighting(encoder, dataSource, weightParams);
+            case SHORTEST:
+                return new ShortestWeighting();
             default:
                 throw new IllegalArgumentException("Unknown weight type: " + weightType);
         }

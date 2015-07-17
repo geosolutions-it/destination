@@ -235,7 +235,7 @@ public class DestinationDataReader implements DataReader {
                     encoder = em.getEncoder(DestinationEncodingManager.PRECALC_RISK);
                     flags = encoder.setDouble(flags, PrecalculatedRiskWeighting.RISK, nrIncidentiElab);
                     break;
-                case DYNAMIC:
+                case FORMULA:
                     encoder = em.getEncoder(DestinationEncodingManager.FORMULA);
                     flags = encoder.setLong(flags, FormulaWeighting.EDGE_ID, dbEdgeId);
                     break;

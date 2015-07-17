@@ -165,8 +165,12 @@
                     </PointSymbolizer>
                     <TextSymbolizer>
                         <Label>
-                            <!--<ogc:PropertyName>weight</ogc:PropertyName>-->
-                          <ogc:Literal>Percorso a rischio minimo</ogc:Literal>
+                          <!--<ogc:PropertyName>weight</ogc:PropertyName>-->
+                          <!--<ogc:Literal>Percorso a rischio minimo</ogc:Literal>-->
+                          <ogc:Function name="env">
+                            <ogc:Literal>title</ogc:Literal>
+                            <ogc:Literal>Percorso minimo</ogc:Literal>
+                          </ogc:Function>
                         </Label>
                         <Font>
                             <CssParameter name="font-family">Arial

@@ -48,7 +48,7 @@ public class DestinationGraphHopper extends GraphHopper {
     @Override
     public Weighting createWeighting(WeightingMap weightingMap, FlagEncoder encoder) {
         try {
-            if (WeightType.fromEncoder(weightingMap.getWeighting()) == weightType) {
+            if (WeightType.valueOf(weightingMap.getWeighting()) == weightType) {
                 return WeightingFactory.getInstance().create(encoder, dataSource, weightType, weightingParams);
             }
         } catch (Exception e) {
