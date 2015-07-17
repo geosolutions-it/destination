@@ -56,7 +56,7 @@
                             <ogc:Literal>target</ogc:Literal>
                             <ogc:Function name="env">
                                 <ogc:Literal>target</ogc:Literal>
-                                <ogc:Literal>100</ogc:Literal>
+                                <ogc:Literal>98</ogc:Literal>
                             </ogc:Function>
                         </ogc:Function>
                         <ogc:Function name="parameter">

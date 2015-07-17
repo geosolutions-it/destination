@@ -190,7 +190,8 @@ public class RoutePlannerGH extends RiskCalculatorBase {
         Map<String, Object> formulaParams = new HashMap<String, Object>();
         formulaParams.put(FormulaWeighting.PARAM_FORMULA_ID, formula);
         formulaParams.put(FormulaWeighting.PARAM_TARGET, target);
-        formulaParams.put(FormulaWeighting.PARAM_FIELD, "rischio1");
+        String field = (FormulaUtils.isAllHumanTargets(target)) ? "rischio1" : "rischio2";
+        formulaParams.put(FormulaWeighting.PARAM_FIELD, field);
         formulaParams.put(FormulaWeighting.PARAM_MATERIALS, materials);
         formulaParams.put(FormulaWeighting.PARAM_SCENARIOS, scenarios);
         formulaParams.put(FormulaWeighting.PARAM_ENTITIES, entities);
@@ -202,14 +203,25 @@ public class RoutePlannerGH extends RiskCalculatorBase {
     }
     
     private WeightType getWeightType(Map<String, Object> formulaParams) {
-        // TODO: optimize loading precalculated weights when possible
         final int SHORTEST_PATH_FORMULA_ID = 142;
+        final int RISK_FORMULA_ID = 141;
+        final int PIS_FORMULA_ID = 22;
+        final int TARGET_SOC = 98;
+        final int TARGET_ENV = 99;
         if (formulaParams.get(FormulaWeighting.PARAM_FORMULA_ID).equals(SHORTEST_PATH_FORMULA_ID)) {
             return WeightType.SHORTEST;
-        } else {
-            // weight is dynamically calculated using the user-specified formula params
-            return WeightType.FORMULA;
+        } else if (formulaParams.get(FormulaWeighting.PARAM_FORMULA_ID).equals(RISK_FORMULA_ID)) {
+            if (formulaParams.get(FormulaWeighting.PARAM_TARGET).equals(TARGET_SOC)) {
+                return WeightType.RISK_SOC;
+            } else if (formulaParams.get(FormulaWeighting.PARAM_TARGET).equals(TARGET_ENV)) {
+                return WeightType.RISK_ENV;
+            }
+        } else if (formulaParams.get(FormulaWeighting.PARAM_FORMULA_ID).equals(PIS_FORMULA_ID)) {
+            return WeightType.NUM_ACC;
         }
+        
+        // weight is dynamically calculated using the user-specified formula params
+        return WeightType.FORMULA;
     }
     
     private String getGraphLocation(WeightType weightType) {
