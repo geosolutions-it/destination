@@ -56,7 +56,7 @@
                             <ogc:Literal>target</ogc:Literal>
                             <ogc:Function name="env">
                                 <ogc:Literal>target</ogc:Literal>
-                                <ogc:Literal>100</ogc:Literal>
+                                <ogc:Literal>98</ogc:Literal>
                             </ogc:Function>
                         </ogc:Function>
                         <ogc:Function name="parameter">
@@ -165,8 +165,12 @@
                     </PointSymbolizer>
                     <TextSymbolizer>
                         <Label>
-                            <!--<ogc:PropertyName>weight</ogc:PropertyName>-->
-                          <ogc:Literal>Percorso a rischio minimo</ogc:Literal>
+                          <!--<ogc:PropertyName>weight</ogc:PropertyName>-->
+                          <!--<ogc:Literal>Percorso a rischio minimo</ogc:Literal>-->
+                          <ogc:Function name="env">
+                            <ogc:Literal>title</ogc:Literal>
+                            <ogc:Literal>Percorso minimo</ogc:Literal>
+                          </ogc:Function>
                         </Label>
                         <Font>
                             <CssParameter name="font-family">Arial

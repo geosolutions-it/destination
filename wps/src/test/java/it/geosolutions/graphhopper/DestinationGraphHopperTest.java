@@ -55,7 +55,7 @@ public class DestinationGraphHopperTest {
     @Ignore
     public void testGraphCreation() {
         //GraphHopper hopper = new DestinationGraphHopper(dataSource, DestinationWeightType.RISK_ENV);
-        GraphHopper hopper = new DestinationGraphHopper(dataSource, WeightType.DYNAMIC);
+        GraphHopper hopper = new DestinationGraphHopper(dataSource, WeightType.FORMULA);
         
         String sysTemp = System.getProperty("java.io.tmpdir");
         File tmpDir = new File(new File(sysTemp), "gh-" + System.currentTimeMillis());

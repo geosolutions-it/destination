@@ -43,6 +43,8 @@ import org.opengis.referencing.operation.MathTransform;
 import com.graphhopper.GHRequest;
 import com.graphhopper.GHResponse;
 import com.graphhopper.GraphHopper;
+import com.graphhopper.routing.util.EncodingManager;
+import com.graphhopper.routing.util.ShortestWeighting;
 import com.graphhopper.util.PointList;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -151,14 +153,11 @@ public class RoutePlannerGH extends RiskCalculatorBase {
         
         Map<String, Object> formulaParams = buildFormulaParams(formula, target, materials,
                 scenarios, entities, severeness, fpfield,  level);
-        // weight is dynamically calculated using the user-specified formula params
-        WeightType weightType = WeightType.DYNAMIC;
-        //WeightType weightType = WeightType.RISK_SOC;
+        WeightType weightType = getWeightType(formulaParams);
         DataSource ds = dataStore.getDataSource();
         
         GraphHopper hopper = loadGraph(ds, weightType, formulaParams);
-        GHResponse rsp = requestRoute(hopper, startPoint, endPoint, FormulaWeighting.NAME);
-        //GHResponse rsp = requestRoute(hopper, startPoint, endPoint, PrecalculatedRiskWeighting.NAME);
+        GHResponse rsp = requestRoute(hopper, startPoint, endPoint, weightType);
         
         if (rsp.hasErrors()) {
             Throwable cause = rsp.getErrors().get(0);
@@ -191,7 +190,8 @@ public class RoutePlannerGH extends RiskCalculatorBase {
         Map<String, Object> formulaParams = new HashMap<String, Object>();
         formulaParams.put(FormulaWeighting.PARAM_FORMULA_ID, formula);
         formulaParams.put(FormulaWeighting.PARAM_TARGET, target);
-        formulaParams.put(FormulaWeighting.PARAM_FIELD, "rischio1");
+        String field = (FormulaUtils.isAllHumanTargets(target)) ? "rischio1" : "rischio2";
+        formulaParams.put(FormulaWeighting.PARAM_FIELD, field);
         formulaParams.put(FormulaWeighting.PARAM_MATERIALS, materials);
         formulaParams.put(FormulaWeighting.PARAM_SCENARIOS, scenarios);
         formulaParams.put(FormulaWeighting.PARAM_ENTITIES, entities);
@@ -200,6 +200,51 @@ public class RoutePlannerGH extends RiskCalculatorBase {
         formulaParams.put(FormulaWeighting.PARAM_LEVEL, level);
 
         return formulaParams;
+    }
+    
+    private WeightType getWeightType(Map<String, Object> formulaParams) {
+        final int SHORTEST_PATH_FORMULA_ID = 142;
+        final int RISK_FORMULA_ID = 141;
+        final int PIS_FORMULA_ID = 22;
+        final int TARGET_SOC = 98;
+        final int TARGET_ENV = 99;
+        if (formulaParams.get(FormulaWeighting.PARAM_FORMULA_ID).equals(SHORTEST_PATH_FORMULA_ID)) {
+            return WeightType.SHORTEST;
+        } else if (formulaParams.get(FormulaWeighting.PARAM_FORMULA_ID).equals(RISK_FORMULA_ID)) {
+            if (formulaParams.get(FormulaWeighting.PARAM_TARGET).equals(TARGET_SOC)) {
+                return WeightType.RISK_SOC;
+            } else if (formulaParams.get(FormulaWeighting.PARAM_TARGET).equals(TARGET_ENV)) {
+                return WeightType.RISK_ENV;
+            }
+        } else if (formulaParams.get(FormulaWeighting.PARAM_FORMULA_ID).equals(PIS_FORMULA_ID)) {
+            return WeightType.NUM_ACC;
+        }
+        
+        // weight is dynamically calculated using the user-specified formula params
+        return WeightType.FORMULA;
+    }
+    
+    private String getGraphLocation(WeightType weightType) {
+        switch (weightType) {
+            case FORMULA:
+            case SHORTEST:
+                return "gh-STANDARD";
+            default:
+                // pre-calculated weights are encoded upon graph loading, so a weight-specific
+                // graph location must be used
+                return "gh-" + weightType;
+        }
+    }
+    
+    private EncodingManager getEncodingManager(WeightType weightType) {
+        switch (weightType) {
+            case FORMULA:
+            case SHORTEST:
+                return DestinationEncodingManager.createDefault();
+            default:
+                // encoder for pre-calculated weights
+                return new DestinationEncodingManager(DestinationEncodingManager.PRECALC_RISK, 8);
+        }
     }
     
     private synchronized GraphHopper loadGraph(DataSource ds, WeightType weightType, Map<String, Object> formulaParams) {
@@ -211,8 +256,7 @@ public class RoutePlannerGH extends RiskCalculatorBase {
         hopper.forServer();
         hopper.setOSMFile("fake.osm");
         hopper.setGraphHopperLocation(graphStorageDir.getAbsolutePath());
-        hopper.setEncodingManager(DestinationEncodingManager.createDefault());
-        //hopper.setEncodingManager(new DestinationEncodingManager(DestinationEncodingManager.PRECALC_RISK, 8));
+        hopper.setEncodingManager(getEncodingManager(weightType));
         hopper.setCHEnable(false);
         hopper.setAllowWrites(allowWrites);
         
@@ -222,14 +266,14 @@ public class RoutePlannerGH extends RiskCalculatorBase {
     }
 
     private boolean graphDirExists(WeightType weightType) {
-        File graphDir = new File(graphHopperBase, "gh-" + weightType);
+        File graphDir = new File(graphHopperBase, getGraphLocation(weightType));
 
         return graphDir.exists();
     }
 
     private File createGraphStorageDir(WeightType weightType) {
         // save graph for later re-use
-        File graphDir = new File(graphHopperBase, "gh-" + weightType);
+        File graphDir = new File(graphHopperBase, getGraphLocation(weightType));
         if (!graphDir.exists()) {
             graphDir.mkdir();
         }
@@ -237,19 +281,18 @@ public class RoutePlannerGH extends RiskCalculatorBase {
         return graphDir;
     }
     
-    private GHResponse requestRoute(GraphHopper hopper, Point startPoint, Point endPoint, String weighting) {
+    private GHResponse requestRoute(GraphHopper hopper, Point startPoint, Point endPoint, WeightType weighting) {
         final Double lonFrom = startPoint.getX();
         final Double lonTo = endPoint.getX();
         final Double latFrom = startPoint.getY();
         final Double latTo = endPoint.getY();
         GHRequest req = new GHRequest(latFrom, lonFrom, latTo, lonTo).
-                setWeighting(weighting).
-                setVehicle(weighting).
+                setWeighting(weighting.name()).
+                setVehicle(weighting.encoderName()).
                 setLocale(Locale.US);
         
         return hopper.route(req);
     }
-    
     
     private SimpleFeatureType buildRouteFeatureType(SimpleFeatureType sourceSchema) {
         SimpleFeatureTypeBuilder tb = new SimpleFeatureTypeBuilder();
