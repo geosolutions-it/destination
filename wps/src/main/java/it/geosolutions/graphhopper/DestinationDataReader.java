@@ -113,7 +113,7 @@ public class DestinationDataReader implements DataReader {
     }
     
     void processNodes(ResultSet rs) throws SQLException {
-        final double TOLERANCE = 1E-05; // in degrees
+        final double TOLERANCE = 1E-04; // in degrees
         
         int nodeCounter = 0;
         while (rs.next()) {
