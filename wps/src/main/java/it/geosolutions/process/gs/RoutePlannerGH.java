@@ -4,15 +4,19 @@ import it.geosolutions.destination.utils.FormulaUtils;
 import it.geosolutions.graphhopper.DestinationEncodingManager;
 import it.geosolutions.graphhopper.DestinationGraphHopper;
 import it.geosolutions.graphhopper.FormulaWeighting;
-import it.geosolutions.graphhopper.PrecalculatedRiskWeighting;
+import it.geosolutions.graphhopper.Utils;
 import it.geosolutions.graphhopper.WeightType;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.sql.DataSource;
@@ -23,9 +27,12 @@ import org.geoserver.config.GeoServerDataDirectory;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.collection.ListFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.NameImpl;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.geotools.filter.text.cql2.CQLException;
+import org.geotools.filter.text.ecql.ECQL;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.jdbc.JDBCDataStore;
 import org.geotools.process.ProcessException;
@@ -37,6 +44,7 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.util.logging.Logging;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 
@@ -44,9 +52,9 @@ import com.graphhopper.GHRequest;
 import com.graphhopper.GHResponse;
 import com.graphhopper.GraphHopper;
 import com.graphhopper.routing.util.EncodingManager;
-import com.graphhopper.routing.util.ShortestWeighting;
 import com.graphhopper.util.PointList;
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
@@ -84,7 +92,8 @@ public class RoutePlannerGH extends RiskCalculatorBase {
             @DescribeParameter(name = "severeness", description = "ids of the severeness to use in calculation") String severeness,
             @DescribeParameter(name = "fp", description = "fields to use for fp calculation", min = 0) String fpfield,
             @DescribeParameter(name = "crs", description ="EPSG code of the crs to use for damage calculation", min=0) String crs,
-            @DescribeParameter(name = "level", description ="optional aggregation level", min=0) Integer level
+            @DescribeParameter(name = "level", description ="optional aggregation level", min=0) Integer level,
+            @DescribeParameter(name = "blocked", description ="optional ids of blocked edges", min=0) String blockedIds
     
     ) throws IOException, SQLException {
         // building DataStore connection using Catalog/storeName or connection input
@@ -119,7 +128,7 @@ public class RoutePlannerGH extends RiskCalculatorBase {
         Point endPoint = geomFactory.createPoint(checkAndReturnCoords(endCoordsArray));
         
         return calculateRoute(features, dataStore, startPoint, endPoint, formula, target, materials,
-                scenarios, entities, severeness, fpfield, level);
+                scenarios, entities, severeness, fpfield, level, blockedIds);
     }
 
     private Coordinate checkAndReturnCoords(String[] coordsArray) {
@@ -141,7 +150,7 @@ public class RoutePlannerGH extends RiskCalculatorBase {
     private SimpleFeatureCollection calculateRoute(SimpleFeatureCollection features,
             JDBCDataStore dataStore, Point startPoint, Point endPoint, int formula, int target,
             String materials, String scenarios, String entities, String severeness, String fpfield,
-            Integer level) throws IOException, SQLException {
+            Integer level, String blockedIds) throws IOException, SQLException {
         // feature level (1, 2, 3)
         if(level == null) {
             level = FormulaUtils.getLevel(features);
@@ -149,10 +158,10 @@ public class RoutePlannerGH extends RiskCalculatorBase {
         
         LOGGER.fine("Doing route calculation with the following parameters: Processing=1" +
                 ",Formula=" + formula + ",Target=" + target + ",Substances=" + materials + ",Scenarios=" +
-                scenarios + ",Entities=" + entities + ",Level=" + level);
+                scenarios + ",Entities=" + entities + ",Level=" + level + ",Blocked=" + blockedIds);
         
         Map<String, Object> formulaParams = buildFormulaParams(formula, target, materials,
-                scenarios, entities, severeness, fpfield,  level);
+                scenarios, entities, severeness, fpfield, level, blockedIds);
         WeightType weightType = getWeightType(formulaParams);
         DataSource ds = dataStore.getDataSource();
         
@@ -175,18 +184,47 @@ public class RoutePlannerGH extends RiskCalculatorBase {
         // - weight (double, risk units)
         // - distance (double, meters)
         // - time (long, milliseconds)
+        // - blocked (boolean)
         // - geometria (LineString)
         SimpleFeatureType routeFT = buildRouteFeatureType(features.getSchema());
         // build feature and add it to feature collection to be returned
-        SimpleFeature routeFeature = buildRouteFeature(routeFT, weight, distance, time, routeGeom);
+        SimpleFeature routeFeature = buildRouteFeature(routeFT, weight, distance, time, false, routeGeom);
         ListFeatureCollection result = new ListFeatureCollection(routeFT);
         result.add(routeFeature);
+        
+        // add blocked edges to the result collection
+        Set<Integer> blockedEdges = (Set<Integer>) formulaParams.getOrDefault(Utils.BLOCKED_EDGE_IDS_KEY, null);
+        if (blockedEdges != null && blockedEdges.size() > 0) {
+            SimpleFeatureIterator it = null;
+            try {
+                Filter blockedEdgesFilter = ECQL.toFilter("id_geo_arco IN (" + blockedIds + ")");
+                SimpleFeatureCollection blockedFeatures = features.subCollection(blockedEdgesFilter);
+                it = blockedFeatures.features();
+                while (it.hasNext()) {
+                    SimpleFeature edgeFeature = it.next();
+                    BigDecimal idGeoArco = (BigDecimal) edgeFeature.getAttribute("id_geo_arco");
+                    Integer edgeDbId = idGeoArco.intValue();
+                    Geometry geom = (Geometry) edgeFeature.getDefaultGeometry();
+                    
+                    if (blockedEdges.contains(edgeDbId)) {
+                        SimpleFeature blockedEdgeFeature = buildRouteFeature(routeFT, 0.0, 0.0, 0, true, geom);
+                        result.add(blockedEdgeFeature);
+                    }
+                }
+            } catch (CQLException e) {
+                LOGGER.log(Level.FINE, "Could not parse blocked edge IDs", e);
+            } finally {
+                if (it != null) {
+                    it.close();
+                }
+            }
+        }
         
         return result;
     }
     
     private Map<String, Object> buildFormulaParams(int formula, int target, String materials,
-            String scenarios, String entities, String severeness, String fpfield, Integer level) {
+            String scenarios, String entities, String severeness, String fpfield, Integer level, String blockedIds) {
         Map<String, Object> formulaParams = new HashMap<String, Object>();
         formulaParams.put(FormulaWeighting.PARAM_FORMULA_ID, formula);
         formulaParams.put(FormulaWeighting.PARAM_TARGET, target);
@@ -198,10 +236,34 @@ public class RoutePlannerGH extends RiskCalculatorBase {
         formulaParams.put(FormulaWeighting.PARAM_SEVERENESS, severeness);
         formulaParams.put(FormulaWeighting.PARAM_FPFIELD, fpfield);
         formulaParams.put(FormulaWeighting.PARAM_LEVEL, level);
+        formulaParams.put(FormulaWeighting.PARAM_BLOCKED, parseBlockedIds(blockedIds));
 
         return formulaParams;
     }
     
+
+    private Set<Integer> parseBlockedIds(String edgeIds) {
+        Set<Integer> blockedIds = new HashSet<Integer>();
+        
+        if (edgeIds != null) {
+            String[] csvList = edgeIds.split(",");
+            for (String dbIdAsString: csvList) {
+                int dbId = -1;
+                try {
+                    dbId = Integer.valueOf(dbIdAsString.trim());
+                    
+                    if (dbId >= 0) {
+                        blockedIds.add(dbId);
+                    }
+                } catch (NumberFormatException e) {
+                    // ignore
+                }
+            }
+        }
+        
+        return blockedIds;
+    }
+
     private WeightType getWeightType(Map<String, Object> formulaParams) {
         final int SHORTEST_PATH_FORMULA_ID = 142;
         final int RISK_FORMULA_ID = 141;
@@ -248,9 +310,8 @@ public class RoutePlannerGH extends RiskCalculatorBase {
     }
     
     private synchronized GraphHopper loadGraph(DataSource ds, WeightType weightType, Map<String, Object> formulaParams) {
-        boolean allowWrites = !graphDirExists(weightType);
-
         File graphStorageDir = createGraphStorageDir(weightType);
+        boolean allowWrites = Utils.isGraphStorageDirEmpty(graphStorageDir);
 
         GraphHopper hopper = new DestinationGraphHopper(ds, weightType, formulaParams);
         hopper.forServer();
@@ -263,12 +324,6 @@ public class RoutePlannerGH extends RiskCalculatorBase {
         hopper.importOrLoad();
         
         return hopper;
-    }
-
-    private boolean graphDirExists(WeightType weightType) {
-        File graphDir = new File(graphHopperBase, getGraphLocation(weightType));
-
-        return graphDir.exists();
     }
 
     private File createGraphStorageDir(WeightType weightType) {
@@ -299,6 +354,7 @@ public class RoutePlannerGH extends RiskCalculatorBase {
         tb.add("weight", Double.class);
         tb.add("distance", Double.class);
         tb.add("time", Long.class);
+        tb.add("blocked", Boolean.class);
         // returned geometries should be in the same CRS as input ones
         CoordinateReferenceSystem targetCRS = sourceSchema.getGeometryDescriptor()
                 .getCoordinateReferenceSystem();
@@ -335,11 +391,12 @@ public class RoutePlannerGH extends RiskCalculatorBase {
     }
     
     private SimpleFeature buildRouteFeature(SimpleFeatureType routeFT, double weight,
-            double distance, long time, LineString geometry) {
+            double distance, long time, boolean blocked, Geometry geometry) {
         SimpleFeatureBuilder fb = new SimpleFeatureBuilder(routeFT);
         fb.set("weight", weight);
         fb.set("distance", distance);
         fb.set("time", time);
+        fb.set("blocked", blocked);
         fb.set("geometria", geometry);
 
         return fb.buildFeature(null);

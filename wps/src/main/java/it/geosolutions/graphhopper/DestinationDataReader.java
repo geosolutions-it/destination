@@ -236,6 +236,7 @@ public class DestinationDataReader implements DataReader {
                     flags = encoder.setDouble(flags, PrecalculatedRiskWeighting.RISK, nrIncidentiElab);
                     break;
                 case FORMULA:
+                case SHORTEST:
                     encoder = em.getEncoder(DestinationEncodingManager.FORMULA);
                     flags = encoder.setLong(flags, FormulaWeighting.EDGE_ID, dbEdgeId);
                     break;
@@ -244,10 +245,20 @@ public class DestinationDataReader implements DataReader {
             }
             
             EdgeIteratorState newEdge = graphStorage.edge(sourceGraphId, targetGraphId)
-                    .setDistance(length).setFlags(flags);
+                    .setDistance(length).setFlags(flags)
+                    // the edge db identifier is saved as the edge name for later retrieval
+                    .setName(Integer.toString(dbEdgeId));
             if (pillarNodes != null) {
                 newEdge.setWayGeometry(pillarNodes);
             }
         }
+    }
+    
+    public int getEdgeGraphId(int edgeDbId) {
+        if (!dbIdToGraphId.containsKey(edgeDbId)) {
+            return -1;
+        }
+        
+        return dbIdToGraphId.get(edgeDbId);
     }
 }

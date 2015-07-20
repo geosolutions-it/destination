@@ -1,6 +1,7 @@
 package it.geosolutions.graphhopper;
 
 import java.util.Map;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -36,15 +37,16 @@ public class WeightingFactory {
             throw new IllegalArgumentException("weightType not specified");
         }
         
+        Set<Integer> blockedEdges = (Set<Integer>) weightParams.get(Utils.BLOCKED_EDGE_IDS_KEY);
         switch (weightType) {
             case RISK_SOC:
             case RISK_ENV:
             case NUM_ACC:
-                return new PrecalculatedRiskWeighting(encoder);
+                return new PrecalculatedRiskWeighting(encoder, blockedEdges);
             case FORMULA:
                 return new FormulaWeighting(encoder, dataSource, weightParams);
             case SHORTEST:
-                return new ShortestWeighting();
+                return new BlockingShortestWeighting(blockedEdges);
             default:
                 throw new IllegalArgumentException("Unknown weight type: " + weightType);
         }
