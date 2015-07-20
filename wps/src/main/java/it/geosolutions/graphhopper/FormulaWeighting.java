@@ -5,8 +5,10 @@ import it.geosolutions.destination.utils.FormulaUtils;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,6 +37,7 @@ public class FormulaWeighting implements Weighting {
     public static final String PARAM_SEVERENESS = "SEVERENESS";
     public static final String PARAM_FPFIELD = "FPFIELD";
     public static final String PARAM_LEVEL = "LEVEL";
+    public static final String PARAM_BLOCKED = Utils.BLOCKED_EDGE_IDS_KEY;
     
     private static final int DEFAULT_FORMULA_ID = 141;
     private static final int DEFAULT_TARGET = 100; // all targets
@@ -46,6 +49,7 @@ public class FormulaWeighting implements Weighting {
     public static final String DEFAULT_SEVERENESS = "1,2,3,4,5";
     public static final String DEFAULT_FPFIELD = "fp_scen_centrale";
     private static final int DEFAULT_LEVEL = 1;
+    private static final Set<Integer> DEFAULT_BLOCKED = Collections.emptySet();
     
     private DataSource ds;
     private Map<String, Object> formulaParams;
@@ -85,49 +89,54 @@ public class FormulaWeighting implements Weighting {
     
     @Override
     public double calcWeight(EdgeIteratorState edgeState, boolean reverse, int prevOrNextEdgeId) {
-        long edgeId = encoder.getLong(edgeState.getFlags(), EDGE_ID);
-        String field = getOrDefault(formulaParams, PARAM_FIELD, DEFAULT_FIELD);
-        String materials = getOrDefault(formulaParams, PARAM_MATERIALS, DEFAULT_MATERIALS);
-        String kemler = getOrDefault(formulaParams, PARAM_KEMLER, DEFAULT_KEMLER);
-        String scenarios = getOrDefault(formulaParams, PARAM_SCENARIOS, DEFAULT_SCENARIOS);
-        String entities = getOrDefault(formulaParams, PARAM_ENTITIES, DEFAULT_ENTITIES);
-        String severeness = getOrDefault(formulaParams, PARAM_SEVERENESS, DEFAULT_SEVERENESS);
-        String fpfield = getOrDefault(formulaParams, PARAM_FPFIELD, DEFAULT_FPFIELD);
-        int level = getOrDefault(formulaParams, PARAM_LEVEL, DEFAULT_LEVEL);
-        
-        Connection conn = null;
-        try {
-            conn = ds.getConnection();
-            Number formulaOutput = FormulaUtils.calculateFormulaValues(conn, 
-                    level,
-                    1, // processing,
-                    formulaDescriptor,
-                    "" + edgeId,
-                    null, // fk_partner
-                    materials,
-                    kemler,
-                    scenarios,
-                    entities,
-                    severeness,
-                    fpfield,
-                    formulaDescriptor.getSql(),
-                    field,
-                    "1,2,4,5,6,7,8", // targets
-                    null, // changedTargets
-                    null, // features
-                    4, // precision,
-                    null, // cff // optional List of csv "id_bersaglo,cff" values to use on the simulation
-                    null, // psc, // optional List of csv id_sostanza,psc values to use
-                                      // on the simulation
-                    null, // padr, // optional List of csv id_sostanza,padr values to use on the simulation
-                    null, // pis, // optional List of csv id_geo_arco,pis values to use on the simulation
-                    null); // damageValues)
+        long edgeDbId = encoder.getLong(edgeState.getFlags(), EDGE_ID);
+        Set<Integer> blockedEdges = getOrDefault(formulaParams, PARAM_BLOCKED, DEFAULT_BLOCKED);
+        if (blockedEdges.contains(new Long(edgeDbId).intValue())) {
+            return Double.POSITIVE_INFINITY;
+        } else {
+            String field = getOrDefault(formulaParams, PARAM_FIELD, DEFAULT_FIELD);
+            String materials = getOrDefault(formulaParams, PARAM_MATERIALS, DEFAULT_MATERIALS);
+            String kemler = getOrDefault(formulaParams, PARAM_KEMLER, DEFAULT_KEMLER);
+            String scenarios = getOrDefault(formulaParams, PARAM_SCENARIOS, DEFAULT_SCENARIOS);
+            String entities = getOrDefault(formulaParams, PARAM_ENTITIES, DEFAULT_ENTITIES);
+            String severeness = getOrDefault(formulaParams, PARAM_SEVERENESS, DEFAULT_SEVERENESS);
+            String fpfield = getOrDefault(formulaParams, PARAM_FPFIELD, DEFAULT_FPFIELD);
+            int level = getOrDefault(formulaParams, PARAM_LEVEL, DEFAULT_LEVEL);
             
-            return (formulaOutput != null) ? formulaOutput.doubleValue() : null;
-        } catch (SQLException e) {
-            throw new RuntimeException("Formula calculation failed", e);
-        } finally {
-            closeConnection(conn);
+            Connection conn = null;
+            try {
+                conn = ds.getConnection();
+                Number formulaOutput = FormulaUtils.calculateFormulaValues(conn, 
+                        level,
+                        1, // processing,
+                        formulaDescriptor,
+                        "" + edgeDbId,
+                        null, // fk_partner
+                        materials,
+                        kemler,
+                        scenarios,
+                        entities,
+                        severeness,
+                        fpfield,
+                        formulaDescriptor.getSql(),
+                        field,
+                        "1,2,4,5,6,7,8", // targets
+                        null, // changedTargets
+                        null, // features
+                        4, // precision,
+                        null, // cff // optional List of csv "id_bersaglo,cff" values to use on the simulation
+                        null, // psc, // optional List of csv id_sostanza,psc values to use
+                                          // on the simulation
+                        null, // padr, // optional List of csv id_sostanza,padr values to use on the simulation
+                        null, // pis, // optional List of csv id_geo_arco,pis values to use on the simulation
+                        null); // damageValues)
+                
+                return (formulaOutput != null) ? formulaOutput.doubleValue() : null;
+            } catch (SQLException e) {
+                throw new RuntimeException("Formula calculation failed", e);
+            } finally {
+                closeConnection(conn);
+            }
         }
     }
 

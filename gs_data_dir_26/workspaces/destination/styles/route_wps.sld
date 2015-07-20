@@ -104,11 +104,23 @@
                                 <ogc:Literal>1</ogc:Literal>
                             </ogc:Function>
                         </ogc:Function>
+                      	<ogc:Function name="parameter">
+                            <ogc:Literal>blocked</ogc:Literal>
+                            <ogc:Function name="env">
+                                <ogc:Literal>blocked</ogc:Literal>
+                            </ogc:Function>
+                        </ogc:Function>
                     </ogc:Function>
                 </Transformation>
                 <Rule>
                     <Title>Percorso a rischio minimo</Title>
                     <Abstract>Percorso a rischio minimo</Abstract>
+                  	<ogc:Filter>
+                      <ogc:PropertyIsEqualTo>
+                        <ogc:PropertyName>blocked</ogc:PropertyName>
+                        <ogc:Literal>false</ogc:Literal>
+                      </ogc:PropertyIsEqualTo>
+                   	</ogc:Filter>
                     <LineSymbolizer
                         uom="http://www.opengeospatial.org/se/units/metre">
                         <Stroke>
@@ -211,6 +223,37 @@
                         <VendorOption name="group">yes</VendorOption>
                     </TextSymbolizer>
                 </Rule>
+              	<Rule>
+                    <Title>Tratta bloccata</Title>
+                    <Abstract>Tratta bloccata</Abstract>
+                  	<ogc:Filter>
+                      <ogc:PropertyIsEqualTo>
+                        <ogc:PropertyName>blocked</ogc:PropertyName>
+                        <ogc:Literal>true</ogc:Literal>
+                      </ogc:PropertyIsEqualTo>
+                   	</ogc:Filter>
+                    <LineSymbolizer
+                        uom="http://www.opengeospatial.org/se/units/metre">
+                        <Stroke>
+                          <GraphicStroke>
+                             <Graphic>
+                               <Mark>
+                                 <WellKnownName>x</WellKnownName>
+                                 <Fill>
+                                   <CssParameter name="fill">#FCFF08</CssParameter>
+                                 </Fill>
+                                 <Stroke>
+                                   <CssParameter name="stroke">#000000</CssParameter>
+                                   <CssParameter name="stroke-width">4</CssParameter>
+                                 </Stroke>
+                               </Mark>
+                               <Size>96</Size>
+                             </Graphic>
+                           </GraphicStroke>
+                            <CssParameter name="stroke-dasharray">76 32</CssParameter>
+                        </Stroke>
+                    </LineSymbolizer>
+              </Rule>
             </FeatureTypeStyle>
         </UserStyle>
     </NamedLayer>

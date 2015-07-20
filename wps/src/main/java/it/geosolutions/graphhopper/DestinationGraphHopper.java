@@ -44,7 +44,7 @@ public class DestinationGraphHopper extends GraphHopper {
     protected DataReader createReader(GraphStorage tmpGraph) {
         return new DestinationDataReader(tmpGraph, dataSource, weightType);
     }
-    
+
     @Override
     public Weighting createWeighting(WeightingMap weightingMap, FlagEncoder encoder) {
         try {

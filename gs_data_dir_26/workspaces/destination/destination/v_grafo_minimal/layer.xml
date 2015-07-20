@@ -1,0 +1,15 @@
+<layer>
+  <name>v_grafo_minimal</name>
+  <id>LayerInfoImpl-3d7f503f:14e9c657781:304f</id>
+  <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl--304b338b:13f9e44fe32:-7ffe</id>
+  </defaultStyle>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl-3d7f503f:14e9c657781:304e</id>
+  </resource>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+</layer>
