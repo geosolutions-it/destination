@@ -104,6 +104,14 @@ public class FormulaUtils {
         return target == 98;
     }
     
+    public static boolean isHumanTarget(int target) {
+        return isAllHumanTargets(target) || (isSimpleTarget(target) && (","+humanTargetsList+",").contains(","+target+","));
+    }
+    
+    public static boolean isNotHumanTarget(int target) {
+        return isAllNotHumanTargets(target) || (isSimpleTarget(target) && (","+notHumanTargetsList+",").contains(","+target+","));
+    }
+    
     /**
      * User chose a specific target.
      * 

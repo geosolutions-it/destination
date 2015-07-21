@@ -193,7 +193,7 @@ public class RoutePlannerGH extends RiskCalculatorBase {
         result.add(routeFeature);
         
         // add blocked edges to the result collection
-        Set<Integer> blockedEdges = (Set<Integer>) formulaParams.getOrDefault(Utils.BLOCKED_EDGE_IDS_KEY, null);
+        Set<Integer> blockedEdges = (Set<Integer>) formulaParams.get(Utils.BLOCKED_EDGE_IDS_KEY);
         if (blockedEdges != null && blockedEdges.size() > 0) {
             SimpleFeatureIterator it = null;
             try {

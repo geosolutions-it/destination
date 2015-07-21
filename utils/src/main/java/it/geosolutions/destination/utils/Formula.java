@@ -37,6 +37,15 @@ public class Formula {
 	private boolean arcs = false;
 	private boolean targets = false;
 	
+	private double temaSocLow = 0.0;
+	private double temaSocMedium = 0.0;
+	private double temaSocMax = 0.0;
+	
+	private double temaEnvLow = 0.0;
+        private double temaEnvMedium = 0.0;
+        private double temaEnvMax = 0.0;
+	
+	
 	int[] humanTargets = new int[] {1,2,4,5,6,7,8,9};
 	int[] notHumanTargets = new int[] {10,11,12,13,14,15,16};
 	
@@ -51,7 +60,9 @@ public class Formula {
 	/**
 	 * @param grid
 	 */
-	public Formula(String sql, String description, boolean nogrid, boolean grid, boolean arcs, boolean targets) {
+	public Formula(String sql, String description, boolean nogrid, boolean grid, boolean arcs, boolean targets,
+	        double temaSocLow, double temaSocMedium, double temaSocMax,
+	        double temaEnvLow, double temaEnvMedium, double temaEnvMax) {
 		super();
 		
 		this.sql = sql;
@@ -60,6 +71,14 @@ public class Formula {
 		this.nogrid = nogrid;
 		this.arcs = arcs;
 		this.targets = targets;
+		
+		this.temaSocLow = temaSocLow;
+		this.temaSocMedium = temaSocMedium;
+		this.temaSocMax = temaSocMax;
+		
+		this.temaEnvLow = temaEnvLow;
+                this.temaEnvMedium = temaEnvMedium;
+                this.temaEnvMax = temaEnvMax;
 	}
 	
 	
@@ -110,14 +129,22 @@ public class Formula {
 	 * @throws SQLException 
 	 */
 	public static Formula load(Connection conn, int processing, int formula, int target, String language) throws SQLException {
-		String sql =  "select formula, flg_visibile, ";
-		   sql += " coalesce((select flg_obbligatorio+1 from siig_mtd_r_formula_criterio where id_formula=siig_mtd_t_formula.id_formula and id_criterio=1),0) as flg_i, ";
-		   sql += " coalesce((select flg_obbligatorio+1 from siig_mtd_r_formula_criterio where id_formula=siig_mtd_t_formula.id_formula and id_criterio=4),0) as flg_m_1, ";
-		   sql += " coalesce((select flg_obbligatorio+1 from siig_mtd_r_formula_criterio where id_formula=siig_mtd_t_formula.id_formula and id_criterio=5),0) as flg_m_2, ";
-		   sql += " coalesce((select flg_obbligatorio+1 from siig_mtd_r_formula_criterio where id_formula=siig_mtd_t_formula.id_formula and id_criterio=6),0) as flg_m_3, ";
-		   sql += " descrizione_"+language+" as description ";
-	       sql += "from siig_mtd_t_formula ";	       
-	       sql += "where id_formula=?";
+		String sql =  "select f.formula, f.flg_visibile, ";
+		   sql += " coalesce((select flg_obbligatorio+1 from siig_mtd_r_formula_criterio where id_formula=f.id_formula and id_criterio=1),0) as flg_i, ";
+		   sql += " coalesce((select flg_obbligatorio+1 from siig_mtd_r_formula_criterio where id_formula=f.id_formula and id_criterio=4),0) as flg_m_1, ";
+		   sql += " coalesce((select flg_obbligatorio+1 from siig_mtd_r_formula_criterio where id_formula=f.id_formula and id_criterio=5),0) as flg_m_2, ";
+		   sql += " coalesce((select flg_obbligatorio+1 from siig_mtd_r_formula_criterio where id_formula=f.id_formula and id_criterio=6),0) as flg_m_3, ";
+		   sql += " f.descrizione_"+language+" as description, ";
+		   sql += " coalesce(f_soc.tema_low,f.tema_low) as tema_soc_low, ";
+		   sql += " coalesce(f_soc.tema_medium,f.tema_medium) as tema_soc_medium, ";
+		   sql += " coalesce(f_soc.tema_max,f.tema_max) as tema_soc_max, ";
+		   sql += " coalesce(f_env.tema_low,f.tema_low) as tema_env_low, ";
+                   sql += " coalesce(f_env.tema_medium,f.tema_medium) as tema_env_medium, ";
+                   sql += " coalesce(f_env.tema_max,f.tema_max) as tema_env_max ";
+	       sql += "from siig_mtd_t_formula f ";	       
+	       sql += "left outer join siig_mtd_t_formula f_soc on f.fk_formula_soc = f_soc.id_formula ";
+	       sql += "left outer join siig_mtd_t_formula f_env on f.fk_formula_env = f_env.id_formula ";
+	       sql += "where f.id_formula=?";
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		try {
@@ -126,7 +153,10 @@ public class Formula {
 			rs = stmt.executeQuery();			
 			if(rs.next()) {
 				return new Formula(rs.getString(1), rs.getString(7), rs.getInt(2) == 1 || rs.getInt(2) == 3, rs.getInt(2) == 2 || rs.getInt(2) == 3,
-						rs.getInt(3) > 0, rs.getInt(4) > 0 || rs.getInt(5) > 0 || rs.getInt(6) > 0).parse(conn, target, processing);				
+						rs.getInt(3) > 0, rs.getInt(4) > 0 || rs.getInt(5) > 0 || rs.getInt(6) > 0,
+						rs.getDouble(8), rs.getDouble(9), rs.getDouble(10),
+						rs.getDouble(11), rs.getDouble(12), rs.getDouble(13)
+						).parse(conn, target, processing);				
 			}
 			return null;
 		} finally {
@@ -287,6 +317,42 @@ public class Formula {
 	public boolean aggregateSevereness() {
 		return aggregateOn(9);
 	}
+
+
+
+    public double getTemaSocLow() {
+        return temaSocLow;
+    }
+
+
+
+    public double getTemaSocMedium() {
+        return temaSocMedium;
+    }
+
+
+
+    public double getTemaSocMax() {
+        return temaSocMax;
+    }
+
+
+
+    public double getTemaEnvLow() {
+        return temaEnvLow;
+    }
+
+
+
+    public double getTemaEnvMedium() {
+        return temaEnvMedium;
+    }
+
+
+
+    public double getTemaEnvMax() {
+        return temaEnvMax;
+    }
 
 	
 }	

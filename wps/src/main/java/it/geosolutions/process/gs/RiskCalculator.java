@@ -25,8 +25,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +44,6 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.collection.ListFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
-import org.geotools.data.store.EmptyFeatureCollection;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.NameImpl;
@@ -58,7 +60,6 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.FilterFactory2;
 
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 
@@ -75,7 +76,7 @@ public class RiskCalculator extends RiskCalculatorBase {
     
     private static final FilterFactory2 ff2 = CommonFactoryFinder
             .getFilterFactory2();
-    
+       
     /**
      * @param catalog
      */
@@ -204,7 +205,8 @@ public class RiskCalculator extends RiskCalculatorBase {
             @DescribeParameter(name = "damageArea", description = "optional field containing damage area geometry or an id for the ProcessingRepository storing the same data", min = 0) String damageArea,
             @DescribeParameter(name = "extendedSchema", description = "optional field that chooses an extended schema for the result (useful for download)", min = 0) Boolean extendedSchema,
             @DescribeParameter(name = "crs", description ="EPSG code of the crs to use for damage calculation", min=0) String crs,
-            @DescribeParameter(name = "level", description ="optional aggregation level", min=0) Integer level
+            @DescribeParameter(name = "level", description ="optional aggregation level", min=0) Integer level,
+            @DescribeParameter(name = "mobile", description ="flag to enable additional functionalities on mobile", min=0) Boolean mobile
     
     ) throws IOException, SQLException {
         // building DataStore connection using Catalog/storeName or connection input
@@ -231,6 +233,9 @@ public class RiskCalculator extends RiskCalculatorBase {
         }
         if (extendedSchema == null) {
             extendedSchema = false;
+        }
+        if(mobile == null) {
+            mobile = false;
         }
         checkProcessingAllowed(dataStore, storeName, processing);
         if (processing == 3) {
@@ -268,7 +273,7 @@ public class RiskCalculator extends RiskCalculatorBase {
                     connectionParams, processing, formula, target, materials, kemler,
                     scenarios, entities, severeness, fpfield, 1, true, null, null,
                     simulationTargets, cffs, pscs, padrs, piss, distancesList,
-                    extendedSchema, level);
+                    extendedSchema, level, mobile);
         } else if (processing == 4) {
             // damage calculus
             try {
@@ -282,7 +287,7 @@ public class RiskCalculator extends RiskCalculatorBase {
                         connectionParams, processing, formula, target, materials, kemler,
                         scenarios, entities, severeness, fpfield, 1, false,
                         damageAreaGeometry, damageValues, null, null, null, null,
-                        null, null, extendedSchema, level);
+                        null, null, extendedSchema, level, mobile);
             } catch (ParseException e) {
                 throw new ProcessException("Error reading targets WKT", e);
             }
@@ -296,7 +301,7 @@ public class RiskCalculator extends RiskCalculatorBase {
             return calculateRisk(features, dataStore, storeName, precision,
                     connectionParams, processing, formula, target, materials, kemler,
                     scenarios, entities, severeness, fpfield, batch, false, null,
-                    null, null, null, null, null, null, null, extendedSchema, level);
+                    null, null, null, null, null, null, null, extendedSchema, level, mobile);
     
         }
     
@@ -536,7 +541,7 @@ public class RiskCalculator extends RiskCalculatorBase {
             Map<Integer, Double> damageValues, List<TargetInfo> changedTargets,
             Map<Integer, Map<Integer, Double>> cffs, List<String> psc,
             Map<Integer, Map<Integer, Double>> padrs, Map<Integer, Double> piss,
-            List<Integer> distances, boolean extendedSchema, Integer level) throws IOException,
+            List<Integer> distances, boolean extendedSchema, Integer level, boolean mobile) throws IOException,
             SQLException {
     
         if (precision == null) {
@@ -572,6 +577,14 @@ public class RiskCalculator extends RiskCalculatorBase {
             } else {
                 tb.add("rischio1", Double.class);
                 tb.add("rischio2", Double.class);
+                if(mobile) {
+                    tb.add("label_sociale", String.class);
+                    tb.add("label_ambientale", String.class);
+                    tb.add("label_totale", String.class);
+                    tb.add("thema_sociale", Integer.class);
+                    tb.add("thema_ambientale", Integer.class);
+                    tb.add("thema_totale", Integer.class);
+                }
             }
             // fake layer name (risk) used for WPS output. Layer risk must be
             // defined in GeoServer
@@ -641,6 +654,14 @@ public class RiskCalculator extends RiskCalculatorBase {
                         fb.add((Number) feature.getAttribute("nr_incidenti"));
                     } else {
                         fb.add(risk[1]);
+                        if(mobile) {
+                            fb.add("");
+                            fb.add("");
+                            fb.add("");
+                            fb.add(0);
+                            fb.add(0);
+                            fb.add(0);
+                        }
                     }
                     temp.put(id.intValue(), fb.buildFeature(id + ""));
 
@@ -737,7 +758,7 @@ public class RiskCalculator extends RiskCalculatorBase {
                                     fk_partner, materials, kemler, scenarios, entities,
                                     severeness, fpfield, target, temp,
                                     precision, extendedSchema);
-                            result.addAll(temp.values());
+                            result.addAll(processForMobile(temp.values(), mobile, target, formulaDescriptor));
                             ids = new StringBuilder();
                             temp = new HashMap<Number, SimpleFeature>();
                         }
@@ -755,7 +776,7 @@ public class RiskCalculator extends RiskCalculatorBase {
                             temp, precision, extendedSchema);
                     
                 }
-                result.addAll(temp.values());
+                result.addAll(processForMobile(temp.values(), mobile, target, formulaDescriptor));
                 LOGGER.fine("Total calculated values: " + result.size());
                 
 
@@ -772,6 +793,77 @@ public class RiskCalculator extends RiskCalculatorBase {
             }
         }
     
+    }
+
+    private Collection<? extends SimpleFeature> processForMobile(Collection<SimpleFeature> values,
+            boolean mobile, int target, Formula formulaDescriptor) {
+        
+        if(mobile) {
+            for(SimpleFeature feature : values) {
+                if(!formulaDescriptor.useTargets()) {
+                    feature.setAttribute("label_sociale", getLabelFrom(feature, "rischio1"));
+                    feature.setAttribute("thema_sociale", getThema(feature, "rischio1", formulaDescriptor.getTemaSocLow(), formulaDescriptor.getTemaSocMedium(), formulaDescriptor.getTemaSocMax()));
+                } else if(FormulaUtils.isAllTargets(target)) {
+                    feature.setAttribute("label_sociale", getLabelFrom(feature, "rischio1"));
+                    feature.setAttribute("label_ambientale", getLabelFrom(feature, "rischio2"));
+                    feature.setAttribute("label_totale", getLabelFrom(feature, "rischio1") + " - " + getLabelFrom(feature, "rischio2"));
+                    feature.setAttribute("thema_sociale", getThema(feature, "rischio1", formulaDescriptor.getTemaSocLow(), formulaDescriptor.getTemaSocMedium(), formulaDescriptor.getTemaSocMax()));
+                    feature.setAttribute("thema_ambientale", getThema(feature, "rischio2", formulaDescriptor.getTemaEnvLow(), formulaDescriptor.getTemaEnvMedium(), formulaDescriptor.getTemaEnvMax()));
+                    feature.setAttribute("thema_totale", getThema(feature, "rischio1", formulaDescriptor.getTemaSocLow(), formulaDescriptor.getTemaSocMedium(), formulaDescriptor.getTemaSocMax(), "rischio2", formulaDescriptor.getTemaEnvLow(), formulaDescriptor.getTemaEnvMedium(), formulaDescriptor.getTemaEnvMax()));
+                } else if(FormulaUtils.isHumanTarget(target)) {
+                    feature.setAttribute("label_sociale", getLabelFrom(feature, "rischio1"));
+                    feature.setAttribute("thema_sociale", getThema(feature, "rischio1", formulaDescriptor.getTemaSocLow(), formulaDescriptor.getTemaSocMedium(), formulaDescriptor.getTemaSocMax()));
+                } else {
+                    feature.setAttribute("label_ambientale", getLabelFrom(feature, "rischio1"));
+                    feature.setAttribute("thema_ambientale", getThema(feature, "rischio1", formulaDescriptor.getTemaEnvLow(), formulaDescriptor.getTemaEnvMedium(), formulaDescriptor.getTemaEnvMax()));
+                }
+            }
+        }
+        return values;
+    }
+
+    private Object getThema(SimpleFeature feature, String fieldName1, double temaSocLow,
+            double temaSocMedium, double temaSocMax, String fieldName2, double temaEnvLow,
+            double temaEnvMedium, double temaEnvMax) {
+        double value1 = (Double)feature.getAttribute(fieldName1);
+        double value2 = (Double)feature.getAttribute(fieldName2);
+        if(value1 < temaSocLow && value2 < temaEnvLow) {
+            return 1;
+        } else if(value1 < temaSocLow && value2 < temaEnvMedium) {
+            return 2;
+        } else if(value1 < temaSocLow && value2 >= temaEnvMedium) {
+            return 3;
+        } else if(value1 < temaSocMedium && value2 < temaEnvLow) {
+            return 4;
+        } else if(value1 < temaSocMedium && value2 < temaEnvMedium) {
+            return 5;
+        } else if(value1 < temaSocMedium && value2 >= temaEnvMedium) {
+            return 6;
+        } else if(value1 >= temaSocMedium && value2 < temaEnvLow) {
+            return 7;
+        } else if(value1 >= temaSocMedium && value2 < temaEnvMedium) {
+            return 8;
+        }
+        return 9;
+    }
+
+    private int getThema(SimpleFeature feature, String fieldName, double temaLow,
+            double temaMedium, double temaMax) {
+        double value = (Double)feature.getAttribute(fieldName);
+        if(value < temaLow) {
+            return 1;
+        } else if(value < temaMedium) {
+            return 2;
+        }
+        return 3;
+    }
+
+    private String getLabelFrom(SimpleFeature feature, String fieldName) {
+        return formatDouble((Double)feature.getAttribute(fieldName));
+    }
+
+    private String formatDouble(Double value) {
+        return value + "";
     }
 
 }
