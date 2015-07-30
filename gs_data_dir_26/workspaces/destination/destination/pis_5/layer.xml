@@ -1,0 +1,15 @@
+<layer>
+  <name>pis_5</name>
+  <id>LayerInfoImpl-e1c6fd1:14ededdc0ad:-321c</id>
+  <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl--657814a0:14d6ce942ee:-8000</id>
+  </defaultStyle>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl-e1c6fd1:14ededdc0ad:-321d</id>
+  </resource>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+</layer>
