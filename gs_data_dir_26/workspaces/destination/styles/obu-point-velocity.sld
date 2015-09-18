@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <StyledLayerDescriptor version="1.0.0" 
  xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd" 
  xmlns="http://www.opengis.net/sld" 
@@ -23,7 +23,9 @@
               </PropertyIsEqualTo>
           </Filter> 
           <Name>rule1</Name>
-          <Title>Fermo</Title>
+          <Title>Fermo
+            <Localized lang="de">Hält</Localized>
+          </Title>
           <Abstract>A 6 pixel square with a red fill and no stroke</Abstract>
             <PointSymbolizer>
               <Graphic>
@@ -54,7 +56,9 @@
             </And>
           </Filter> 
           <Name>rule1</Name>
-          <Title>Bassa</Title>
+          <Title>Bassa
+            <Localized lang="de">Niedrige</Localized>
+          </Title>
           <Abstract>A 6 pixel square with a red fill and no stroke</Abstract>
             <PointSymbolizer>
               <Graphic>
@@ -85,7 +89,9 @@
             </And>
           </Filter> 
           <Name>rule1</Name>
-          <Title>Media</Title>
+          <Title>Media
+            <Localized lang="de">Mittlere</Localized>
+          </Title>
           <Abstract>A 6 pixel square with a red fill and no stroke</Abstract>
             <PointSymbolizer>
               <Graphic>
@@ -110,7 +116,9 @@
               </PropertyIsGreaterThan>
           </Filter> 
           <Name>rule1</Name>
-          <Title>Alta</Title>
+          <Title>Alta
+            <Localized lang="de">Hohe</Localized>
+          </Title>
           <Abstract>A 6 pixel square with a red fill and no stroke</Abstract>
             <PointSymbolizer>
               <Graphic>
