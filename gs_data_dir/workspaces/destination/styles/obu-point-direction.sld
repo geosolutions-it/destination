@@ -23,7 +23,9 @@
             </PropertyIsNotEqualTo>
           </Filter>
           <Name>rule1</Name>
-          <Title>No Direction</Title>
+          <Title>No Direction
+            <Localized lang="de">Keine Richtung</Localized>
+          </Title>
           <Abstract>A 6 pixel square with a red fill and no stroke</Abstract>
             
             <PointSymbolizer>
@@ -51,7 +53,9 @@
             </PropertyIsEqualTo>
           </Filter>
           <Name>rule1</Name>
-          <Title>Obu Direction</Title>
+          <Title>Obu Direction
+            <Localized lang="de">Richtung OBU</Localized>
+          </Title>
           <Abstract>A 6 pixel square with a red fill and no stroke</Abstract>
             
             <PointSymbolizer>

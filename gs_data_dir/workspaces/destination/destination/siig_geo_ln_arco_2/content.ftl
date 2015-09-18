@@ -31,6 +31,15 @@
 					<#if attribute.name == 'lunghezza'>
 						<th>${["Lunghezza","Lunghezza","Lunghezza","Lunghezza"][locale]}</th><td>${attribute.value}</td> 
                     </#if>                                                             
+					<#if attribute.name == 'source'>
+						<th>${["Source","Source","Source","Source"][locale]}</th><td>${attribute.value}</td> 
+                    </#if>                                                             
+					<#if attribute.name == 'target'>
+						<th>${["Target","Target","Target","Target"][locale]}</th><td>${attribute.value}</td> 
+                    </#if>                                                             
+					<#if attribute.name == 'id_geo_arco'>
+						<th>${["id_geo_arco","id_geo_arco","id_geo_arco","id_geo_arco"][locale]}</th><td>${attribute.value}</td> 
+                    </#if>                                                             
 									
                 </tr>
         </#if>

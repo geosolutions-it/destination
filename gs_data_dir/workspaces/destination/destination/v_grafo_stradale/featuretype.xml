@@ -93,7 +93,7 @@ elenco_dissesti_en::varchar(255),&#xd;
 elenco_dissesti_fr::varchar(255),&#xd;
 elenco_dissesti_de::varchar(255),&#xd;
 geometria&#xd;
-from v_geo_grafo_ln_%resolution%&#xd;
+from v_geo_grafo_ln&#xd;
 where geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)</sql>
         <geometry>
           <name>geometria</name>

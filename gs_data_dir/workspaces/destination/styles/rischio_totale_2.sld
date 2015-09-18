@@ -311,7 +311,7 @@
     <Localized lang="it">Alto-Alto</Localized>
       <Localized lang="en">High-High</Localized>
       <Localized lang="fr">Alto-Alto</Localized>
-      <Localized lang="fr">Haut-Haut</Localized>
+      <Localized lang="de">Hohes-Hohes</Localized>
   </Title>
     <Abstract>Alto-Alto</Abstract>
    <ogc:Filter>
