@@ -31,8 +31,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
@@ -206,7 +208,8 @@ public class RiskCalculator extends RiskCalculatorBase {
             @DescribeParameter(name = "extendedSchema", description = "optional field that chooses an extended schema for the result (useful for download)", min = 0) Boolean extendedSchema,
             @DescribeParameter(name = "crs", description ="EPSG code of the crs to use for damage calculation", min=0) String crs,
             @DescribeParameter(name = "level", description ="optional aggregation level", min=0) Integer level,
-            @DescribeParameter(name = "mobile", description ="flag to enable additional functionalities on mobile", min=0) Boolean mobile
+            @DescribeParameter(name = "mobile", description ="flag to enable additional functionalities on mobile", min=0) Boolean mobile,
+            @DescribeParameter(name = "skippedarcs", description ="user defined arcs to skip", min=0) String skippedarcs
     
     ) throws IOException, SQLException {
         // building DataStore connection using Catalog/storeName or connection input
@@ -273,7 +276,7 @@ public class RiskCalculator extends RiskCalculatorBase {
                     connectionParams, processing, formula, target, materials, kemler,
                     scenarios, entities, severeness, fpfield, 1, true, null, null,
                     simulationTargets, cffs, pscs, padrs, piss, distancesList,
-                    extendedSchema, level, mobile);
+                    extendedSchema, level, mobile, skippedarcs);
         } else if (processing == 4) {
             // damage calculus
             try {
@@ -287,7 +290,7 @@ public class RiskCalculator extends RiskCalculatorBase {
                         connectionParams, processing, formula, target, materials, kemler,
                         scenarios, entities, severeness, fpfield, 1, false,
                         damageAreaGeometry, damageValues, null, null, null, null,
-                        null, null, extendedSchema, level, mobile);
+                        null, null, extendedSchema, level, mobile, skippedarcs);
             } catch (ParseException e) {
                 throw new ProcessException("Error reading targets WKT", e);
             }
@@ -301,7 +304,7 @@ public class RiskCalculator extends RiskCalculatorBase {
             return calculateRisk(features, dataStore, storeName, precision,
                     connectionParams, processing, formula, target, materials, kemler,
                     scenarios, entities, severeness, fpfield, batch, false, null,
-                    null, null, null, null, null, null, null, extendedSchema, level, mobile);
+                    null, null, null, null, null, null, null, extendedSchema, level, mobile, skippedarcs);
     
         }
     
@@ -541,7 +544,7 @@ public class RiskCalculator extends RiskCalculatorBase {
             Map<Integer, Double> damageValues, List<TargetInfo> changedTargets,
             Map<Integer, Map<Integer, Double>> cffs, List<String> psc,
             Map<Integer, Map<Integer, Double>> padrs, Map<Integer, Double> piss,
-            List<Integer> distances, boolean extendedSchema, Integer level, boolean mobile) throws IOException,
+            List<Integer> distances, boolean extendedSchema, Integer level, boolean mobile, String skippedarcs) throws IOException,
             SQLException {
     
         if (precision == null) {
@@ -563,7 +566,8 @@ public class RiskCalculator extends RiskCalculatorBase {
                     .getType().getBinding());
             tb.add("geometria", features.getSchema().getGeometryDescriptor().getType().getBinding(), features.getSchema()
                     .getGeometryDescriptor().getCoordinateReferenceSystem());
-            
+            tb.add("viadotto", Boolean.class);
+            tb.add("galleria", Boolean.class);
             if (extendedSchema) {
                 if(FormulaUtils.isAllTargets(target)) {
                     tb.add("elab_sociale", Double.class);
@@ -597,7 +601,23 @@ public class RiskCalculator extends RiskCalculatorBase {
             if(level == null) {
                 level = FormulaUtils.getLevel(features);
             }
-    
+            Set<Number> viadotti = new HashSet<Number>();
+            Set<Number> gallerie = new HashSet<Number>();
+            if(skippedarcs != null && !skippedarcs.isEmpty()) {
+                String[] arcs = skippedarcs.split("_");
+                for(String arcDesc : arcs) {
+                    String[] attrs = arcDesc.split("\\*");
+                    int id = Integer.parseInt(attrs[0]);
+                    boolean viadotto = Boolean.parseBoolean(attrs[1]);
+                    boolean galleria = Boolean.parseBoolean(attrs[2]);
+                    if(viadotto) {
+                        viadotti.add(id);
+                    }
+                    if(galleria) {
+                        gallerie.add(id);
+                    }
+                }
+            }
             LOGGER.fine("Doing formula calculus with the following parameters: Processing=" + processing +
                     ",Formula=" + formula + ",Target=" + target + ",Substances=" + materials + ",Kemler=" + kemler + ",Scenarios=" +
                     scenarios + ",Entities=" + entities + ",Level=" + level);
@@ -633,16 +653,32 @@ public class RiskCalculator extends RiskCalculatorBase {
                 String fk_partner = null;
 
                 while (iter.hasNext()) {
+                    risk = new Double[] { 0.0, 0.0 };
+                    
                     SimpleFeature feature = iter.next();
                     Number id = (Number) feature.getAttribute("id_geo_arco");
                     fk_partner = (String) feature.getAttribute("fk_partner");
                     fb.add(id);
                     fb.add(feature.getDefaultGeometry());
+                    
+                    Number flgViadotto = (Number)feature.getAttribute("flg_viadotto");
+                    Number flgGalleria = (Number)feature.getAttribute("flg_galleria");
+                    
+                    boolean isViadotto = viadotti.contains(id.intValue()) || (flgViadotto != null && flgViadotto.intValue() == 1); 
+                    boolean isGalleria = gallerie.contains(id.intValue()) || (flgGalleria != null && flgGalleria.intValue() == 1);
+                    
+                    fb.add(isViadotto);
+                    fb.add(isGalleria);
                     if (formulaDescriptor.takeFromSource()) {
-                        risk[0] = ((Number) feature.getAttribute("rischio1"))
-                                .doubleValue();
-                        risk[1] = ((Number) feature.getAttribute("rischio2"))
-                                .doubleValue();
+                         risk[0] = ((Number) feature.getAttribute("rischio1"))
+                                    .doubleValue();
+                         risk[1] = ((Number) feature.getAttribute("rischio2"))
+                                    .doubleValue();
+                    }
+                    
+                    if(isViadotto || isGalleria) {
+                        risk[0] = -100.0;
+                        risk[1] = -100.0;
                     }
                     fb.add(risk[0]);
                     if (extendedSchema) {
@@ -664,7 +700,7 @@ public class RiskCalculator extends RiskCalculatorBase {
                         }
                     }
                     temp.put(id.intValue(), fb.buildFeature(id + ""));
-
+                    
                     if (simulation) {
                         Double pis = piss.get(id.intValue());
                         Map<Integer, Double> padr = padrs.get(id.intValue());
@@ -716,16 +752,17 @@ public class RiskCalculator extends RiskCalculatorBase {
                                 }
                             }
                         }
-
-                        FormulaUtils
-                                .calculateSimulationFormulaValuesOnSingleArc(
-                                        conn, level, processing,
-                                        formulaDescriptor, id.intValue(),
-                                        fk_partner, materials, kemler, scenarios,
-                                        entities, severeness, fpfield, target,
-                                        simulationTargets, temp, precision,
-                                        cff, psc, padr, pis, null,
-                                        extendedSchema);
+                        if(!isViadotto && !isGalleria) {
+                            FormulaUtils
+                                    .calculateSimulationFormulaValuesOnSingleArc(
+                                            conn, level, processing,
+                                            formulaDescriptor, id.intValue(),
+                                            fk_partner, materials, kemler, scenarios,
+                                            entities, severeness, fpfield, target,
+                                            simulationTargets, temp, precision,
+                                            cff, psc, padr, pis, null,
+                                            extendedSchema);
+                        }
 
                         result.addAll(temp.values());
                         temp = new HashMap<Number, SimpleFeature>();
@@ -734,23 +771,27 @@ public class RiskCalculator extends RiskCalculatorBase {
                                 .getDefaultGeometry();
                         if (arcGeometry != null
                                 && arcGeometry.intersects(damageArea)) {
-                            FormulaUtils
-                                    .calculateSimulationFormulaValuesOnSingleArc(
-                                            conn, level, processing,
-                                            formulaDescriptor, id.intValue(),
-                                            fk_partner, materials, kemler, scenarios,
-                                            entities, severeness, fpfield,
-                                            target, null, temp, precision,
-                                            null, null, null, null,
-                                            damageValues, extendedSchema);
+                            if(!isViadotto && !isGalleria) {
+                                FormulaUtils
+                                        .calculateSimulationFormulaValuesOnSingleArc(
+                                                conn, level, processing,
+                                                formulaDescriptor, id.intValue(),
+                                                fk_partner, materials, kemler, scenarios,
+                                                entities, severeness, fpfield,
+                                                target, null, temp, precision,
+                                                null, null, null, null,
+                                                damageValues, extendedSchema);
+                            }
                             result.addAll(temp.values());
                         }
                         temp = new HashMap<Number, SimpleFeature>();
                     } else {
-                        ids.append("," + id);
-                        count++;
+                        if(!isViadotto && !isGalleria) {
+                            ids.append("," + id);
+                            count++;
+                        }
                         // calculate batch items a time
-                        if (count % batch == 0) {
+                        if (count > 0 && count % batch == 0) {
                             LOGGER.fine("Calculated " + count + " values");
                             FormulaUtils.calculateFormulaValues(conn, level,
                                     processing, formulaDescriptor, ids
@@ -763,9 +804,9 @@ public class RiskCalculator extends RiskCalculatorBase {
                             temp = new HashMap<Number, SimpleFeature>();
                         }
                     }
-
+    
+                    
                 }
-
                 if (ids.length() > 0) {
                     // final calculus for remaining items not in batch size
                     LOGGER.fine("Calculating remaining items");

@@ -137,8 +137,126 @@
                   <ogc:Literal></ogc:Literal>
                 </ogc:Function>
               </ogc:Function>
+              <ogc:Function name="parameter">
+                <ogc:Literal>skippedarcs</ogc:Literal>
+                <ogc:Function name="env">
+                  <ogc:Literal>viadottigallerie</ogc:Literal>
+                  <ogc:Literal></ogc:Literal>
+                </ogc:Function>
+              </ogc:Function>
             </ogc:Function>
           </Transformation>
+        <Rule>
+    <Title>Viadotto
+    <Localized lang="it">Viadotto</Localized>
+      <Localized lang="en">Viadotto</Localized>
+      <Localized lang="fr">Viadotto</Localized>
+      <Localized lang="de">Viadotto</Localized>
+  </Title>
+    <Abstract>Viadotto</Abstract>
+   <ogc:Filter>
+        <ogc:PropertyIsEqualTo>
+            <ogc:PropertyName>viadotto</ogc:PropertyName>
+            <ogc:Literal>true</ogc:Literal>
+        </ogc:PropertyIsEqualTo>
+        
+   </ogc:Filter>
+     
+   <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+     <Stroke>
+      <CssParameter name="stroke">#FF00FF</CssParameter>
+      <CssParameter name="stroke-width">12</CssParameter>
+      <CssParameter name="stroke-dasharray">5 10</CssParameter>
+     </Stroke>
+   </LineSymbolizer>
+   <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+    <Geometry>
+      <ogc:Function name="startPoint">
+        <ogc:PropertyName>geometria</ogc:PropertyName>
+      </ogc:Function>
+    </Geometry>
+    <Graphic>
+      <Mark>
+        <WellKnownName>circle</WellKnownName>
+        <Fill>
+          <CssParameter name="fill">#000000</CssParameter>
+        </Fill>
+      </Mark>
+      <Size>4</Size>
+    </Graphic>
+   </PointSymbolizer>
+   <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+    <Geometry>
+      <ogc:Function name="endPoint">
+        <ogc:PropertyName>geometria</ogc:PropertyName>
+      </ogc:Function>
+    </Geometry>
+    <Graphic>
+      <Mark>
+        <WellKnownName>circle</WellKnownName>
+        <Fill>
+          <CssParameter name="fill">#000000</CssParameter>
+        </Fill>
+      </Mark>
+      <Size>2</Size>
+    </Graphic>
+   </PointSymbolizer>
+   </Rule>
+   <Rule>
+    <Title>Galleria
+    <Localized lang="it">Galleria</Localized>
+      <Localized lang="en">Galleria</Localized>
+      <Localized lang="fr">Galleria</Localized>
+      <Localized lang="de">Galleria</Localized>
+  </Title>
+    <Abstract>Galleria</Abstract>
+   <ogc:Filter>
+        <ogc:PropertyIsEqualTo>
+            <ogc:PropertyName>galleria</ogc:PropertyName>
+            <ogc:Literal>true</ogc:Literal>
+        </ogc:PropertyIsEqualTo>
+   </ogc:Filter>
+     
+   <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+     <Stroke>
+      <CssParameter name="stroke">#6666FF</CssParameter>
+      <CssParameter name="stroke-width">12</CssParameter>
+      <CssParameter name="stroke-dasharray">5 10</CssParameter>
+     </Stroke>
+   </LineSymbolizer>
+   <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+    <Geometry>
+      <ogc:Function name="startPoint">
+        <ogc:PropertyName>geometria</ogc:PropertyName>
+      </ogc:Function>
+    </Geometry>
+    <Graphic>
+      <Mark>
+        <WellKnownName>circle</WellKnownName>
+        <Fill>
+          <CssParameter name="fill">#000000</CssParameter>
+        </Fill>
+      </Mark>
+      <Size>4</Size>
+    </Graphic>
+   </PointSymbolizer>
+   <PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
+    <Geometry>
+      <ogc:Function name="endPoint">
+        <ogc:PropertyName>geometria</ogc:PropertyName>
+      </ogc:Function>
+    </Geometry>
+    <Graphic>
+      <Mark>
+        <WellKnownName>circle</WellKnownName>
+        <Fill>
+          <CssParameter name="fill">#000000</CssParameter>
+        </Fill>
+      </Mark>
+      <Size>2</Size>
+    </Graphic>
+   </PointSymbolizer>
+   </Rule>
         <Rule>
     <Title>Basso
     <Localized lang="it">Basso</Localized>
@@ -148,14 +266,19 @@
   </Title>
     <Abstract>Basso</Abstract>
    <ogc:Filter>
-        <ogc:PropertyIsLessThanOrEqualTo>
-        <ogc:PropertyName>rischio1</ogc:PropertyName>
-          <ogc:Function name="env">
-            <ogc:Literal>low</ogc:Literal>
-            <ogc:Literal>100</ogc:Literal>
-          </ogc:Function>
-        </ogc:PropertyIsLessThanOrEqualTo>
-        
+        <ogc:And>
+            <ogc:PropertyIsGreaterThanOrEqualTo>
+            <ogc:PropertyName>rischio1</ogc:PropertyName>
+            <ogc:Literal>-1.0</ogc:Literal>
+            </ogc:PropertyIsGreaterThanOrEqualTo>
+            <ogc:PropertyIsLessThanOrEqualTo>
+            <ogc:PropertyName>rischio1</ogc:PropertyName>
+              <ogc:Function name="env">
+                <ogc:Literal>low</ogc:Literal>
+                <ogc:Literal>100</ogc:Literal>
+              </ogc:Function>
+            </ogc:PropertyIsLessThanOrEqualTo>
+        </ogc:And>
    </ogc:Filter>
      
    <LineSymbolizer uom="http://www.opengeospatial.org/se/units/metre">

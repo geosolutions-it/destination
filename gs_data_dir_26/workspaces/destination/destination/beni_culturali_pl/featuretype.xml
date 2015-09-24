@@ -20,7 +20,7 @@
     AXIS[&quot;Geodetic longitude&quot;, EAST], &#xd;
     AXIS[&quot;Geodetic latitude&quot;, NORTH], &#xd;
     AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]], &#xd;
-  PROJECTION[&quot;Transverse_Mercator&quot;], &#xd;
+  PROJECTION[&quot;Transverse_Mercator&quot;, AUTHORITY[&quot;EPSG&quot;,&quot;9807&quot;]], &#xd;
   PARAMETER[&quot;central_meridian&quot;, 9.0], &#xd;
   PARAMETER[&quot;latitude_of_origin&quot;, 0.0], &#xd;
   PARAMETER[&quot;scale_factor&quot;, 0.9996], &#xd;
@@ -66,7 +66,7 @@ FROM&#xd;
         FROM v_geo_beni_culturali_pl bersaglio&#xd;
      join siig_geo_ln_arco_%resolution% on &#xd;
     st_dwithin(bersaglio.geometria, siig_geo_ln_arco_%resolution%.geometria, %distanza%)&#xd;
-    where siig_geo_ln_arco_%resolution%.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)&#xd;
+    where siig_geo_ln_arco_%resolution%.id_geo_arco not in (%skipped%) and (siig_geo_ln_arco_%resolution%.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632) or cod_provincia=&apos;%provincia%&apos; or cod_comune=&apos;%comune%&apos;) and flg_viadotto = 0 and flg_galleria = 0&#xd;
     )&#xd;
 UNION&#xd;
 SELECT partner_it,partner_en,partner_fr,partner_de,id_tematico,fk_bers_non_umano_pl as fk_geo,denominazione_bene_it,denominazione_bene_en,denominazione_bene_fr,denominazione_bene_de,tipologia_it,tipologia_en,tipologia_fr,tipologia_de,superficie,geometria&#xd;
@@ -87,6 +87,11 @@ FROM&#xd;
           <regexpValidator>^[\w\d\s,\.]+$</regexpValidator>
         </parameter>
         <parameter>
+          <name>skipped</name>
+          <defaultValue>0</defaultValue>
+          <regexpValidator>^[\w\d\s,\.]+$</regexpValidator>
+        </parameter>
+        <parameter>
           <name>resolution</name>
           <defaultValue>1</defaultValue>
           <regexpValidator>^[\d\s]+$</regexpValidator>
@@ -100,6 +105,16 @@ FROM&#xd;
           <name>wkt</name>
           <defaultValue>POLYGON((438892.7288562446 4975140.981545661,439193.9185034519 4975114.484753116,439211.81910092465 4974859.452787744,438763.54800271254 4974737.133442594,438892.7288562446 4975140.981545661))</defaultValue>
           <regexpValidator>^[\w\d\s\.\(\)\,]+$</regexpValidator>
+        </parameter>
+        <parameter>
+          <name>provincia</name>
+          <defaultValue>-1</defaultValue>
+          <regexpValidator>^[\w\d\s]+$</regexpValidator>
+        </parameter>
+        <parameter>
+          <name>comune</name>
+          <defaultValue>-1</defaultValue>
+          <regexpValidator>^[\w\d\s]+$</regexpValidator>
         </parameter>
       </virtualTable>
     </entry>

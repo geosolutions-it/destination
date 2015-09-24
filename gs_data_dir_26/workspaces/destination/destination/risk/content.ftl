@@ -32,6 +32,12 @@
                 
                 
                 <#assign odd = !odd>
+                    <#if attribute.name == 'viadotto'>
+                        <#assign viadotto=attribute.value>
+                    </#if>
+                    <#if attribute.name == 'galleria'>
+                        <#assign galleria=attribute.value>
+                    </#if>
                     <#if attribute.name == 'rischio1'>
                         <#assign rischio1=attribute.value>
                     </#if>
@@ -42,14 +48,20 @@
                 </tr>
         </#if>
     </#list>
-    <#if mixed>
-    <th>${["Processed Value - Social","Valore Elaborazione - Sociale","Valore Elaborazione - Sociale","Wertentwicklung - Anthropologisches"][locale]}</th><td>${rischio1}</td>
-    </tr><tr>
-    <th>${["Processed Value - Environmental","Valore Elaborazione - Ambientale","Valore Elaborazione - Ambientale","Wertentwicklung - Umwelt"][locale]}</th><td>${rischio2}</td>
+    <#if viadotto == "true">
+        <th>${["Type","Tipo","type","Art"][locale]}</th><td>${["Viaduct","Viadotto","Viaduc","Viaduct"][locale]}</td>
+    <#elseif galleria == "true">
+        <th>${["Type","Tipo","type","Art"][locale]}</th><td>${["Gallery","Galleria","Galerie","Galerie"][locale]}</td>
     <#else>
-    <th>${["Processed Value","Valore Elaborazione","Valore Elaborazione","Wertentwicklung"][locale]}</th><td>${rischio1}</td>
-	</#if>
-
+    
+        <#if mixed>
+        <th>${["Processed Value - Social","Valore Elaborazione - Sociale","Valore Elaborazione - Sociale","Wertentwicklung - Anthropologisches"][locale]}</th><td>${rischio1}</td>
+        </tr><tr>
+        <th>${["Processed Value - Environmental","Valore Elaborazione - Ambientale","Valore Elaborazione - Ambientale","Wertentwicklung - Umwelt"][locale]}</th><td>${rischio2}</td>
+        <#else>
+        <th>${["Processed Value","Valore Elaborazione","Valore Elaborazione","Wertentwicklung"][locale]}</th><td>${rischio1}</td>
+        </#if>
+    </#if>
 </table>
 <hr />
 </#list>

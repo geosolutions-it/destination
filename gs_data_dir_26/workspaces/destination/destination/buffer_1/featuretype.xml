@@ -20,7 +20,7 @@
     AXIS[&quot;Geodetic longitude&quot;, EAST], &#xd;
     AXIS[&quot;Geodetic latitude&quot;, NORTH], &#xd;
     AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]], &#xd;
-  PROJECTION[&quot;Transverse_Mercator&quot;], &#xd;
+  PROJECTION[&quot;Transverse_Mercator&quot;, AUTHORITY[&quot;EPSG&quot;,&quot;9807&quot;]], &#xd;
   PARAMETER[&quot;central_meridian&quot;, 9.0], &#xd;
   PARAMETER[&quot;latitude_of_origin&quot;, 0.0], &#xd;
   PARAMETER[&quot;scale_factor&quot;, 0.9996], &#xd;
@@ -60,8 +60,8 @@
         <name>buffer</name>
         <sql>SELECT id_geo_arco,geometria&#xd;
 from siig_geo_ln_arco_%resolution%&#xd;
-where geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)&#xd;
-or cod_provincia = &apos;%provincia%&apos; or cod_comune=&apos;%comune%&apos;
+where id_geo_arco not in (%skipped%) and (geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)&#xd;
+or cod_provincia = &apos;%provincia%&apos; or cod_comune=&apos;%comune%&apos;) and flg_viadotto = 0 and flg_galleria = 0
 </sql>
         <escapeSql>false</escapeSql>
         <keyColumn>id_geo_arco</keyColumn>
@@ -73,6 +73,11 @@ or cod_provincia = &apos;%provincia%&apos; or cod_comune=&apos;%comune%&apos;
         <parameter>
           <name>bounds</name>
           <defaultValue>438859.3438263,4953719.9308777,445056.32630922,4961834.6496277</defaultValue>
+          <regexpValidator>^[\w\d\s,\.]+$</regexpValidator>
+        </parameter>
+        <parameter>
+          <name>skipped</name>
+          <defaultValue>0</defaultValue>
           <regexpValidator>^[\w\d\s,\.]+$</regexpValidator>
         </parameter>
         <parameter>

@@ -36,7 +36,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -58,11 +57,9 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.collection.DecoratingSimpleFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.jdbc.JDBCDataStore;
 import org.geotools.process.ProcessException;
 import org.geotools.process.factory.DescribeParameter;
@@ -78,10 +75,13 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryDescriptor;
+import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKTReader;
+
+import it.geosolutions.process.gs.MultipleBuffer;
 
 /**
  * 
@@ -334,7 +334,8 @@ public class DestinationDownload extends RiskCalculatorBase {
 			@DescribeParameter(name = "damageArea", description = "optional field containing damage area geometry or an id for the ProcessingRepository storing the same data", min = 0) String damageArea,
 			@DescribeParameter(name = "language", description = "optional field containing language to be used in localized data", min = 0) String language,
 			@DescribeParameter(name = "onlyarcs", description = "optional flag to include only arcs in download", min = 0) Boolean onlyArcs,
-            @DescribeParameter(name = "crs", description ="EPSG code of the crs to use for damage calculation", min=0) String crs
+                        @DescribeParameter(name = "crs", description ="EPSG code of the crs to use for damage calculation", min=0) String crs,
+                        @DescribeParameter(name = "skippedarcs", description = "optional arcs to skip", min = 0) String skippedarcs 
 
 		)  {
 		try {
@@ -408,7 +409,7 @@ public class DestinationDownload extends RiskCalculatorBase {
 					finalZipFileNames.add(createRiskShapefile(features, storeName, batch, precision,
 							connectionParams, processing, formula, target, materials, kemler,
 							scenarios, entities, severeness, fpfield, changedTargets, cff,
-							psc, padr, pis, distances, damageArea, crs));
+							psc, padr, pis, distances, damageArea, crs, skippedarcs));
 				} else {
 					// tabular data in CSV format
 					finalZipFileNames.add(createSimpleRiskShapefile(features, storeName, batch, precision,
@@ -424,15 +425,32 @@ public class DestinationDownload extends RiskCalculatorBase {
 				}
 				
 				if(!onlyArcs) {
+				    SimpleFeatureCollection f = features;
+				
+				    List<Filter> fidsFilters = new ArrayList<Filter>();
+				    if(skippedarcs != null && !skippedarcs.isEmpty()) {
+				        String[] arcs = skippedarcs.split("_");
+			                for(String arcDesc : arcs) {
+			                    String[] attrs = arcDesc.split("\\*");
+			                    int id = Integer.parseInt(attrs[0]);
+			                    boolean viadotto = Boolean.parseBoolean(attrs[1]);
+			                    boolean galleria = Boolean.parseBoolean(attrs[2]);
+			                    if(viadotto || galleria) {
+			                        fidsFilters.add(ff.equals(ff.property("id_geo_arco"), ff.literal(id)));
+			                    }
+			                }
+			                f = features.subCollection(ff.not(ff.or(fidsFilters)));
+				    }
+				    
 					// damage area buffers
-					finalZipFileNames.add(createDamageAreasShapefile(features,
+					finalZipFileNames.add(createDamageAreasShapefile(f,
 							storeName, distances,
 							distanceNames,
 							processing,
 							damageArea, crs));
 					
 					// selected targets shapefiles
-					addTargets(features, storeName, connectionParams, target, distances,
+					addTargets(f, storeName, connectionParams, target, distances,
 							finalZipFileNames, dataStore, processing, changedTargetsInfo, damageArea);
 				}
 				
@@ -882,7 +900,7 @@ public class DestinationDownload extends RiskCalculatorBase {
 			String materials, String kemler, String scenarios, String entities,
 			String severeness, String fpfield, String changedTargets,
 			String cff, String psc, String padr, String pis, String distances,
-			String damageArea, String crs) throws IOException,
+			String damageArea, String crs, String skippedarcs) throws IOException,
 			SQLException, FileNotFoundException {
 		
 		String riskShapeFileName = createUniqueFileName() + ".zip";
@@ -890,7 +908,7 @@ public class DestinationDownload extends RiskCalculatorBase {
 				storeName, batch, precision, connectionParams, processing,
 				formula, target, materials, kemler, scenarios, entities, severeness,
 				fpfield, changedTargets, cff, psc, padr, pis, distances,
-				damageArea, true, crs, null, null);			
+				damageArea, true, crs, null, null, skippedarcs);			
 		
 		return writeToShapeFile(riskShapeFileName, fc);
 	}
