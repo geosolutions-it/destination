@@ -59,7 +59,7 @@
     <entry key="JDBC_VIRTUAL_TABLE">
       <virtualTable>
         <name>industria_servizi_pl</name>
-        <sql>SELECT partner_it,partner_en,partner_fr,partner_de,id_tematico,fk_bersaglio_umano_pl as fk_geo,denominazione_it,denominazione_en,denominazione_fr,denominazione_de,cod_fisc,descrizione_ateco_it,descrizione_ateco_en,descrizione_ateco_fr,descrizione_ateco_de,addetti,fonte_addetti_it,fonte_addetti_en,fonte_addetti_fr,fonte_addetti_de,geometria&#xd;
+        <sql>SELECT partner_it,partner_en,partner_fr,partner_de,id_tematico,fk_bersaglio_umano_pl as fk_geo,denominazione_it,denominazione_en,denominazione_fr,denominazione_de,cod_fisc,codateco,descrizione_ateco_it,descrizione_ateco_en,descrizione_ateco_fr,descrizione_ateco_de,addetti,fonte_addetti_it,fonte_addetti_en,fonte_addetti_fr,fonte_addetti_de,geometria&#xd;
 FROM&#xd;
    v_geo_industria_pl&#xd;
     where v_geo_industria_pl.fk_bersaglio_umano_pl in (&#xd;
@@ -70,13 +70,12 @@ FROM&#xd;
     where siig_geo_ln_arco_%resolution%.id_geo_arco not in (%skipped%) and (siig_geo_ln_arco_%resolution%.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632) or cod_provincia=&apos;%provincia%&apos; or cod_comune=&apos;%comune%&apos;) and flg_viadotto = 0 and flg_galleria = 0&#xd;
     )&#xd;
 UNION&#xd;
-SELECT partner_it,partner_en,partner_fr,partner_de,id_tematico,fk_bersaglio_umano_pl as fk_geo,denominazione_it,denominazione_en,denominazione_fr,denominazione_de,cod_fisc,descrizione_ateco_it,descrizione_ateco_en,descrizione_ateco_fr,descrizione_ateco_de,addetti,fonte_addetti_it,fonte_addetti_en,fonte_addetti_fr,fonte_addetti_de,geometria&#xd;
+SELECT partner_it,partner_en,partner_fr,partner_de,id_tematico,fk_bersaglio_umano_pl as fk_geo,denominazione_it,denominazione_en,denominazione_fr,denominazione_de,cod_fisc,codateco,descrizione_ateco_it,descrizione_ateco_en,descrizione_ateco_fr,descrizione_ateco_de,addetti,fonte_addetti_it,fonte_addetti_en,fonte_addetti_fr,fonte_addetti_de,geometria&#xd;
 FROM&#xd;
    v_geo_industria_pl&#xd;
     where  st_intersects(geometria,ST_GeomFromText(&apos;%wkt%&apos;,32632))
 </sql>
         <escapeSql>false</escapeSql>
-        <keyColumn>id_tematico</keyColumn>
         <geometry>
           <name>geometria</name>
           <type>MultiPolygon</type>
@@ -98,16 +97,6 @@ FROM&#xd;
           <regexpValidator>^[\w\d\s,\.]+$</regexpValidator>
         </parameter>
         <parameter>
-          <name>resolution</name>
-          <defaultValue>1</defaultValue>
-          <regexpValidator>^[\d\s]+$</regexpValidator>
-        </parameter>
-        <parameter>
-          <name>wkt</name>
-          <defaultValue>POLYGON((438892.7288562446 4975140.981545661,439193.9185034519 4975114.484753116,439211.81910092465 4974859.452787744,438763.54800271254 4974737.133442594,438892.7288562446 4975140.981545661))</defaultValue>
-          <regexpValidator>^[\w\d\s\.\(\)\,]+$</regexpValidator>
-        </parameter>
-        <parameter>
           <name>provincia</name>
           <defaultValue>-1</defaultValue>
           <regexpValidator>^[\w\d\s]+$</regexpValidator>
@@ -116,6 +105,16 @@ FROM&#xd;
           <name>comune</name>
           <defaultValue>-1</defaultValue>
           <regexpValidator>^[\w\d\s]+$</regexpValidator>
+        </parameter>
+        <parameter>
+          <name>resolution</name>
+          <defaultValue>1</defaultValue>
+          <regexpValidator>^[\d\s]+$</regexpValidator>
+        </parameter>
+        <parameter>
+          <name>wkt</name>
+          <defaultValue>POLYGON((438892.7288562446 4975140.981545661,439193.9185034519 4975114.484753116,439211.81910092465 4974859.452787744,438763.54800271254 4974737.133442594,438892.7288562446 4975140.981545661))</defaultValue>
+          <regexpValidator>^[\w\d\s\.\(\)\,]+$</regexpValidator>
         </parameter>
       </virtualTable>
     </entry>
