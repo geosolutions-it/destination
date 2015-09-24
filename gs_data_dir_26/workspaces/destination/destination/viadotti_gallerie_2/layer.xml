@@ -1,0 +1,15 @@
+<layer>
+  <name>viadotti_gallerie_2</name>
+  <id>LayerInfoImpl--3c41c39e:14ff9a392c4:13ec</id>
+  <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl--304b338b:13f9e44fe32:-7ffe</id>
+  </defaultStyle>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl--3c41c39e:14ff9a392c4:13eb</id>
+  </resource>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+</layer>
