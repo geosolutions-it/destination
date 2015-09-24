@@ -59,7 +59,7 @@
     <entry key="JDBC_VIRTUAL_TABLE">
       <virtualTable>
         <name>industria_servizi_pl</name>
-        <sql>SELECT partner_it,partner_en,partner_fr,partner_de,id_tematico,fk_bersaglio_umano_pl as fk_geo,denominazione_it,denominazione_en,denominazione_fr,denominazione_de,cod_fisc,descrizione_ateco_it,descrizione_ateco_en,descrizione_ateco_fr,descrizione_ateco_de,addetti,fonte_addetti_it,fonte_addetti_en,fonte_addetti_fr,fonte_addetti_de,geometria&#xd;
+        <sql>SELECT partner_it,partner_en,partner_fr,partner_de,id_tematico,fk_bersaglio_umano_pl as fk_geo,denominazione_it,denominazione_en,denominazione_fr,denominazione_de,cod_fisc,codateco,descrizione_ateco_it,descrizione_ateco_en,descrizione_ateco_fr,descrizione_ateco_de,addetti,fonte_addetti_it,fonte_addetti_en,fonte_addetti_fr,fonte_addetti_de,geometria&#xd;
 FROM&#xd;
    v_geo_industria_pl&#xd;
     where v_geo_industria_pl.fk_bersaglio_umano_pl in (&#xd;
@@ -70,12 +70,12 @@ FROM&#xd;
     where siig_geo_ln_arco_1.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)&#xd;
     )&#xd;
 UNION&#xd;
-SELECT partner_it,partner_en,partner_fr,partner_de,id_tematico,fk_bersaglio_umano_pl as fk_geo,denominazione_it,denominazione_en,denominazione_fr,denominazione_de,cod_fisc,descrizione_ateco_it,descrizione_ateco_en,descrizione_ateco_fr,descrizione_ateco_de,addetti,fonte_addetti_it,fonte_addetti_en,fonte_addetti_fr,fonte_addetti_de,geometria&#xd;
+SELECT partner_it,partner_en,partner_fr,partner_de,id_tematico,fk_bersaglio_umano_pl as fk_geo,denominazione_it,denominazione_en,denominazione_fr,denominazione_de,cod_fisc,codateco,descrizione_ateco_it,descrizione_ateco_en,descrizione_ateco_fr,descrizione_ateco_de,addetti,fonte_addetti_it,fonte_addetti_en,fonte_addetti_fr,fonte_addetti_de,geometria&#xd;
 FROM&#xd;
    v_geo_industria_pl&#xd;
     where  st_intersects(geometria,ST_GeomFromText(&apos;%wkt%&apos;,32632))&#xd;
 UNION&#xd;
-SELECT partner_it,partner_en,partner_fr,partner_de,id_tematico,fk_bersaglio_umano_pt as fk_geo,denominazione_it,denominazione_en,denominazione_fr,denominazione_de,cod_fisc,descrizione_ateco_it,descrizione_ateco_en,descrizione_ateco_fr,descrizione_ateco_de,addetti,fonte_addetti_it,fonte_addetti_en,fonte_addetti_fr,fonte_addetti_de,ST_Buffer(geometria,50) as geometria&#xd;
+SELECT partner_it,partner_en,partner_fr,partner_de,id_tematico,fk_bersaglio_umano_pt as fk_geo,denominazione_it,denominazione_en,denominazione_fr,denominazione_de,cod_fisc,codateco,descrizione_ateco_it,descrizione_ateco_en,descrizione_ateco_fr,descrizione_ateco_de,addetti,fonte_addetti_it,fonte_addetti_en,fonte_addetti_fr,fonte_addetti_de,ST_Buffer(geometria,50) as geometria&#xd;
 FROM&#xd;
    v_geo_industria_pt&#xd;
     where v_geo_industria_pt.fk_bersaglio_umano_pt in (&#xd;
@@ -86,11 +86,10 @@ FROM&#xd;
     where siig_geo_ln_arco_1.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632)&#xd;
     )   &#xd;
 UNION&#xd;
-SELECT partner_it,partner_en,partner_fr,partner_de,id_tematico,fk_bersaglio_umano_pt as fk_geo,denominazione_it,denominazione_en,denominazione_fr,denominazione_de,cod_fisc,descrizione_ateco_it,descrizione_ateco_en,descrizione_ateco_fr,descrizione_ateco_de,addetti,fonte_addetti_it,fonte_addetti_en,fonte_addetti_fr,fonte_addetti_de,ST_Buffer(geometria,50) as geometria&#xd;
+SELECT partner_it,partner_en,partner_fr,partner_de,id_tematico,fk_bersaglio_umano_pt as fk_geo,denominazione_it,denominazione_en,denominazione_fr,denominazione_de,cod_fisc,codateco,descrizione_ateco_it,descrizione_ateco_en,descrizione_ateco_fr,descrizione_ateco_de,addetti,fonte_addetti_it,fonte_addetti_en,fonte_addetti_fr,fonte_addetti_de,ST_Buffer(geometria,50) as geometria&#xd;
 FROM&#xd;
    v_geo_industria_pt&#xd;
     where  st_intersects(geometria,ST_GeomFromText(&apos;%wkt%&apos;,32632))</sql>
-        <keyColumn>id_tematico</keyColumn>
         <geometry>
           <name>geometria</name>
           <type>MultiPolygon</type>
