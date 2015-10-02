@@ -23,6 +23,7 @@ import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -31,6 +32,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultTransaction;
@@ -141,6 +143,15 @@ public class ArcsIngestionProcess extends InputObject {
         gridIdNames.put(4, "cod_comune");
         gridIdNames.put(5, "cod_provincia");
     }
+    
+    private static String[] padrSostanzaMapping = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", // original values
+        "100", "101", "102", "103", "104", "105", "106", "107", "108", "109",
+        "110", "111", "112", "113", "114", "115", "116", "117", "118", "119",
+        "120", "121", "122", "123", "124", "125", "126", "127", "128", "129",
+        "130", "131", "132", "133", "134", "135", "136", "137", "138", "139",
+        "140", "141", "142", "143", "144", "145", "146", "147", "148", // 149 does not exists
+        "150", "151", "152", "153", "154", "155", "156", "157", "158", "159",
+        "160", "161", "162", "163", "164", "165", "166", "167"};
 
     /**
      * Initializes a VectorTarget handler for the given input feature.
@@ -590,13 +601,19 @@ public class ArcsIngestionProcess extends InputObject {
         int[] tgm = new int[] { 0, 0 };
         int[] velocita = new int[] { 0, 0 };
         double[] cff = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-        double[] padr = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        double[] padr = new double [79];
+        Arrays.fill(padr, 0);
+        int padrSize = 79;
+        
         ElementsCounter flgTgmCounter = new ElementsCounter();
         ElementsCounter flgVelocCounter = new ElementsCounter();
         ElementsCounter flgCorsieCounter = new ElementsCounter();
         ElementsCounter flgIncidentiCounter = new ElementsCounter();
         Set<Integer> pterr = new HashSet<Integer>();
         int idOrigin = -1;
+        Boolean isViadotto = true;
+        Boolean isGalleria = true;
+
         while ((inputFeature = readInput(iterator)) != null) {
             try {
                 if (aggregateGeo == null) {
@@ -634,6 +651,11 @@ public class ArcsIngestionProcess extends InputObject {
                         "flg_nr_incidenti");
                 flgCorsieCounter.addElement(currentFlgCorsie);
                 flgIncidentiCounter.addElement(currentFlgIncidenti);
+                
+                // Boolean check, every input features must have the same flag for the output feature to be flagged
+                isViadotto = isViadotto && ((Integer) getMapping(inputFeature, attributeMappings, "flg_viadotto")>0);
+                isGalleria = isGalleria && ((Integer) getMapping(inputFeature, attributeMappings, "flg_galleria")>0);
+                
                 if (!dontComputeVehicle) {
                     // by vehicle
                     int[] tgms = extractMultipleValues(inputFeature, "TGM");
@@ -667,15 +689,40 @@ public class ArcsIngestionProcess extends InputObject {
                     }
 
                     // cff
+                    // We are supposing that cff.length < cffs.length
                     double[] cffs = extractMultipleValuesDouble(inputFeature, "CFF", cff.length);
                     for (int i = 0; i < cff.length; i++) {
                         cff[i] += cffs[i] * currentLunghezza.doubleValue();
                     }
                     // padr
-                    double[] padrs = extractMultipleValuesDouble(inputFeature, "PADR", padr.length);
-                    for (int i = 0; i < padrs.length; i++) {
-                        padr[i] += padrs[i] * currentLunghezza.doubleValue();
+                    if(inputFeature.getProperty("PADR2") == null){
+                        // Set the PADR values number to 12, this is an old input type
+                        padrSize = 12;
+                        //Input feature has the old schema, revert to 12 padr list
+                        double[] padrs = extractMultipleValuesDouble(inputFeature, "PADR", 12);
+                        for (int i = 0; i < padrs.length; i++) {
+                            padr[i] += padrs[i] * currentLunghezza.doubleValue();
+                        }
+
+                    }else{
+                        
+                        double[] padrs = extractMultipleValuesDouble(inputFeature, "PADR", 0);
+                        double[] padrs2 = extractMultipleValuesDouble(inputFeature, "PADR2", 0);
+                        double[] padrs3 = extractMultipleValuesDouble(inputFeature, "PADR3", 0);
+                        
+                        double[] composedPadr = ArrayUtils.addAll(
+                                                ArrayUtils.addAll(padrs , padrs2),
+                                                padrs3);
+                        int composedLenght = composedPadr.length;
+                        if(composedLenght > padr.length){
+                            LOGGER.warn("Input Error: Too many PADR values, truncating");
+                            composedLenght = padr.length;
+                        }
+                        for (int i = 0; i < composedLenght; i++) {
+                            padr[i] = composedPadr[i] * currentLunghezza.doubleValue();
+                        }
                     }
+                   
                 }
 
             } catch (Exception e) {
@@ -694,7 +741,12 @@ public class ArcsIngestionProcess extends InputObject {
         if(geo == null && writeEmpty) {
             geo = aggregateGeo;
         }
-         if (geo != null) {
+        if(idOrigin == -1){
+            // There was no aggregation, setting flags to false
+            isViadotto = false;
+            isGalleria = false;
+        }
+        if (geo != null) {
             Transaction rowTransaction = new DefaultTransaction();
             setTransaction(outputObjects, rowTransaction);
 
@@ -706,7 +758,7 @@ public class ArcsIngestionProcess extends InputObject {
                 } else {
                     addAggregateGeoFeature(outputObjects[4], id, idTematico, geo, (int) lunghezza,
                             corsie, incidenti, inputFeature, idOrigin, flgCorsieCounter.getMax("C"),
-                            flgIncidentiCounter.getMax("C"));
+                            flgIncidentiCounter.getMax("C"), isViadotto, isGalleria);
                     if (!dontComputeVehicle) {
                         addAggregateVehicleFeature(outputObjects[0], id, (int) lunghezza, tgm,
                                 velocita, flgTgmCounter.getMax("C"), flgVelocCounter.getMax("C"),
@@ -718,6 +770,10 @@ public class ArcsIngestionProcess extends InputObject {
                                 inputFeature);
                         addAggregateCFFFeature(outputObjects[2], id, (int) lunghezza, cff,
                                 inputFeature);
+                        if(padr.length > padrSize){
+                            // We are aggregating an old type of input, truncate to original size
+                            padr = Arrays.copyOf(padr, padrSize);
+                        }
                         addAggregatePADRFeature(outputObjects[3], id, (int) lunghezza, padr,
                                 inputFeature);
 
@@ -740,6 +796,16 @@ public class ArcsIngestionProcess extends InputObject {
         return errors;
     }
 
+    /**
+     * Inserts padr records relative to the given inputFeature in the padrObject
+     * (Example table: siig_arco_1_sostanza)
+     * @param padrObject
+     * @param id
+     * @param lunghezza
+     * @param padr
+     * @param inputFeature
+     * @throws IOException
+     */
     private void addAggregatePADRFeature(OutputObject padrObject, int id, int lunghezza,
             double padr[], SimpleFeature inputFeature) throws IOException {
 
@@ -762,7 +828,14 @@ public class ArcsIngestionProcess extends InputObject {
                     }
                 }
 
-                String idSostanza = (count + 1) + "";
+                if(count >= padrSostanzaMapping.length){
+                    LOGGER.warn("Found bad padr index: "+count+ ". Skipping..");
+                    return;
+                }
+                //String idSostanza = (count + 1) + "";
+                String idSostanza = padrSostanzaMapping[count];
+                // GeoTools will split the featureid to populate "id_geo_arco" and "id_sostanza"
+                // that are both primary keys and foreign keys of the table
                 String featureid = id + "." + idSostanza;
                 SimpleFeature feature = featureBuilder.buildFeature(featureid);
                 feature.getUserData().put(Hints.USE_PROVIDED_FID, true);
@@ -869,7 +942,7 @@ public class ArcsIngestionProcess extends InputObject {
      */
     private void addAggregateGeoFeature(OutputObject outputObject, int id, int idTematico,
             Geometry geo, int lunghezza, int corsie, double incidenti, SimpleFeature inputFeature,
-            int idOrigin, String flgCorsie, String flgIncidenti) throws IOException {
+            int idOrigin, String flgCorsie, String flgIncidenti, boolean flgViadotto, boolean flgGalleria) throws IOException {
         SimpleFeatureBuilder geoFeatureBuilder = outputObject.getBuilder();
         //ricavo i codici provinciali e comunali 
         CodiceProvincialeComunale codiciProvincialiComunali = getCodiceProvincialeComune(geo);
@@ -906,6 +979,10 @@ public class ArcsIngestionProcess extends InputObject {
                 geoFeatureBuilder.add(flgCorsie);
             } else if (attr.getLocalName().equals("flg_nr_incidenti")) {
                 geoFeatureBuilder.add(flgIncidenti);
+            } else if (attr.getLocalName().equals("flg_viadotto")) {
+                geoFeatureBuilder.add(flgViadotto?1:0);
+            } else if (attr.getLocalName().equals("flg_galleria")) {
+                geoFeatureBuilder.add(flgGalleria?1:0);
             } else if (attr.getLocalName().equals("id_origine")) {
                 geoFeatureBuilder.add(idOrigin);
             } else if (attr.getLocalName().equals("nr_corsie")) {
@@ -1140,25 +1217,34 @@ public class ArcsIngestionProcess extends InputObject {
         }
         return values;
     }
-
+    
     /**
+     * Returns an array containing all the values found in the attribute of the given feature.
+     * Values are split by | character
+     * Values must be dot-noted double numbers
+     * If no attribute is found, an empty array with the given default_size will be returned
      * @param inputFeature
      * @return
      */
     private double[] extractMultipleValuesDouble(SimpleFeature inputFeature, String attributeName,
-            int valueNumber) {
+            int default_size) {
+    	    	
+    	// Input feature has no Attribute, return an empty array
         if (inputFeature.getAttribute(attributeName) == null) {
-            return new double[valueNumber];
+            return new double[default_size];
         }
+        
         String[] svalues = inputFeature.getAttribute(attributeName).toString().split("\\|");
-        double[] values = new double[valueNumber];
-
+        double[] values = new double[svalues.length];
+        Arrays.fill(values, 0);
+        
         for (int count = 0; count < svalues.length; count++) {
             try {
                 String el = svalues[count].replace(",", ".");
                 values[count] = Double.parseDouble(el);
             } catch (NumberFormatException e) {
-
+                // Skipping malformed value, default to zero.
+                values[count] = 0;
             }
         }
         return values;
@@ -1267,6 +1353,14 @@ public class ArcsIngestionProcess extends InputObject {
         }
     }
 
+    /**
+     * Populate the padr table splitting the padr properties of the input feature
+     * @param sostanzaObject
+     * @param id
+     * @param inputFeature
+     * @param datastore
+     * @throws IOException
+     */
     private void addSostanzaFeature(OutputObject sostanzaObject, int id,
             SimpleFeature inputFeature, DataStore datastore) throws IOException {
 
@@ -1274,13 +1368,32 @@ public class ArcsIngestionProcess extends InputObject {
         Object padrAttribute = inputFeature.getAttribute("PADR");
         String[] padrAttributeSplitted = padrAttribute == null ? new String[] {} : padrAttribute
                 .toString().split("\\|");
+        
+        Object padr2Attribute = inputFeature.getAttribute("PADR2");
+        String[] padr2AttributeSplitted = padr2Attribute == null ? new String[] {} : padr2Attribute
+                .toString().split("\\|");
+        
+        Object padr3Attribute = inputFeature.getAttribute("PADR3");
+        String[] padr3AttributeSplitted = padr3Attribute == null ? new String[] {} : padr3Attribute
+                .toString().split("\\|");
+        
+        String[] composedPadr = ArrayUtils.addAll(
+                ArrayUtils.addAll(padrAttributeSplitted , padr2AttributeSplitted),
+                padr3AttributeSplitted);
 
-        for (int count = 0; count < padrAttributeSplitted.length; count++) {
+        for (int count = 0; count < composedPadr.length; count++) {
             try {
-                String el = padrAttributeSplitted[count].replace(",", ".");
+                String el = composedPadr[count].replace(",", ".");
                 double padrElement = Double.parseDouble(el);
                 featureBuilder.reset();
-                String id_sostanza = (count + 1) + "";
+                
+                if(count >= padrSostanzaMapping.length){
+                    LOGGER.warn("Found bad padr index: "+count+ ". Skipping..");
+                    return;
+                }
+                //String id_sostanza = (count + 1) + "";
+                String id_sostanza = padrSostanzaMapping[count];
+                
                 // for (String id_sostanza : sostanze) {
                 for (AttributeDescriptor attr : sostanzaObject.getSchema()
                         .getAttributeDescriptors()) {

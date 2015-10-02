@@ -48,4 +48,13 @@
 		<string>id_origine</string>
 		<string>ID_ORIG</string>
 	</entry>
+	<entry>        
+        <string>flg_viadotto</string>
+        <string>#{(FLG_VDTT == null or FLG_VDTT lt 0) ? 0 : FLG_VDTT}</string>
+    </entry>
+    <entry>         
+        <string>flg_galleria</string>
+        <string>#{(FLG_GLLR == null or FLG_GLLR lt 0) ? 0 : FLG_GLLR}</string>
+    </entry>
+    
 </map>
