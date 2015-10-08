@@ -8,7 +8,7 @@
   <resource class="featureType">
     <id>FeatureTypeInfoImpl-e1c6fd1:14ededdc0ad:-7ffa</id>
   </resource>
-  <queryable>false</queryable>
+  <queryable>true</queryable>
   <opaque>true</opaque>
   <attribution>
     <logoWidth>0</logoWidth>
