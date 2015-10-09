@@ -131,7 +131,7 @@ public class RoutePlannerGH extends RiskCalculatorBase {
                 scenarios, entities, severeness, fpfield, level, blockedIds);
     }
 
-    private Coordinate checkAndReturnCoords(String[] coordsArray) {
+    public Coordinate checkAndReturnCoords(String[] coordsArray) {
         if (coordsArray != null && coordsArray.length >= 2) {
             double[] doubleCoords = new double[coordsArray.length];
             for (int i=0; i<coordsArray.length; i++) {
@@ -147,7 +147,7 @@ public class RoutePlannerGH extends RiskCalculatorBase {
         throw new ProcessException("Invalid coordinates: " + coordsArray);
     }
 
-    private SimpleFeatureCollection calculateRoute(SimpleFeatureCollection features,
+    public SimpleFeatureCollection calculateRoute(SimpleFeatureCollection features,
             JDBCDataStore dataStore, Point startPoint, Point endPoint, int formula, int target,
             String materials, String scenarios, String entities, String severeness, String fpfield,
             Integer level, String blockedIds) throws IOException, SQLException {
@@ -362,7 +362,7 @@ public class RoutePlannerGH extends RiskCalculatorBase {
 
         // fake layer name (risk) used for WPS output. Layer "risk" must be
         // defined in GeoServer catalog
-        tb.setName(new NameImpl(sourceSchema.getName().getNamespaceURI(), "risk"));
+        tb.setName(new NameImpl(sourceSchema.getName().getNamespaceURI(), "routing"));
         
         return tb.buildFeatureType();
     }

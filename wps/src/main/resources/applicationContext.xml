@@ -26,6 +26,11 @@
       <constructor-arg index="1" ref="dataDirectory"/>
     </bean>	
     
+    <bean id="routingDownloader" class="it.geosolutions.process.gs.DestinationDownloadRouting">
+      <constructor-arg index="0" ref="catalog"/>
+      <constructor-arg index="1" ref="dataDirectory"/>
+    </bean> 
+    
     <bean id="removeDownload" class="it.geosolutions.process.gs.DestinationRemoveDownload">
         <constructor-arg index="0" ref="dataDirectory"/>      
     </bean>	
