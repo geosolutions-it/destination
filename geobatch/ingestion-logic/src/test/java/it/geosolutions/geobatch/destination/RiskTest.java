@@ -36,10 +36,19 @@ public class RiskTest extends DestinationMemoryTest{
 		initTestWithData(new String[] {"risk_test_data"}, new RiskTestMemoryMockDataStore());
 	}
 
+	/**
+	 * Test the prefetchRiskAtLevel() method
+	 * The "risk_test_data" contains records related to partner ID = 1
+	 * We load the test data setting the partner code to "RP" ("RP" = 1)
+	 * @throws Exception
+	 */
 	@Test
-	public void test() throws Exception {
-		RiskComputation riskComputation = createProcess("RP_C_Grafo_20130917");		
+	public void testPrefetchRiskAtLevel() throws Exception {
+	    // Setup
+		RiskComputation riskComputation = createProcess("RP_C_Grafo_20130917");	
+		// Run 
 		riskComputation.prefetchRiskAtLevel(3, 1, 1, 26, 100, "1,2,3,4,5,6,7,8,9,10", "1,2,3,4,5,6,7,8,9,10,11", "0,1", "1,2,3,4,5", "fp_scen_centrale", "UPDATE", null, false, false);
+		// Test
 		checkFeature("siig_t_elab_standard_1", 12);
 	}
 
@@ -48,6 +57,7 @@ public class RiskTest extends DestinationMemoryTest{
 				new ProgressListenerForwarder(null),
 				metadataHandler, dataStore);
 		return riskComputation;
+		
 	}
 
 	@Override

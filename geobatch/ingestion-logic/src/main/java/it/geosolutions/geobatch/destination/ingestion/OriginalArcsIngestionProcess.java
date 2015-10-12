@@ -28,6 +28,7 @@ import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -36,7 +37,6 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
@@ -103,7 +103,9 @@ public class OriginalArcsIngestionProcess extends InputObject {
 		doubleFormat.setMaximumFractionDigits(5);
 	}
 	
-	private String padrStatistico = null;
+	private String padrStatisticoSplitted1 = null;
+	private String padrStatisticoSplitted2 = null;
+	private String padrStatisticoSplitted3 = null;
 
 
 	private int years = 5;
@@ -243,12 +245,64 @@ public class OriginalArcsIngestionProcess extends InputObject {
 				Double padr = ((Number)feature.getAttribute("padr_statistico")).doubleValue();
 				padrList.put(id, doubleFormat.format(padr));
 			}
-			padrStatistico = StringUtils.join(padrList.values(), "|");
+			populateStatisticPadr(padrList);
 			
 		} finally {
 			featureReader.close();
 		}
 			
+	}
+
+
+
+	/**
+	 * Populate the 3 splitted default padr values
+	 * The main padr string is splitted in chunks of 250 characters or less
+	 * @param padrList
+	 */
+	private void populateStatisticPadr(Map<Integer, String> padrList) {
+		if(padrList != null && !padrList.isEmpty()){
+			
+			// Data is coming from old type input files
+			if(padrList.size() <= 12){
+				padrStatisticoSplitted1 = StringUtils.join(padrList.values(), "|");
+				padrStatisticoSplitted2 = "";
+				padrStatisticoSplitted3 = "";
+				return;
+			}
+			
+			final List<Integer> idList = new ArrayList<Integer>();
+			for(Integer i : padrList.keySet()){
+				idList.add( i );
+			}
+
+			// ids should be ordered
+			Collections.sort(idList);
+			
+			StringBuilder sb1 = new StringBuilder(250);
+			StringBuilder sb2 = new StringBuilder(250);
+			StringBuilder sb3 = new StringBuilder(250);
+			
+			int currentIdx = 0;
+			String padrValue =null;
+			for(Integer i : idList){
+				padrValue = padrList.get(i);
+				if(currentIdx < (250 - padrValue.length() - 1) ){
+					sb1.append(padrValue).append("|");
+				}else if(currentIdx < (500 - padrValue.length() - 1) ){
+					sb2.append(padrValue).append("|");
+				}else if(currentIdx < (750 - padrValue.length() - 1) ){
+					sb3.append(padrValue).append("|");
+				}else{
+					// TODO: throw?
+				}
+				currentIdx += (padrValue.length()+1);
+			}
+			padrStatisticoSplitted1 = sb1.toString();
+			padrStatisticoSplitted2 = sb1.toString();
+			padrStatisticoSplitted3 = sb1.toString();
+			
+		}
 	}
 	
 	public void importArcs(CoordinateReferenceSystem crs, 
@@ -417,6 +471,7 @@ public class OriginalArcsIngestionProcess extends InputObject {
 
 
 	/**
+	 * Reads the file "roads_input_model.txt" to create the datastore schema
 	 * @param dataStore
 	 * @param outName2
 	 * @throws SQLException 
@@ -453,6 +508,8 @@ public class OriginalArcsIngestionProcess extends InputObject {
 	}
 
 	/**
+	 * Cuts the inputFeature in 100, 500 and 1000 length pieces and writes 
+	 * the output in the {@link OutputObject} array first element 
 	 * @param inputFeature
 	 * @throws IOException 
 	 */
@@ -527,6 +584,8 @@ public class OriginalArcsIngestionProcess extends InputObject {
 		String flagVelocita = (String)inputFeature.getAttribute("FLG_VELOC");
 		String flagTgm = (String)inputFeature.getAttribute("FLG_TGM");
 		String flagIncidenti = (String)inputFeature.getAttribute("FLG_N_INC");
+		String flagViadotto = (String)inputFeature.getAttribute("FLG_VDTT");
+		String flagGalleria = (String)inputFeature.getAttribute("FLG_GLLR");
 		Integer corsie = (Integer)inputFeature.getAttribute("N_CORSIE");
 		if(corsie == null || corsie <=0) {			
 			if(categoria != null) {
@@ -566,8 +625,13 @@ public class OriginalArcsIngestionProcess extends InputObject {
 		
 		String provincia = getProvincia(geometry);
 		String padr = (String)inputFeature.getAttribute("PADR");
+		String padr2 = (String)inputFeature.getAttribute("PADR2");
+		String padr3 = (String)inputFeature.getAttribute("PADR3");
+		// Note: if the feature does not have a valid PADR attribute, PADR2 and PADR3 are not checked
 		if(padr == null || padr.trim().isEmpty()) {
-			padr = padrStatistico ;
+			padr = padrStatisticoSplitted1 ;
+			padr2 = padrStatisticoSplitted2;
+			padr3 = padrStatisticoSplitted3;
 		}
 		
 		double[] incidentiPerYear = new double[years];
@@ -614,6 +678,10 @@ public class OriginalArcsIngestionProcess extends InputObject {
 				geoFeatureBuilder.add(provincia);
 			} else if(attr.getLocalName().equals("PADR")) {				
 				geoFeatureBuilder.add(padr);
+			} else if(attr.getLocalName().equals("PADR2")) {				
+				geoFeatureBuilder.add(padr2);
+			} else if(attr.getLocalName().equals("PADR3")) {				
+				geoFeatureBuilder.add(padr3);
 			} else if(attr.getLocalName().equals("VELOCITA")) {				
 				geoFeatureBuilder.add(velocita);
 			} else if(attr.getLocalName().equals("FLG_VELOC")) {				
@@ -626,6 +694,10 @@ public class OriginalArcsIngestionProcess extends InputObject {
 				geoFeatureBuilder.add(incidenti);
 			} else if(attr.getLocalName().equals("FLG_N_INC")) {				
 				geoFeatureBuilder.add(flagIncidenti);
+			} else if(attr.getLocalName().equals("FLG_VDTT")) {
+				geoFeatureBuilder.add(flagViadotto);
+			} else if(attr.getLocalName().equals("FLG_GLLR")) {
+				geoFeatureBuilder.add(flagGalleria);
 			} else if(attr.getLocalName().equals("the_geom")) {
 				geoFeatureBuilder.add(geometry);
 			} else {
