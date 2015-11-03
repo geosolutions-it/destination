@@ -170,7 +170,8 @@ public class RoutePlannerGH extends RiskCalculatorBase {
         
         if (rsp.hasErrors()) {
             Throwable cause = rsp.getErrors().get(0);
-            throw new IOException("Failed to calculate route", cause);
+            //throw new IOException("Failed to calculate route", cause);
+            throw new ProcessException("Failed to calculate route", cause);
         }
         
         double distance = rsp.getDistance();
