@@ -782,7 +782,7 @@ public class RiskCalculator extends RiskCalculatorBase {
                                                 null, null, null, null,
                                                 damageValues, extendedSchema);
                             }
-                            result.addAll(temp.values());
+                            result.addAll(processForMobile(temp.values(), mobile, target, formulaDescriptor));
                         }
                         temp = new HashMap<Number, SimpleFeature>();
                     } else {

@@ -1,0 +1,15 @@
+<layer>
+  <name>siig_geo_pl_regioni</name>
+  <id>LayerInfoImpl-3e77b5a2:150eb7c3ce7:-7ff4</id>
+  <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl--304b338b:13f9e44fe32:-7ffe</id>
+  </defaultStyle>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl-3e77b5a2:150eb7c3ce7:-7ff5</id>
+  </resource>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+</layer>

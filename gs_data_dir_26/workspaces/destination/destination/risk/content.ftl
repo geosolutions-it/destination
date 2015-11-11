@@ -17,8 +17,8 @@
 <table class="featureInfo">
   <tr>
 
-    <th class="title">${["Attribute","Attributo","Attribute","Attribut"][locale]}</th><th class="title">${["Value","Valore","Value","Wert"][locale]}</th>
-
+    <th class="title">${["Attribute","Attributo","Attribute","Attribut"][locale]}</th>
+    <th class="title">${["Value","Valore","Value","Wert"][locale]}</th>
   </tr>
 
     <#assign odd = false>
@@ -55,11 +55,11 @@
     <#else>
     
         <#if mixed>
-        <th>${["Processed Value - Social","Valore Elaborazione - Sociale","Valore Elaborazione - Sociale","Wertentwicklung - Anthropologisches"][locale]}</th><td>${rischio1}</td>
+        <th>${["Processed Value - Social","Valore Elaborazione - Sociale","Valore Elaborazione - Sociale","Wertentwicklung - Anthropologisches"][locale]}</th><td>${rischio1} ${request.ENV.FORMULAUDM1}</td>
         </tr><tr>
-        <th>${["Processed Value - Environmental","Valore Elaborazione - Ambientale","Valore Elaborazione - Ambientale","Wertentwicklung - Umwelt"][locale]}</th><td>${rischio2}</td>
+        <th>${["Processed Value - Environmental","Valore Elaborazione - Ambientale","Valore Elaborazione - Ambientale","Wertentwicklung - Umwelt"][locale]}</th><td>${rischio2} ${request.ENV.FORMULAUDM2}</td>
         <#else>
-        <th>${["Processed Value","Valore Elaborazione","Valore Elaborazione","Wertentwicklung"][locale]}</th><td>${rischio1}</td>
+        <th>${["Processed Value","Valore Elaborazione","Valore Elaborazione","Wertentwicklung"][locale]}</th><td>${rischio1} ${request.ENV.FORMULAUDM}</td>
         </#if>
     </#if>
 </table>

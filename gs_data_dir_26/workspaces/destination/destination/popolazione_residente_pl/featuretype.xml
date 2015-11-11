@@ -67,7 +67,7 @@ FROM&#xd;
         FROM v_geo_popolazione_residente_pl bersaglio&#xd;
      join siig_geo_ln_arco_%resolution% on &#xd;
     st_dwithin(bersaglio.geometria, siig_geo_ln_arco_%resolution%.geometria, %distanzaumano%)&#xd;
-    where siig_geo_ln_arco_%resolution%.id_geo_arco not in (%skipped%) and (siig_geo_ln_arco_%resolution%.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632) or cod_provincia=&apos;%provincia%&apos; or cod_comune=&apos;%comune%&apos;) and flg_viadotto = 0 and flg_galleria = 0&#xd;
+    where siig_geo_ln_arco_%resolution%.id_geo_arco not in (%skipped%) and (siig_geo_ln_arco_%resolution%.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632) or cod_provincia=&apos;%provincia%&apos; or cod_comune=&apos;%comune%&apos; or fk_partner = &apos;%regione%&apos;) and flg_viadotto = 0 and flg_galleria = 0&#xd;
 group by fk_bersaglio_umano_pl&#xd;
     )&#xd;
 UNION&#xd;
@@ -98,6 +98,11 @@ st_intersects(geometria,ST_GeomFromText(&apos;%wkt%&apos;,32632))
           <name>skipped</name>
           <defaultValue>-1</defaultValue>
           <regexpValidator>^[\w\d\s,\.]+$</regexpValidator>
+        </parameter>
+        <parameter>
+          <name>regione</name>
+          <defaultValue>-1</defaultValue>
+          <regexpValidator>^[\w\d\s]+$</regexpValidator>
         </parameter>
         <parameter>
           <name>provincia</name>

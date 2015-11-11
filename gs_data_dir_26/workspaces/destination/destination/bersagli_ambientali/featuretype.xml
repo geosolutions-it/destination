@@ -93,7 +93,7 @@ from&#xd;
 from siig_geo_bers_non_umano_pl bersaglio&#xd;
 inner join siig_geo_ln_arco_%resolution% on &#xd;
 st_dwithin(bersaglio.geometria, siig_geo_ln_arco_%resolution%.geometria, %distanza%)&#xd;
-where siig_geo_ln_arco_%resolution%.id_geo_arco not in (%skipped%) and (siig_geo_ln_arco_%resolution%.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632) or cod_provincia=&apos;%provincia%&apos; or cod_comune=&apos;%comune%&apos;) and flg_viadotto = 0 and flg_galleria = 0&#xd;
+where siig_geo_ln_arco_%resolution%.id_geo_arco not in (%skipped%) and (siig_geo_ln_arco_%resolution%.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632) or cod_provincia=&apos;%provincia%&apos; or cod_comune=&apos;%comune%&apos; or fk_partner = &apos;%regione%&apos;) and flg_viadotto = 0 and flg_galleria = 0&#xd;
 group by idgeo_bers_non_umano_pl&#xd;
 union&#xd;
 select idgeo_bers_non_umano_pl as id,geometria&#xd;
@@ -125,6 +125,11 @@ left outer join siig_d_bene_culturale on siig_d_bene_culturale.id_tipo_bene = si
           <name>skipped</name>
           <defaultValue>0</defaultValue>
           <regexpValidator>^[\w\d\s,\.]+$</regexpValidator>
+        </parameter>
+        <parameter>
+          <name>regione</name>
+          <defaultValue>-1</defaultValue>
+          <regexpValidator>^[\w\d\s]+$</regexpValidator>
         </parameter>
         <parameter>
           <name>provincia</name>

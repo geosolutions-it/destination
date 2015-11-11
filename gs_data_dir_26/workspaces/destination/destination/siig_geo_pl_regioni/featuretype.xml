@@ -1,14 +1,14 @@
 <featureType>
-  <id>FeatureTypeInfoImpl--1bf56c14:13eefa54d37:-7efa</id>
-  <name>rischio_1</name>
-  <nativeName>rischio_1</nativeName>
+  <id>FeatureTypeInfoImpl-3e77b5a2:150eb7c3ce7:-7ff5</id>
+  <name>siig_geo_pl_regioni</name>
+  <nativeName>siig_geo_pl_regioni</nativeName>
   <namespace>
     <id>NamespaceInfoImpl--570ae188:124761b8d78:-7ffc</id>
   </namespace>
-  <title>rischio_1</title>
+  <title>siig_geo_pl_regioni</title>
   <keywords>
+    <string>siig_geo_pl_regioni</string>
     <string>features</string>
-    <string>rischio_1</string>
   </keywords>
   <nativeCRS class="projected">PROJCS[&quot;WGS 84 / UTM zone 32N&quot;, &#xd;
   GEOGCS[&quot;WGS 84&quot;, &#xd;
@@ -32,17 +32,17 @@
   AUTHORITY[&quot;EPSG&quot;,&quot;32632&quot;]]</nativeCRS>
   <srs>EPSG:32632</srs>
   <nativeBoundingBox>
-    <minx>317643.718908261</minx>
-    <maxx>516288.531381263</maxx>
-    <miny>4881313.99981367</miny>
-    <maxy>5140984.00018351</maxy>
+    <minx>313280.468728198</minx>
+    <maxx>765952.5</maxx>
+    <miny>4879335.00000383</miny>
+    <maxy>5220290.4962963</maxy>
     <crs class="projected">EPSG:32632</crs>
   </nativeBoundingBox>
   <latLonBoundingBox>
-    <minx>6.627869199002975</minx>
-    <maxx>9.21197651326948</maxx>
-    <miny>44.062310099963625</miny>
-    <maxy>46.42223261604264</maxy>
+    <minx>6.538895377242832</minx>
+    <maxx>12.503750925281022</maxx>
+    <miny>44.01897618912544</miny>
+    <maxy>47.13514281580185</maxy>
     <crs>GEOGCS[&quot;WGS84(DD)&quot;, &#xd;
   DATUM[&quot;WGS84&quot;, &#xd;
     SPHEROID[&quot;WGS84&quot;, 6378137.0, 298.257223563]], &#xd;
@@ -53,50 +53,8 @@
   </latLonBoundingBox>
   <projectionPolicy>FORCE_DECLARED</projectionPolicy>
   <enabled>true</enabled>
-  <advertised>true</advertised>
   <metadata>
     <entry key="cachingEnabled">false</entry>
-    <entry key="JDBC_VIRTUAL_TABLE">
-      <virtualTable>
-        <name>rischio_1</name>
-        <sql>select id_geo_arco, geometria, nr_incidenti_elab/lunghezza*1000 as rischio1, nr_incidenti_elab/lunghezza*1000 as rischio2,&#xd;
-flg_viadotto, flg_galleria&#xd;
-from siig_geo_ln_arco_%resolution%&#xd;
-where siig_geo_ln_arco_%resolution%.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632) or cod_provincia = &apos;%provincia%&apos; or fk_partner = &apos;%regione%&apos; or cod_comune=&apos;%comune%&apos;
-</sql>
-        <escapeSql>false</escapeSql>
-        <geometry>
-          <name>geometria</name>
-          <type>MultiLineString</type>
-          <srid>32632</srid>
-        </geometry>
-        <parameter>
-          <name>bounds</name>
-          <defaultValue>250000,4800000,600000,5200000</defaultValue>
-          <regexpValidator>^[\w\d\s,\.\-]+$</regexpValidator>
-        </parameter>
-        <parameter>
-          <name>provincia</name>
-          <defaultValue>-1</defaultValue>
-          <regexpValidator>^[\w\d\s]+$</regexpValidator>
-        </parameter>
-        <parameter>
-          <name>regione</name>
-          <defaultValue>-1</defaultValue>
-          <regexpValidator>^[\w\d\s]+$</regexpValidator>
-        </parameter>
-        <parameter>
-          <name>comune</name>
-          <defaultValue>-1</defaultValue>
-          <regexpValidator>^[\w\d\s]+$</regexpValidator>
-        </parameter>
-        <parameter>
-          <name>resolution</name>
-          <defaultValue>1</defaultValue>
-          <regexpValidator>^[\d\s]+$</regexpValidator>
-        </parameter>
-      </virtualTable>
-    </entry>
   </metadata>
   <store class="dataStore">
     <id>DataStoreInfoImpl--3970ff67:13c00cf828a:-7fef</id>

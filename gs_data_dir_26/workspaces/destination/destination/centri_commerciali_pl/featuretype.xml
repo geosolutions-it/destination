@@ -67,7 +67,7 @@ FROM&#xd;
         FROM v_geo_commercio_pl bersaglio&#xd;
      join siig_geo_ln_arco_%resolution% on &#xd;
     st_dwithin(bersaglio.geometria, siig_geo_ln_arco_%resolution%.geometria, %distanzaumano%)&#xd;
-    where siig_geo_ln_arco_%resolution%.id_geo_arco not in (%skipped%) and (siig_geo_ln_arco_%resolution%.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632) or cod_provincia=&apos;%provincia%&apos; or cod_comune=&apos;%comune%&apos;) and flg_viadotto = 0 and flg_galleria = 0&#xd;
+    where siig_geo_ln_arco_%resolution%.id_geo_arco not in (%skipped%) and (siig_geo_ln_arco_%resolution%.geometria &amp;&amp; st_makeenvelope(%bounds%, 32632) or cod_provincia=&apos;%provincia%&apos; or cod_comune=&apos;%comune%&apos; or fk_partner = &apos;%regione%&apos;) and flg_viadotto = 0 and flg_galleria = 0&#xd;
     )&#xd;
 UNION&#xd;
 SELECT partner_it,partner_en,partner_fr,partner_de,id_tematico,fk_bersaglio_umano_pl as fk_geo,denominazione_it,denominazione_en,denominazione_fr,denominazione_de,insegna_it,insegna_en,insegna_fr,insegna_de,sup_vendita,fonte_utenti_it,fonte_utenti_en,fonte_utenti_fr,fonte_utenti_de,utenti,fonte_addetti_commercio_it,fonte_addetti_commercio_en,fonte_addetti_commercio_fr,fonte_addetti_commercio_de,addetti,geometria&#xd;
@@ -106,6 +106,11 @@ st_intersects(geometria,ST_GeomFromText(&apos;%wkt%&apos;,32632))
           <name>wkt</name>
           <defaultValue>POLYGON((438892.7288562446 4975140.981545661,439193.9185034519 4975114.484753116,439211.81910092465 4974859.452787744,438763.54800271254 4974737.133442594,438892.7288562446 4975140.981545661))</defaultValue>
           <regexpValidator>^[\w\d\s\.\(\)\,]+$</regexpValidator>
+        </parameter>
+        <parameter>
+          <name>regione</name>
+          <defaultValue>-1</defaultValue>
+          <regexpValidator>^[\w\d\s]+$</regexpValidator>
         </parameter>
         <parameter>
           <name>provincia</name>
