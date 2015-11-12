@@ -30,7 +30,7 @@
                 </tr>
         </#if>
     </#list>
-    <th>${["Risk","Rischio","Rischio","Risiko"][locale]}</th><td>${tot}</td>
+    <th>${["Risk","Rischio","Rischio","Risiko"][locale]}</th><td>${tot} [morti/arco/anno]</td>
 
 
 </table>
