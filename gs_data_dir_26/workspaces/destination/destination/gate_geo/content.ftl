@@ -26,13 +26,25 @@
 						<th>${["Id","Id","Id","Id"][locale]}</th><td>${attribute.value}</td> 
                     </#if> 
 					<#if attribute.name == 'descrizione'>
-						<th>${["Description","Descrizione","Description","Description"][locale]}</th><td>${attribute.value}</td> 
+						<th>${["Description","Denominazione","Description","Description"][locale]}</th><td>${attribute.value}</td> 
                     </#if> 
 					<#if attribute.name == 'concessionaria_sito'>
 						<th>${["Concessionaria","Concessionaria","Concessionaria","Concessionaria"][locale]}</th><td>${attribute.value}</td> 
                     </#if> 
+					<#if attribute.name == 'direzione'>
+						<th>${["Direction","Direzione","Direction","Direction"][locale]}</th><td>${attribute.value}</td> 
+                    </#if> 
+					<#if attribute.name == 'collocazione'>
+						<th>${["Position","Ubicazione","Position","Position"][locale]}</th><td>${attribute.value}</td> 
+                    </#if> 
 					<#if attribute.name == 'nr_corsie_carreggiata'>
-						<th>${["Lanes","Corsie","Lanes","Lanes"][locale]}</th><td>${attribute.value}</td> 
+						<th>${["Lanes","Numero corsie carreggiata","Lanes","Lanes"][locale]}</th><td>${attribute.value}</td> 
+                    </#if> 
+					<#if attribute.name == 'corsia_emergenza'>
+						<th>${["Emergency Lanes","Corsia di emergenza","Emergency Lanes","Emergency Lanes"][locale]}</th><td>${attribute.value}</td> 
+                    </#if> 
+					<#if attribute.name == 'tipo_struttura'>
+						<th>${["Structure type","Tipo struttura","Structure type","Structure type"][locale]}</th><td>${attribute.value}</td> 
                     </#if> 
 									
                 </tr>

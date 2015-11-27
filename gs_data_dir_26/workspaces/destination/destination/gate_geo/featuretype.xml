@@ -76,7 +76,10 @@ concessionaria_sito_it,&#xd;
 concessionaria_sito_en,&#xd;
 concessionaria_sito_fr,&#xd;
 concessionaria_sito_de,&#xd;
-nr_corsie_carreggiata&#xd;
+nr_corsie_carreggiata,&#xd;
+direzione,&#xd;
+corsia_emergenza,&#xd;
+tipo_struttura&#xd;
 from siig_gate_geo_gate&#xd;
 where data_cancellazione is null and geometria is not null
 </sql>
