@@ -316,6 +316,12 @@ public class RiskCalculator extends RiskCalculatorBase {
      */
     private void checkProcessingAllowed(JDBCDataStore dataStore, String dataStoreName, int processing)
             throws IOException {
+        
+        // "Elaborazione Standard" process is open to anyone
+        if(processing == 1){
+            return;
+        }
+        
         // access through catalog to let the security jump in
         FeatureTypeInfo ft = catalog.getResourceByName(dataStoreName,
                 "siig_mtd_d_elaborazione", FeatureTypeInfo.class);
