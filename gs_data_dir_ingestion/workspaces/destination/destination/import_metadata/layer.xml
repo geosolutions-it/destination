@@ -1,0 +1,12 @@
+<layer>
+  <name>import_metadata</name>
+  <id>LayerInfoImpl--5be28162:151483fa5c5:-7fff</id>
+  <type>VECTOR</type>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl--5be28162:151483fa5c5:-8000</id>
+  </resource>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+</layer>
