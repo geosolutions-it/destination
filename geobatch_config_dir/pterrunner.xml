@@ -3,8 +3,8 @@
 
     <id>pterrunner</id>
 
-    <name>Pter ingestion</name>
-    <description>Pter ingestion</description>
+    <name>Ingestione Pter</name>
+    <description>Ingestione Pter</description>
 
     <autorun>true</autorun>
 
@@ -23,13 +23,15 @@
 
         <Ds2dsConfiguration>
             <id>import_shape</id>
-            <name>SHP ingestion</name>
+            <name>Importazione Shapefile su DB</name>
             <description>Ingesting shapefile into the DB</description>
 
             <listenerConfigurations/>
             <failIgnored>false</failIgnored>
             <purgeData>true</purgeData>
-
+			<skippedTypes>
+				<string>xml</string>
+			</skippedTypes>
             <outputFeature>
                 <dataStore>
                    <entry>
@@ -43,10 +45,6 @@
                    <entry>
                      <string>port</string>
                      <string>5432</string>
-                   </entry>
-                   <entry>
-                     <string>database</string>
-                     <string>destination_staging</string>
                    </entry>
                    <entry>
                      <string>database</string>
@@ -69,18 +67,18 @@
             <projectOnMappings>false</projectOnMappings>
             <attributeMappings/>
             <!-- Listeners -->
-            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>ConsumerLogger1</listenerId>
             <listenerId>Cumulator</listenerId>
         </Ds2dsConfiguration>
 
         <PterIngestionConfiguration>
             <id>pter_ingestion</id>
-            <name>pter_ingestion</name>
-            <description>Pter Ingestion</description>
+            <name>Elaborazione dati PTER</name>
+            <description>Elaborazione dati PTER</description>
 
             <dropInput>true</dropInput>
             <!-- Listeners -->
-            <listenerId>ConsumerLogger0</listenerId>
+            <listenerId>ConsumerLogger2</listenerId>
             <listenerId>Cumulator</listenerId>
         </PterIngestionConfiguration>
         
@@ -93,7 +91,16 @@
             <serviceID>loggingListenerService</serviceID>
             <id>ConsumerLogger0</id>
             <loggerName>it.geosolutions.ConsLogger</loggerName>
-            <appendToListenerForwarder>true</appendToListenerForwarder>
+        </LoggingProgressListener>
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ConsumerLogger1</id>
+            <loggerName>it.geosolutions.ConsLogger</loggerName>
+        </LoggingProgressListener>
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ConsumerLogger2</id>
+            <loggerName>it.geosolutions.ConsLogger</loggerName>
         </LoggingProgressListener>
         <CumulatingProgressListener>
             <serviceID>cumulatingListenerService</serviceID>

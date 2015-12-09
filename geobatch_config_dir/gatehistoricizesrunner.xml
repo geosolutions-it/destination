@@ -53,7 +53,7 @@
 						</entry>
 						<entry>
 							<string>database</string>
-							<string>destination</string>
+							<string>destination_staging</string>
 						</entry>
 						<entry>
 							<string>schema</string>
@@ -91,7 +91,7 @@
 					   </entry>
 					   <entry>
 						 <string>database</string>
-						 <string>destination</string>
+						 <string>destination_staging</string>
 					   </entry>                   
 					   <entry>
 						 <string>schema</string>
