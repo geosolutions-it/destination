@@ -126,7 +126,7 @@
                         <Stroke>
                             <!--<CssParameter name="stroke">#FF00D8</CssParameter>-->
                           	<CssParameter name="stroke">#FCFF08</CssParameter>
-                            <CssParameter name="stroke-width">64</CssParameter>
+                            <CssParameter name="stroke-width">28</CssParameter>
                         </Stroke>
                     </LineSymbolizer>
                     <PointSymbolizer
