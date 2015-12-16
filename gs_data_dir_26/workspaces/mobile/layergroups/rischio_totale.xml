@@ -1,0 +1,90 @@
+<layerGroup>
+  <id>LayerGroupInfoImpl-3dbab834:1516cd2f79e:-7ff9</id>
+  <name>rischio_totale</name>
+  <mode>SINGLE</mode>
+  <title>rischio_totale</title>
+  <abstractTxt>rischio_totale</abstractTxt>
+  <workspace>
+    <id>WorkspaceInfoImpl-3dbab834:1516cd2f79d:6342</id>
+  </workspace>
+  <publishables>
+    <published type="layer">
+      <id>LayerInfoImpl-3dbab834:15186e9a2c3:-4bd0</id>
+    </published>
+    <published type="layer">
+      <id>LayerInfoImpl-3dbab834:15186e9a2c3:-3cad</id>
+    </published>
+    <published type="layer">
+      <id>LayerInfoImpl-3dbab834:15186e9a2c3:-3ca8</id>
+    </published>
+    <published type="layer">
+      <id>LayerInfoImpl-3dbab834:15186e9a2c3:18e0</id>
+    </published>
+    <published type="layer">
+      <id>LayerInfoImpl-3dbab834:15186e9a2c3:-4024</id>
+    </published>
+  </publishables>
+  <styles>
+    <style>
+      <id>StyleInfoImpl-3dbab834:15186e9a2c3:4cd6</id>
+    </style>
+    <style>
+      <id>StyleInfoImpl-3dbab834:15186e9a2c3:4cd7</id>
+    </style>
+    <style>
+      <id>StyleInfoImpl-3dbab834:15186e9a2c3:4cd8</id>
+    </style>
+    <style>
+      <id>StyleInfoImpl-3dbab834:15186e9a2c3:4cd9</id>
+    </style>
+    <style>
+      <id>StyleInfoImpl-3dbab834:15186e9a2c3:4cda</id>
+    </style>
+  </styles>
+  <bounds>
+    <minx>307376.7374592663</minx>
+    <maxx>777297.7741795989</maxx>
+    <miny>4876185.567449302</miny>
+    <maxy>5227027.997430774</maxy>
+    <crs class="projected">EPSG:32632</crs>
+  </bounds>
+  <metadata>
+    <entry key="title">rischio_totale</entry>
+  </metadata>
+  <authorityURLs>
+    <AuthorityURL>
+      <name>en</name>
+      <href>http://destination.geo-solutions.it/en</href>
+    </AuthorityURL>
+    <AuthorityURL>
+      <name>it</name>
+      <href>http://destination.geo-solutions.it/it</href>
+    </AuthorityURL>
+    <AuthorityURL>
+      <name>fr</name>
+      <href>http://destination.geo-solutions.it/fr</href>
+    </AuthorityURL>
+    <AuthorityURL>
+      <name>de</name>
+      <href>http://destination.geo-solutions.it/de</href>
+    </AuthorityURL>
+  </authorityURLs>
+  <identifiers>
+    <Identifier>
+      <authority>en</authority>
+      <identifier>Risk Social - Environmental</identifier>
+    </Identifier>
+    <Identifier>
+      <authority>it</authority>
+      <identifier>Rischio Sociale - Ambientale</identifier>
+    </Identifier>
+    <Identifier>
+      <authority>fr</authority>
+      <identifier>risque sociale - environnemental</identifier>
+    </Identifier>
+    <Identifier>
+      <authority>de</authority>
+      <identifier>Risiko</identifier>
+    </Identifier>
+  </identifiers>
+</layerGroup>

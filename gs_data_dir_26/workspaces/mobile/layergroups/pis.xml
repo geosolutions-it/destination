@@ -1,0 +1,49 @@
+<layerGroup>
+  <id>LayerGroupInfoImpl-3dbab834:1516cd2f79e:-321b</id>
+  <name>pis</name>
+  <mode>SINGLE</mode>
+  <workspace>
+    <id>WorkspaceInfoImpl-3dbab834:1516cd2f79d:6342</id>
+  </workspace>
+  <publishables>
+    <published type="layer">
+      <id>LayerInfoImpl-3dbab834:15186e9a2c3:-7ff9</id>
+    </published>
+    <published type="layer">
+      <id>LayerInfoImpl-3dbab834:15186e9a2c3:-7ff2</id>
+    </published>
+    <published type="layer">
+      <id>LayerInfoImpl-3dbab834:15186e9a2c3:-3226</id>
+    </published>
+    <published type="layer">
+      <id>LayerInfoImpl-3dbab834:15186e9a2c3:-3221</id>
+    </published>
+    <published type="layer">
+      <id>LayerInfoImpl-3dbab834:15186e9a2c3:-321c</id>
+    </published>
+  </publishables>
+  <styles>
+    <style>
+      <id>StyleInfoImpl-3dbab834:15186e9a2c3:4cd1</id>
+    </style>
+    <style>
+      <id>StyleInfoImpl-3dbab834:15186e9a2c3:4cd2</id>
+    </style>
+    <style>
+      <id>StyleInfoImpl-3dbab834:15186e9a2c3:4cd3</id>
+    </style>
+    <style>
+      <id>StyleInfoImpl-3dbab834:15186e9a2c3:4cd4</id>
+    </style>
+    <style>
+      <id>StyleInfoImpl-3dbab834:15186e9a2c3:4cd5</id>
+    </style>
+  </styles>
+  <bounds>
+    <minx>307521.6551252864</minx>
+    <maxx>776105.5917718211</maxx>
+    <miny>4876225.320709771</miny>
+    <maxy>5222566.596034277</maxy>
+    <crs class="projected">EPSG:32632</crs>
+  </bounds>
+</layerGroup>
