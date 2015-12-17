@@ -38,7 +38,7 @@
 	
 	<bean class="it.geosolutions.geostore.services.rest.security.GeoStoreRequestHeadersAuthenticationFilter"
         id="shibboletFilter">
-        <property name="userNameHeader" value="AJP_Shib-Identita-CodiceFiscale"/>
+        <property name="userNameHeader" value="Shib-Identita-CodiceFiscale"/>
         <property name="autoCreateUser" value="true"/>
         <property name="userMapper" ref="headersMapper"/>
     </bean>
@@ -47,7 +47,7 @@
         id="headersMapper">
         <constructor-arg>
             <map>
-                <entry key="email" value="ajp_shib_identita_email"/>
+                <entry key="email" value="shib_identita_email"/>
                 <entry key="logintype" value="'shibboleth'"/>
                 <entry key="UUID" value="T(java.util.UUID).randomUUID().toString()"/>
             </map>
