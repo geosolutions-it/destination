@@ -904,7 +904,7 @@ public class DestinationDownload extends RiskCalculatorBase {
 			SQLException, FileNotFoundException {
 		
 		String riskShapeFileName = createUniqueFileName() + ".zip";
-		SimpleFeatureCollection fc = riskCalculator.execute(features,
+		SimpleFeatureCollection fc = riskCalculator.execute(features, null,
 				storeName, batch, precision, connectionParams, processing,
 				formula, target, materials, kemler, scenarios, entities, severeness,
 				fpfield, changedTargets, cff, psc, padr, pis, distances,

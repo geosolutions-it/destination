@@ -183,6 +183,7 @@ public class RiskCalculator extends RiskCalculatorBase {
     @DescribeResult(description = "Risk calculus result")
     public SimpleFeatureCollection execute(
             @DescribeParameter(name = "features", description = "Input feature collection") SimpleFeatureCollection features,
+            @DescribeParameter(name = "workspace", description = "risk workspace name", min = 0) String workspace,
             @DescribeParameter(name = "store", description = "risk data store name", min = 0) String storeName,
             @DescribeParameter(name = "batch", description = "batch calculus size", min = 0) Integer batch,
             @DescribeParameter(name = "precision", description = "output value precision (decimals)", min = 0) Integer precision,
@@ -217,10 +218,10 @@ public class RiskCalculator extends RiskCalculatorBase {
         JDBCDataStore dataStore = null;
         if (catalog != null && storeName != null) {
             LOGGER.fine("Loading DataStore " + storeName + " from Catalog");
-            DataStoreInfo dataStoreInfo = catalog.getDataStoreByName(storeName);
+            DataStoreInfo dataStoreInfo = catalog.getDataStoreByName(workspace, storeName);
             if (dataStoreInfo == null) {
                 LOGGER.severe("DataStore not found");
-                throw new IOException("DataStore not found: " + storeName);
+                throw new IOException("DataStore not found: " + workspace + ":" + storeName);
             }
             dataStore = (JDBCDataStore) dataStoreInfo.getDataStore(null);
         } else if (connectionParams != null) {
