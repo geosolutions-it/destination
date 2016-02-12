@@ -1,0 +1,17 @@
+<layer>
+  <name>pis_1</name>
+  <id>LayerInfoImpl-3dbab834:15186e9a2c3:-7ff9</id>
+  <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl-3dbab834:15186e9a2c3:4cd1</id>
+  </defaultStyle>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl-3dbab834:15186e9a2c3:-7ffa</id>
+  </resource>
+  <queryable>true</queryable>
+  <opaque>true</opaque>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+</layer>

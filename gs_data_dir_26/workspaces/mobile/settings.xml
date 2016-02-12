@@ -1,0 +1,31 @@
+<settings>
+  <id>SettingsInfoImpl-3dbab834:15186e9a2c3:dd4</id>
+  <workspace>
+    <id>WorkspaceInfoImpl-3dbab834:1516cd2f79d:6342</id>
+    <name>mobile</name>
+  </workspace>
+  <contact>
+    <id>contact</id>
+    <addressCity>Alexandria</addressCity>
+    <addressCountry>Egypt</addressCountry>
+    <addressType>Work</addressType>
+    <contactEmail>claudius.ptolomaeus@gmail.com</contactEmail>
+    <contactOrganization>The ancient geographes INC</contactOrganization>
+    <contactPerson>Claudius Ptolomaeus</contactPerson>
+    <contactPosition>Chief geographer</contactPosition>
+  </contact>
+  <charset>UTF-8</charset>
+  <numDecimals>8</numDecimals>
+  <onlineResource>http://geoserver.org</onlineResource>
+  <verbose>false</verbose>
+  <verboseExceptions>false</verboseExceptions>
+  <metadata>
+    <map>
+      <entry>
+        <string>quietOnNotFound</string>
+        <boolean>false</boolean>
+      </entry>
+    </map>
+  </metadata>
+  <localWorkspaceIncludesPrefix>true</localWorkspaceIncludesPrefix>
+</settings>

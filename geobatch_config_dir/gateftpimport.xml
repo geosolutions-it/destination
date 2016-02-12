@@ -11,7 +11,7 @@
     <EventGeneratorConfiguration>
         <serviceID>fsEventGeneratorService</serviceID>
         <wildCard>*.*</wildCard>
-        <watchDirectory>gatefilehandling/in</watchDirectory>
+        <watchDirectory>gateftpimport/in</watchDirectory>
         <osType>OS_UNDEFINED</osType>
         <eventType>POLLING_EVENT</eventType>
         <!-- Executed once an hour  -->
@@ -38,7 +38,7 @@
                    </entry>
                    <entry>
                      <string>host</string>
-                     <string>192.168.1.31</string>
+                     <string>localhost</string>
                    </entry>
                    <entry>
                      <string>port</string>
@@ -46,11 +46,7 @@
                    </entry>
                    <entry>
                      <string>database</string>
-                     <string>destination</string>
-                   </entry>
-                   <entry>
-                     <string>database</string>
-                     <string>destination</string>
+                     <string>destination_staging</string>
                    </entry>
                    <entry>
                      <string>schema</string>

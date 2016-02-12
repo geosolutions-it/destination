@@ -1,0 +1,9 @@
+<requestHeaderAuthentication>
+  <id>12d7e6bf:1429ed3773b:-8000</id>
+  <name>shibboleth</name>
+  <className>org.geoserver.security.filter.GeoServerRequestHeaderAuthenticationFilter</className>
+  <roleSource class="org.geoserver.security.config.PreAuthenticatedUserNameFilterConfig$PreAuthenticatedUserNameRoleSource">RoleService</roleSource>
+  <userGroupServiceName>default</userGroupServiceName>
+  <roleServiceName>iride</roleServiceName>
+  <principalHeaderAttribute>Shib-Iride-IdentitaDigitale</principalHeaderAttribute>
+</requestHeaderAuthentication>

@@ -1,0 +1,15 @@
+<layer>
+  <name>v_geo_grafo_ln_1</name>
+  <id>LayerInfoImpl-3dbab834:15186e9a2c3:16d1</id>
+  <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl--7e9de184:13f61c0b107:-4d9e</id>
+  </defaultStyle>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl-3dbab834:15186e9a2c3:16d0</id>
+  </resource>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+</layer>
