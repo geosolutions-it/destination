@@ -27,9 +27,21 @@
       		<string>ID_TEMA</string>
       	</entry>
       	<entry>      	
-      		<string>denominazione</string>
-      		<string>DENOM</string>
+      		<string>denominazione_comune_it</string>
+      		<string>DEN_COM_IT</string>
       	</entry>
+      	<entry>          
+            <string>denominazione_comune_en</string>
+            <string>DEN_COM_EN</string>
+        </entry>
+        <entry>         
+            <string>denominazione_comune_fr</string>
+            <string>DEN_COM_FR</string>
+        </entry>
+        <entry>         
+            <string>denominazione_comune_de</string>
+            <string>DEN_COM_DE</string>
+        </entry>
       	<entry>      	
       		<string>nat_code</string>
       		<string>NAT_CODE</string>
@@ -80,6 +92,10 @@
       		<string>addetti</string>
       		<string>N_ADDETTI</string>
       	</entry>
+      	<entry>          
+            <string>flg_nr_addetti_ind</string>
+            <string>FLG_NR_AD</string>
+        </entry>
       </map>
     </entry>
     <entry>

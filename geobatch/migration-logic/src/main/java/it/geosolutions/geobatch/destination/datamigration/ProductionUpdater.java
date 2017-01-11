@@ -364,7 +364,7 @@ public class ProductionUpdater extends InputObject{
 								
 							}
 							count++;
-							if(count % 100 == 0) {
+							if(count % 100 == 0 && ids.size() > 0) {
 								store.removeFeatures(ff.id(ids));
 								ids.clear();
 							}

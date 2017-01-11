@@ -586,7 +586,7 @@ public class OriginalArcsIngestionProcess extends InputObject {
 		String flagIncidenti = (String)inputFeature.getAttribute("FLG_N_INC");
 		String flagViadotto = (String)inputFeature.getAttribute("FLG_VDTT");
 		String flagGalleria = (String)inputFeature.getAttribute("FLG_GLLR");
-		Integer corsie = (Integer)inputFeature.getAttribute("N_CORSIE");
+		Integer corsie = ((Number)inputFeature.getAttribute("N_CORSIE")).intValue();
 		if(corsie == null || corsie <=0) {			
 			if(categoria != null) {
 				corsie = corsieStandard.get(categoria);
